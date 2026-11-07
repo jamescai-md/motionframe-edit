@@ -67,6 +67,15 @@ different beat to build first.
    focusing. Fades are for a single object or a privacy dissolve, not for a
    scene change and not between every beat.
 
+## Building it
+
+Deciding what moves is half the job; getting a clean frame out is the other half. The lane
+mechanics, the four traps that ruin otherwise-good animation (`transform-origin: 0 0`,
+`immediateRender: false`, never animating `left`/`top`/`width`/`height`, and masks defeating
+easing), the SVG draw-on recipe, and the deterministic capture pipeline are in
+`references/construction.md`. Read it before writing the first tween, not after the render
+looks wrong.
+
 ## Type, colour and layout are not decided here
 
 Motion is one layer over a composition that already has to work as a still. The moment a

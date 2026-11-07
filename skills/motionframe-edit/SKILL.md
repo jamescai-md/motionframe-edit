@@ -45,10 +45,15 @@ commit, and what that source is good and bad at.
 
 | Job | Read first |
 |---|---|
-| cutting, captions, delivery | `library/editing/` |
-| beats, timing, lanes, traps | `library/motion/` |
-| pages, tokens, interface motion | `library/design/` |
-| "who said this rule?" | `docs/absorption.md` |
+| "where does our material on <topic> come from?" | `library/INDEX.md` — 20 topics, each row listing the upstream files that actually discuss it |
+| cutting, captions, delivery | `library/INDEX.md` → cutting · captions · delivery, then the two or three files it names |
+| beats, timing, animation construction | `library/INDEX.md` → easing · animation construction · transitions |
+| sound design, mixing, loudness | `library/INDEX.md` → sound effects · audio mix · music |
+| pages, tokens, interface motion | `library/INDEX.md` → typography · colour · tokens |
+| "who said this rule, and where did it land?" | `docs/absorption.md` |
+
+Do not browse `library/` by hand: 1,824 files across eighteen repositories, and the index exists
+so you open two or three rather than forty.
 
 ## The twelve rules
 

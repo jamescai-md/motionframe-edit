@@ -389,3 +389,20 @@ class TestReferenceStyle(unittest.TestCase):
         src = (pathlib.Path(__file__).resolve().parent.parent / "tools" / "mfe.py").read_text()
         for key in required:
             self.assertIn(f'"{key}"', src, f"style_spec must still emit {key}")
+
+
+class TestLibraryIndex(unittest.TestCase):
+    """The library index is the only thing making 1,824 copied files navigable."""
+
+    def test_every_topic_has_sources(self):
+        index = (pathlib.Path(__file__).resolve().parent.parent
+                 / "library" / "INDEX.md").read_text(encoding="utf-8")
+        empty = [line.split("|")[1].strip() for line in index.splitlines()
+                 if line.startswith("|") and "| 0 |" in line]
+        self.assertEqual(empty, [], f"topics with no source files: {empty}")
+
+    def test_index_names_specific_files(self):
+        index = (pathlib.Path(__file__).resolve().parent.parent
+                 / "library" / "INDEX.md").read_text(encoding="utf-8")
+        self.assertGreaterEqual(index.count("/upstream/"), 40,
+                                "the index must name concrete upstream files, not folders")

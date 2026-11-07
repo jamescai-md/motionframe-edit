@@ -59,6 +59,80 @@ Placement beats level:
   common tell of a machine-made edit.
 - Silence is an effect. A 200–400 ms hole before a drop does more than a riser.
 
+## SFX — the visual-event map
+
+Sound effects are not decoration sprinkled on cuts; they are the audible half of a physical
+action. Build them from a list, not from mood.
+
+**Write the event map first.** For each shot, name the events that deserve a sound:
+
+| Visual event | Sound | Where it lands |
+|---|---|---|
+| an object makes contact (logo lands, card hits, stamp) | impact — low body + click | peak on the contact frame, not the file's start |
+| a spatial move (camera whips, element flies in) | whoosh — filtered noise | tail of the whoosh into the cut, 1–3 frames early |
+| a small UI action (toggle, tap, tick) | dry click or soft tap | on the frame, quiet |
+| text or a number appears with weight | short sub-thump or single tick | on the frame |
+| a section ends, or a turn is coming | riser, or **silence** | riser ends on the cut; silence needs nothing |
+| a place is established | room tone / ambience | under everything, constant, very low |
+
+**Alignment beats choice.** The rule that matters most, from a launch handoff:
+*"Give each sound cue a visible event; align its audible impact, not its file start."* A file
+whose peak is 200 ms in has to be trimmed so its peak hits the frame.
+
+**The ban list.** Laser zaps, pitch-drop plops, sci-fi chirps, camera-shutter clicks, and a
+whoosh on every transition. Each one is a recognisable stock-file tell. Also: no SFX under a
+cut with no visible action — that is the definition of decoration.
+
+**Levels.** SFX sit under the voice and above the music bed: roughly −12 to −6 dB relative to
+dialogue for an accent that should be felt, −20 dB for texture. If an effect is the loudest
+thing in a window containing speech, it is too loud, regardless of how good it sounds.
+
+### Where effects come from, and the licence line
+
+No paid dependency, ever. Three routes, and say which you used:
+
+1. **Retrieval, free and keyless.** Openverse's audio index (most results are Freesound) takes
+   `license=cc0,by` and needs no account. This is what the HyperFrames launch pipeline in
+   `library/motion/hyperframes/upstream/skills/media-use/audio/references/sfx.md` does, and its
+   licence discipline is the part worth keeping:
+   - **CC0 or CC BY only.** Never NonCommercial, ShareAlike or NoDerivatives — those cannot
+     travel in work you hand to someone else.
+   - **Credit every CC BY sound** in `CREDITS.md`, with the artist and the licence, and keep
+     that file with the project. CC0 needs no credit but still gets recorded in
+     `provenance.json` as `stock-licensed`.
+   - **One asset per effect name**, reused across cues. A whoosh is a whoosh.
+   - **No match means skip, not fail.** A missing effect is recorded and the render continues;
+     sound design of the whole piece is never blocked by one cue.
+2. **A small local library**, curated and licence-checked once, so a project works offline.
+3. **Synthesis**, below — offline, frame-exact, and often the better answer for transitions.
+2. **Synthesise it.** For transitions and impacts a generated sound is often better than stock,
+   because it can be timed to the frame. These run with the ffmpeg you already have:
+
+```bash
+# impact: 55 Hz body + a 30 ms click, exponential decay, peak ≈ -5 dBFS
+ffmpeg -y -f lavfi -i "sine=frequency=55:duration=0.35,volume=0.9" \
+       -f lavfi -i "anoisesrc=duration=0.03:color=white:amplitude=0.5" \
+  -filter_complex "[0:a]afade=t=out:st=0.02:d=0.33:curve=exp[body];\
+                   [1:a]afade=t=out:st=0:d=0.03:curve=exp[click];\
+                   [body][click]amix=inputs=2:normalize=0[a]" -map "[a]" impact.wav
+
+# whoosh: shaped pink noise, 0.55 s, peak ≈ -7 dBFS
+ffmpeg -y -f lavfi -i "anoisesrc=duration=0.55:color=pink:amplitude=0.6" \
+  -af "highpass=f=350,lowpass=f=5200,afade=t=in:st=0:d=0.22,\
+       afade=t=out:st=0.33:d=0.22,volume=6dB" whoosh.wav
+
+# riser: noise swelling over 1 s, cut on the drop
+ffmpeg -y -f lavfi -i "anoisesrc=duration=1.2:color=pink:amplitude=0.5" \
+  -af "highpass=f=600,afade=t=in:st=0:d=1.0:curve=exp,volume=10dB" riser.wav
+```
+
+Each is a starting point: render it, look at the waveform, move the decay and the peak, and
+check the peak lands where the picture does.
+
+**What you must say about SFX at handoff:** how many, on which events, and that you cannot hear
+them. "Six effects, each on a contact or a transition, peaks trimmed to the frame; I have not
+heard the mix — check the whooshes are not stepped on by the dialogue."
+
 ## Voice treatment, in order
 
 1. **Clean** — high-pass at 80–100 Hz (removes rumble, keeps body), a gentle

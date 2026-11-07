@@ -31,6 +31,8 @@ jobs:
         # llms-full.txt is generated from the skills. If it drifts, the single-file
         # context dump silently lies about the repo.
         run: python3 tools/make-llms-full.py --check
+      - name: library index is current
+        run: python3 tools/make-index.py --check
       - name: validate specs and the EDL contract
         # No third-party deps on purpose: the specs are JSON, and the contract is
         # enforced by the engine's own validator. If this step needs jsonschema to

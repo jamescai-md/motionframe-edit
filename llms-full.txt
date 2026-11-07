@@ -78,7 +78,7 @@ python3 -m unittest discover -s tests -v
 
 ## The library
 
-`library/` holds the absorbed doctrine of the eighteen source skills this project merges —
+`library/` holds the eighteen source skills this project merges, copied verbatim —
 the sources themselves, copied verbatim (1,824 files), each with its upstream licence, pinned
 commit and known weaknesses. Read the source for the domain you are working in, not all of them.
 `docs/absorption.md` is the generated map from source to skill.
@@ -132,10 +132,15 @@ commit, and what that source is good and bad at.
 
 | Job | Read first |
 |---|---|
-| cutting, captions, delivery | `library/editing/` |
-| beats, timing, lanes, traps | `library/motion/` |
-| pages, tokens, interface motion | `library/design/` |
-| "who said this rule?" | `docs/absorption.md` |
+| "where does our material on <topic> come from?" | `library/INDEX.md` — 20 topics, each row listing the upstream files that actually discuss it |
+| cutting, captions, delivery | `library/INDEX.md` → cutting · captions · delivery, then the two or three files it names |
+| beats, timing, animation construction | `library/INDEX.md` → easing · animation construction · transitions |
+| sound design, mixing, loudness | `library/INDEX.md` → sound effects · audio mix · music |
+| pages, tokens, interface motion | `library/INDEX.md` → typography · colour · tokens |
+| "who said this rule, and where did it land?" | `docs/absorption.md` |
+
+Do not browse `library/` by hand: 1,824 files across eighteen repositories, and the index exists
+so you open two or three rather than forty.
 
 ## The twelve rules
 
@@ -1152,6 +1157,80 @@ Placement beats level:
   common tell of a machine-made edit.
 - Silence is an effect. A 200–400 ms hole before a drop does more than a riser.
 
+## SFX — the visual-event map
+
+Sound effects are not decoration sprinkled on cuts; they are the audible half of a physical
+action. Build them from a list, not from mood.
+
+**Write the event map first.** For each shot, name the events that deserve a sound:
+
+| Visual event | Sound | Where it lands |
+|---|---|---|
+| an object makes contact (logo lands, card hits, stamp) | impact — low body + click | peak on the contact frame, not the file's start |
+| a spatial move (camera whips, element flies in) | whoosh — filtered noise | tail of the whoosh into the cut, 1–3 frames early |
+| a small UI action (toggle, tap, tick) | dry click or soft tap | on the frame, quiet |
+| text or a number appears with weight | short sub-thump or single tick | on the frame |
+| a section ends, or a turn is coming | riser, or **silence** | riser ends on the cut; silence needs nothing |
+| a place is established | room tone / ambience | under everything, constant, very low |
+
+**Alignment beats choice.** The rule that matters most, from a launch handoff:
+*"Give each sound cue a visible event; align its audible impact, not its file start."* A file
+whose peak is 200 ms in has to be trimmed so its peak hits the frame.
+
+**The ban list.** Laser zaps, pitch-drop plops, sci-fi chirps, camera-shutter clicks, and a
+whoosh on every transition. Each one is a recognisable stock-file tell. Also: no SFX under a
+cut with no visible action — that is the definition of decoration.
+
+**Levels.** SFX sit under the voice and above the music bed: roughly −12 to −6 dB relative to
+dialogue for an accent that should be felt, −20 dB for texture. If an effect is the loudest
+thing in a window containing speech, it is too loud, regardless of how good it sounds.
+
+### Where effects come from, and the licence line
+
+No paid dependency, ever. Three routes, and say which you used:
+
+1. **Retrieval, free and keyless.** Openverse's audio index (most results are Freesound) takes
+   `license=cc0,by` and needs no account. This is what the HyperFrames launch pipeline in
+   `library/motion/hyperframes/upstream/skills/media-use/audio/references/sfx.md` does, and its
+   licence discipline is the part worth keeping:
+   - **CC0 or CC BY only.** Never NonCommercial, ShareAlike or NoDerivatives — those cannot
+     travel in work you hand to someone else.
+   - **Credit every CC BY sound** in `CREDITS.md`, with the artist and the licence, and keep
+     that file with the project. CC0 needs no credit but still gets recorded in
+     `provenance.json` as `stock-licensed`.
+   - **One asset per effect name**, reused across cues. A whoosh is a whoosh.
+   - **No match means skip, not fail.** A missing effect is recorded and the render continues;
+     sound design of the whole piece is never blocked by one cue.
+2. **A small local library**, curated and licence-checked once, so a project works offline.
+3. **Synthesis**, below — offline, frame-exact, and often the better answer for transitions.
+2. **Synthesise it.** For transitions and impacts a generated sound is often better than stock,
+   because it can be timed to the frame. These run with the ffmpeg you already have:
+
+```bash
+# impact: 55 Hz body + a 30 ms click, exponential decay, peak ≈ -5 dBFS
+ffmpeg -y -f lavfi -i "sine=frequency=55:duration=0.35,volume=0.9" \
+       -f lavfi -i "anoisesrc=duration=0.03:color=white:amplitude=0.5" \
+  -filter_complex "[0:a]afade=t=out:st=0.02:d=0.33:curve=exp[body];\
+                   [1:a]afade=t=out:st=0:d=0.03:curve=exp[click];\
+                   [body][click]amix=inputs=2:normalize=0[a]" -map "[a]" impact.wav
+
+# whoosh: shaped pink noise, 0.55 s, peak ≈ -7 dBFS
+ffmpeg -y -f lavfi -i "anoisesrc=duration=0.55:color=pink:amplitude=0.6" \
+  -af "highpass=f=350,lowpass=f=5200,afade=t=in:st=0:d=0.22,\
+       afade=t=out:st=0.33:d=0.22,volume=6dB" whoosh.wav
+
+# riser: noise swelling over 1 s, cut on the drop
+ffmpeg -y -f lavfi -i "anoisesrc=duration=1.2:color=pink:amplitude=0.5" \
+  -af "highpass=f=600,afade=t=in:st=0:d=1.0:curve=exp,volume=10dB" riser.wav
+```
+
+Each is a starting point: render it, look at the waveform, move the decay and the peak, and
+check the peak lands where the picture does.
+
+**What you must say about SFX at handoff:** how many, on which events, and that you cannot hear
+them. "Six effects, each on a contact or a transition, peaks trimmed to the frame; I have not
+heard the mix — check the whooshes are not stepped on by the dialogue."
+
 ## Voice treatment, in order
 
 1. **Clean** — high-pass at 80–100 Hz (removes rumble, keeps body), a gentle
@@ -1331,6 +1410,15 @@ different beat to build first.
 5. **Almost nothing fades.** Things arrive by moving, cutting, unmasking or
    focusing. Fades are for a single object or a privacy dissolve, not for a
    scene change and not between every beat.
+
+## Building it
+
+Deciding what moves is half the job; getting a clean frame out is the other half. The lane
+mechanics, the four traps that ruin otherwise-good animation (`transform-origin: 0 0`,
+`immediateRender: false`, never animating `left`/`top`/`width`/`height`, and masks defeating
+easing), the SVG draw-on recipe, and the deterministic capture pipeline are in
+`references/construction.md`. Read it before writing the first tween, not after the render
+looks wrong.
 
 ## Type, colour and layout are not decided here
 
@@ -1656,6 +1744,106 @@ changes the frame shape is a new piece, not a transfer.
 
 Both gates measure form. Whether the graphics earn their place is the decoration test above,
 and it is your call, not the tool's.
+
+
+<!-- ===== skills/motion-director/references/construction.md ===== -->
+# Construction — from decisions to frames
+
+The rest of this skill decides *what* moves and *why*. This file is the part that gets a frame
+out of a browser or out of ffmpeg without it looking wrong, and it exists because the sources
+that taught the hard parts had their rules scattered across launch handoffs and none of them
+survived the first merge.
+
+## Pick the lane by what has to move
+
+| What moves | Lane | Why |
+|---|---|---|
+| A cut, a punch-in, a reframe, a slow push | **ffmpeg only** | no browser, no dependencies, renders in seconds |
+| Type, layout, charts, SVG line-work, UI | **HTML + GSAP + headless Chrome** | real DOM, real typography, real easing |
+| Anything frame-exact, parameterised, re-rendered | **Remotion** (own licence, optional) | React components as frames |
+
+Do not reach for the browser lane to do a punch-in. It is 40× slower and adds a dependency
+chain to something ffmpeg already does.
+
+## The four traps that ruin otherwise-good animation
+
+Every one of these comes from launch handoffs in `library/motion/hyperframes-launches/` and
+`library/motion/hyperframes/`, where each was learned by shipping a broken frame.
+
+**1. `transform-origin: 0 0` is load-bearing.**
+SVG and transformed boxes scale from their centre by default, so a scale animation drifts away
+from the point the designer aligned. Set the origin explicitly on every element you animate:
+`transform-origin: 0 0` for anything anchored top-left in a layout, `50% 100%` for something
+that must squash into the floor or sit on a baseline. A rule in a handoff word for word:
+*squash uses `transform-origin: 50% 100%` so shapes compress into the floor contact.*
+
+**2. `immediateRender: false` on entry tweens that share a timeline.**
+A paused timeline still applies the *starting* value of every tween it contains the moment the
+timeline is built. Positioned elements therefore jump to their start state before the playhead
+reaches them — in one launch that put a card 1250 px off-screen. Add
+`immediateRender: false` to entry tweens (`from`, `fromTo`) on a timeline you will seek.
+
+**3. Never animate `left`, `top`, `width`, `height`.**
+They force layout on every frame, and they break when the composition is resized or re-seeked.
+Animate `transform` (`x`, `y`, `scale`, `rotate`) and `opacity`. The one exception is a
+deliberate layout change, not motion.
+
+**4. A mask defeats "cut the curve".**
+If you mask an element and animate its path, the easing you set becomes invisible — the mask
+edge is what the viewer reads. Either animate the mask deliberately or do not mask.
+
+## Draw-on, for line-work and graphs
+
+The technique the reference pieces use for glowing charts and underlines:
+
+```html
+<path d="..." stroke-dasharray="440" stroke-dashoffset="440" />
+```
+
+```js
+gsap.to(".line", { strokeDashoffset: 0, duration: 1.6, ease: "power2.inOut" });
+```
+
+Set `stroke-dasharray` and `stroke-dashoffset` to the path length (measure with
+`getTotalLength()`; 440 is a placeholder, not a number to copy). Animate the offset to zero.
+For a left-to-right reveal, also set `transform-origin: 0 0`.
+
+## Deterministic capture, then assemble
+
+A browser renders at whatever rate it likes. A video needs frame N on demand:
+
+```javascript
+// the page exposes a seek hook; the harness calls it per frame
+window.renderAt = (t) => { tl.pause(); tl.time(t); };
+```
+
+- Drive the timeline by `tl.time(t)` with the timeline paused, never by real time.
+- Capture at the delivery fps (30 or 60), one screenshot per frame.
+- Assemble with ffmpeg, and keep the audio out of the browser entirely:
+
+```bash
+ffmpeg -framerate 30 -i work/frames/%05d.png -i work/audio.wav \
+  -c:v libx264 -crf 18 -pix_fmt yuv420p -c:a aac -shortest work/layer.mp4
+```
+
+- Composite that layer over footage with the PTS-shifted overlay pattern in `lanes.md`.
+
+## What to check before you call it built
+
+- [ ] Every animated element has an explicit `transform-origin`.
+- [ ] Every entry tween on a seekable timeline has `immediateRender: false`.
+- [ ] No tween animates a layout property.
+- [ ] The draw-on uses the real path length.
+- [ ] Frame N is identical across two renders (determinism) — capture frame 0 and frame 0 again
+      and diff them; a difference means something is animating off the timeline.
+- [ ] The last frame is a designed still, not whatever the animation happened to end on.
+- [ ] `mfe.py gate` passes on the assembled layer before it is composited.
+
+## What this file does not cover
+
+Colour, type and layout decisions are `../../design-director/references/system.md`; whether the
+motion is worth making at all is the decoration test in `../SKILL.md`; and pacing against a
+reference is `reference-work.md`.
 
 
 <!-- ===== skills/motion-director/references/transitions.md ===== -->
@@ -3025,6 +3213,54 @@ writing, not the upstream's.
   doctrine is useful here.
 - **Contradictions** — left as contradictions in the sources, resolved in
   `../skills/motionframe-edit/references/precedence.md`, and nowhere else.
+
+
+<!-- ===== library/INDEX.md ===== -->
+# Index — where the material on each topic lives
+
+*Generated by `tools/make-index.py` from the copied sources. Do not edit by hand.*
+
+The library holds 1,824 verbatim source files across eighteen repositories. Nobody
+should read them all, and no skill does. This page answers one question: **for this topic,
+which upstream files are worth opening?**
+
+Ranking is by mention density (mentions ÷ √lines) — a finder, not a judge. Raw counts would
+put one 2,700-line implementation plan at the top of every row.
+A file can be ranked first and still be wrong; the skills are the arbitration, and
+`skills/motionframe-edit/references/precedence.md` is where contradictions are settled.
+
+| Topic | Files | Start here |
+|---|---:|---|
+| cutting, trims and joins | 200 | `motion/motionmaxxing/upstream/references/transitions.md` · `editing/herk-edit-kit/upstream/.agents/skills/cut-silences/SKILL.md` · `editing/herk-edit-kit/upstream/.claude/skills/cut-silences/SKILL.md` |
+| pacing and rhythm | 490 | `motion/reelmimic/upstream/.claude/skills/hyperframes-animation/blueprints/kinetic-type-beats.md` · `motion/reelmimic/upstream/.claude/skills/hyperframes-animation/blueprints/dataviz-countup.md` · `motion/motionmaxxing/upstream/references/director.md` |
+| hooks and openings | 211 | `motion/reelmimic/upstream/docs/HARNESS.md` · `editing/i-hate-editing/upstream/rules/hooks.md` · `motion/reelmimic/upstream/.claude/skills/hyperframes-animation/blueprints/kinetic-type-beats.md` |
+| captions and subtitles | 512 | `motion/remotion/upstream/packages/codex-plugin/skills/remotion-best-practices/remotion-captions/import-srt-captions.md` · `motion/remotion/upstream/packages/skills/skills/remotion-captions/import-srt-captions.md` · `editing/hypit/upstream/packages/caption/README.md` |
+| audio mix and loudness | 155 | `motion/hyperframes/upstream/skills/style-sampling/references/remix.md` · `motion/motionmaxxing/upstream/references/sound-sync.md` · `motion/motionmaxxing/upstream/references/tools.md` |
+| sound effects | 137 | `motion/hyperframes/upstream/skills/media-use/audio/references/sfx.md` · `motion/reelmimic/upstream/.claude/skills/media-use/audio/references/sfx.md` · `editing/i-hate-editing/upstream/rules/sound.md` |
+| music | 710 | `motion/reelmimic/upstream/.claude/skills/hyperframes-audio/SKILL.md` · `motion/motionmaxxing/upstream/references/sound-sync.md` · `motion/hyperframes/upstream/skills/media-use/references/resolve.md` |
+| transitions | 440 | `motion/remotion/upstream/packages/skills/skills/remotion-markup/transitions.md` · `motion/remotion/upstream/packages/codex-plugin/skills/remotion-best-practices/remotion-markup/transitions.md` · `editing/herk-edit-kit/upstream/.agents/skills/hyperframes/references/transitions.md` |
+| easing, timing and springs | 774 | `motion/reelmimic/upstream/.claude/skills/embedded-captions/modes/standard/_motion.md` · `motion/reelmimic/upstream/.claude/skills/hyperframes-animation/blueprints/agent-progress-theater.md` · `motion/hyperframes/upstream/skills/remotion-to-hyperframes/references/timing.md` |
+| animation construction | 541 | `motion/reelmimic/upstream/.claude/skills/hyperframes-animation/adapters/gsap.md` · `motion/hyperframes/upstream/packages/core/docs/versions/v0.1/core.md` · `motion/hyperframes/upstream/packages/core/docs/core.md` |
+| typography | 472 | `design/apple-design/upstream/references/hig/typography.md` · `motion/reelmimic/upstream/.claude/skills/hyperframes-creative/references/typography.md` · `editing/hypit/upstream/skills/hypit/references/production/fonts-and-text.md` |
+| colour and contrast | 514 | `editing/herk-edit-kit/upstream/.agents/skills/hyperframes/house-style.md` · `motion/reelmimic/upstream/.claude/skills/hyperframes-creative/references/house-style.md` · `motion/reelmimic/upstream/.claude/skills/embedded-captions/themes/README.md` |
+| layout, grid and composition | 955 | `motion/hyperframes/upstream/packages/core/docs/core.md` · `editing/herk-edit-kit/upstream/docs/superpowers/plans/2026-04-17-linear-promo-implementation.md` · `motion/hyperframes/upstream/packages/core/docs/versions/v0.1/core.md` |
+| design tokens and systems | 618 | `motion/reelmimic/upstream/.claude/skills/figma/SKILL.md` · `design/ui-ux-pro-max/upstream/.claude/skills/design-system/SKILL.md` · `motion/hyperframes/upstream/themes/CONTRACT.md` |
+| charts and data | 543 | `design/apple-design/upstream/references/hig/charts.md` · `motion/remotion/upstream/packages/STATS.md` · `design/apple-design/upstream/references/hig/charting-data.md` |
+| slop and anti-patterns | 103 | `motion/motionmaxxing/upstream/taste/verdicts.md` · `motion/motionmaxxing/upstream/SKILL.md` · `motion/reelmimic/upstream/.claude/skills/faceless-explainer/references/visual-design.md` |
+| delivery and export | 396 | `motion/remotion/upstream/packages/chrome-compile/VALIDATION-158.0.8127.2.md` · `motion/hyperframes/upstream/packages/cli/src/docs/rendering.md` · `motion/reelmimic/upstream/.claude/skills/figma/SKILL.md` |
+| ffmpeg technique | 267 | `motion/remotion/upstream/packages/compositor/ffmpeg/wrapper/README.md` · `motion/reelmimic/upstream/.claude/skills/ffmpeg/SKILL.md` · `motion/remotion/upstream/.agents/skills/update-ffmpeg/SKILL.md` |
+| transcription and asr | 200 | `editing/open-edit/upstream/.claude/skills/open-edit/TRANSCRIPTION.md` · `editing/herk-edit-kit/upstream/.agents/skills/hyperframes/references/transcript-guide.md` · `motion/hyperframes/upstream/skills/media-use/audio/references/captions/transcript-handling.md` |
+| verification and review | 656 | `motion/hyperframes/upstream/plans/preview-loads-during-shell-first-layout.md` · `motion/hyperframes/upstream/packages/share/README.md` · `editing/herk-edit-kit/upstream/.agents/skills/make-a-video/SKILL.md` |
+
+## How to use it
+
+```bash
+grep -ril "whoosh" library/*/*/upstream --include=*.md | head
+```
+
+Open the two or three highest-ranked files for the topic, not the whole set. If a topic
+matters and the ranking looks wrong, fix `TOPICS` in `tools/make-index.py` — the map is
+generated, so it is cheap to correct.
 
 
 <!-- ===== specs/gates.json ===== -->

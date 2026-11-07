@@ -75,7 +75,7 @@ python3 -m unittest discover -s tests -v
 
 ## The library
 
-`library/` holds the absorbed doctrine of the eighteen source skills this project merges —
+`library/` holds the eighteen source skills this project merges, copied verbatim —
 the sources themselves, copied verbatim (1,824 files), each with its upstream licence, pinned
 commit and known weaknesses. Read the source for the domain you are working in, not all of them.
 `docs/absorption.md` is the generated map from source to skill.
