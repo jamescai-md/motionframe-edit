@@ -15,7 +15,7 @@ Input: raw footage. Output: a package someone can publish without opening an edi
 
 **The bar:** if a professional editor returned this, would the client accept it?
 
-Read `../motionframe-edit/SKILL.md` first if you have not — the twelve laws apply here
+Read `../motionframe-edit/SKILL.md` first if you have not — the twelve rules apply here
 and are not repeated.
 
 ## 0. Taste, then inventory

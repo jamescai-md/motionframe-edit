@@ -2,15 +2,11 @@
 
 ## The split that makes it work
 
-```
-        JUDGEMENT                          MEASUREMENT
-   ┌──────────────────┐              ┌────────────────────┐
-   │  the skills      │              │     tools/mfe.py    │
-   │  (markdown)      │  ──────────▶ │  (one file, ffmpeg)│
-   │  what to do,     │   commands   │  probe, cut,       │
-   │  why, and when   │  ◀────────── │  caption, gate     │
-   └──────────────────┘   numbers    └────────────────────┘
-```
+The skills hold judgement; the tools hold measurement. The skills decide what should happen
+and why. `tools/mfe.py` does the parts that can be checked by a machine — probing, cutting,
+captioning, measuring — and hands back numbers rather than opinions. Nothing crosses that line
+in both directions: prose never asserts a duration or a loudness figure it did not get from a
+command.
 
 Most skill repos are all judgement: strong opinions, no verification. The result
 is confident work with defects nobody caught. This project puts every checkable

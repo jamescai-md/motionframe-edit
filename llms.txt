@@ -1,9 +1,9 @@
 # motionframe-edit
 
-> One agent skill for AI video editing, motion graphics and design. Twenty-five
-> open-source skill repositories distilled into one doctrine, one free local ffmpeg
-> engine, and eight quality gates that measure a render before it ships. No API keys,
-> no accounts, no telemetry. MIT.
+> One agent skill for video editing, motion graphics and interface design. Eighteen
+> open-source skill repositories merged into one, their source text kept alongside the
+> merge (1,824 files), with a local ffmpeg engine that measures a render instead of
+> trusting it. No API keys, no accounts, no telemetry. MIT for this project's own work.
 
 Entry point for agents: `AGENTS.md` (Codex, OpenCode, Antigravity, Cursor, Hermes) or
 `skills/motionframe-edit/SKILL.md` (Claude, and any SKILL.md-compatible loader).

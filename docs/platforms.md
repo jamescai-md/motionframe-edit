@@ -16,7 +16,7 @@ duplicated per platform; the adapters are pointers, which is why they cannot dri
 
 **1. Skills directory (best).** The agent discovers each skill by its `description`
 and loads a body only when it routes there. This is progressive disclosure, and it
-is the whole reason the suite is seven skills rather than one enormous file.
+is why the suite is seven skills rather than one enormous file.
 
 ```bash
 ./install.sh --target claude          # symlinks all seven into ~/.claude/skills

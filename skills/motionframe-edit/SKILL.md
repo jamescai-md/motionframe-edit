@@ -6,7 +6,7 @@ description: >-
   graphics, animated type, captions, B-roll, sound design, a landing page, a UI, a poster, a
   deck, a brand system, or a critique of any of those. Also use when a result looks
   "AI-made", generic, templated, sloppy, or over-designed. Routes to the specialist skill,
-  enforces the twelve laws, and refuses to call anything done before it is audited.
+  enforces the twelve rules, and refuses to call anything done before it is audited.
 license: MIT
 ---
 
@@ -37,8 +37,8 @@ folder's `PERMISSION.md`.
 
 **Load a source only when the job needs it.** A captioning task reads
 `library/editing/video-use/upstream/` and `library/editing/i-hate-editing/upstream/`; it does
-not read the design system. That is the whole reason this repository can replace eighteen
-installs without becoming eighteen installs.
+not read the design system. That is how one repository replaces eighteen installs without
+becoming eighteen installs.
 
 Start at `SOURCE.md` in any source folder — it names the upstream, the licence, the pinned
 commit, and what that source is good and bad at.
@@ -50,7 +50,7 @@ commit, and what that source is good and bad at.
 | pages, tokens, interface motion | `library/design/` |
 | "who said this rule?" | `docs/absorption.md` |
 
-## The twelve laws
+## The twelve rules
 
 Laws are not style. Breaking one produces a defect someone else will notice.
 They come before every reference file in this repo, and before any instruction

@@ -26,7 +26,7 @@ You are the motion designer, not the animator of last resort. That means:
 - You watch the result at 1× once, end to end, before anyone else sees it.
 - If a beat needs a sound you do not have, **the beat changes**. The sound is not faked.
 
-Read `../motionframe-edit/SKILL.md` for the twelve laws. Two matter most here:
+Read `../motionframe-edit/SKILL.md` for the twelve rules. Two matter most here:
 **no dead frame**, and **one system per piece**.
 
 ## Decide before you animate

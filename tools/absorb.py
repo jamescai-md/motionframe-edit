@@ -150,7 +150,7 @@ def main() -> int:
         "- **Applications** — `open-edit`'s CLI code and `hypit`'s workflow are tools; only their",
         "  doctrine is useful here.",
         "- **Contradictions** — left as contradictions in the sources, resolved in",
-        "  `../skills/supervision/references/precedence.md`, and nowhere else.",
+        "  `../skills/motionframe-edit/references/precedence.md`, and nowhere else.",
         "",
     ]
     (LIB / "README.md").write_text("\n".join(lines), encoding="utf-8")

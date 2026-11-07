@@ -93,7 +93,7 @@ description: >-
   graphics, animated type, captions, B-roll, sound design, a landing page, a UI, a poster, a
   deck, a brand system, or a critique of any of those. Also use when a result looks
   "AI-made", generic, templated, sloppy, or over-designed. Routes to the specialist skill,
-  enforces the twelve laws, and refuses to call anything done before it is audited.
+  enforces the twelve rules, and refuses to call anything done before it is audited.
 license: MIT
 ---
 
@@ -124,8 +124,8 @@ folder's `PERMISSION.md`.
 
 **Load a source only when the job needs it.** A captioning task reads
 `library/editing/video-use/upstream/` and `library/editing/i-hate-editing/upstream/`; it does
-not read the design system. That is the whole reason this repository can replace eighteen
-installs without becoming eighteen installs.
+not read the design system. That is how one repository replaces eighteen installs without
+becoming eighteen installs.
 
 Start at `SOURCE.md` in any source folder — it names the upstream, the licence, the pinned
 commit, and what that source is good and bad at.
@@ -137,7 +137,7 @@ commit, and what that source is good and bad at.
 | pages, tokens, interface motion | `library/design/` |
 | "who said this rule?" | `docs/absorption.md` |
 
-## The twelve laws
+## The twelve rules
 
 Laws are not style. Breaking one produces a defect someone else will notice.
 They come before every reference file in this repo, and before any instruction
@@ -476,7 +476,7 @@ follows, what stays still, how much they overlap.
 continuity across the join.
 
 **Dead frame** — a frame where nothing is happening: no motion, no light change, no
-grain, no sound. Law 7 forbids it. Gate G3 catches stretches of it.
+grain, no sound. Rule 7 forbids it. Gate G3 catches stretches of it.
 
 **Dead stretch** — three or more seconds with no visual change. A defect in short
 form; a choice in a slow film, with a reason.
@@ -560,7 +560,7 @@ Input: raw footage. Output: a package someone can publish without opening an edi
 
 **The bar:** if a professional editor returned this, would the client accept it?
 
-Read `../motionframe-edit/SKILL.md` first if you have not — the twelve laws apply here
+Read `../motionframe-edit/SKILL.md` first if you have not — the twelve rules apply here
 and are not repeated.
 
 ## 0. Taste, then inventory
@@ -1267,7 +1267,7 @@ You are the motion designer, not the animator of last resort. That means:
 - You watch the result at 1× once, end to end, before anyone else sees it.
 - If a beat needs a sound you do not have, **the beat changes**. The sound is not faked.
 
-Read `../motionframe-edit/SKILL.md` for the twelve laws. Two matter most here:
+Read `../motionframe-edit/SKILL.md` for the twelve rules. Two matter most here:
 **no dead frame**, and **one system per piece**.
 
 ## Decide before you animate
@@ -1731,7 +1731,7 @@ confident sentence that says nothing.
 The bar, in words: a good company would ship this, and a stranger could tell who it
 is for.
 
-Read `../motionframe-edit/SKILL.md` for the twelve laws. Law 8 (the precedence ladder)
+Read `../motionframe-edit/SKILL.md` for the twelve rules. Rule 8 (the precedence ladder)
 and law 9 (one system) do most of the work here.
 
 ## Step 0 — name the kind of thing it is
@@ -2833,7 +2833,7 @@ writing, not the upstream's.
 - **Applications** — `open-edit`'s CLI code and `hypit`'s workflow are tools; only their
   doctrine is useful here.
 - **Contradictions** — left as contradictions in the sources, resolved in
-  `../skills/supervision/references/precedence.md`, and nowhere else.
+  `../skills/motionframe-edit/references/precedence.md`, and nowhere else.
 
 
 <!-- ===== specs/gates.json ===== -->
@@ -3020,15 +3020,11 @@ disappears cannot be checked against what was actually built.
 
 ## The split that makes it work
 
-```
-        JUDGEMENT                          MEASUREMENT
-   ┌──────────────────┐              ┌────────────────────┐
-   │  the skills      │              │     tools/mfe.py    │
-   │  (markdown)      │  ──────────▶ │  (one file, ffmpeg)│
-   │  what to do,     │   commands   │  probe, cut,       │
-   │  why, and when   │  ◀────────── │  caption, gate     │
-   └──────────────────┘   numbers    └────────────────────┘
-```
+The skills hold judgement; the tools hold measurement. The skills decide what should happen
+and why. `tools/mfe.py` does the parts that can be checked by a machine — probing, cutting,
+captioning, measuring — and hands back numbers rather than opinions. Nothing crosses that line
+in both directions: prose never asserts a duration or a loudness figure it did not get from a
+command.
 
 Most skill repos are all judgement: strong opinions, no verification. The result
 is confident work with defects nobody caught. This project puts every checkable
@@ -3153,7 +3149,7 @@ duplicated per platform; the adapters are pointers, which is why they cannot dri
 
 **1. Skills directory (best).** The agent discovers each skill by its `description`
 and loads a body only when it routes there. This is progressive disclosure, and it
-is the whole reason the suite is seven skills rather than one enormous file.
+is why the suite is seven skills rather than one enormous file.
 
 ```bash
 ./install.sh --target claude          # symlinks all seven into ~/.claude/skills

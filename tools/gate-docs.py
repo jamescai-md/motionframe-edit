@@ -12,7 +12,7 @@ selftest that feeds them deliberately broken input and fails if they pass.
     python3 tools/gate-docs.py --selftest   # prove each gate can fail
 
 Gates
-  D0  first screen      README answers what / who / how before the fold
+  D0  first screen      title, a plain description, and a command to start
   D1  links             every relative link in every markdown file resolves
   D2  frontmatter       every skill declares a unique name and a real description
   D3  generated         llms-full.txt matches the skills it is generated from
@@ -56,16 +56,24 @@ def md_files(root: pathlib.Path) -> list[pathlib.Path]:
 
 # --- gates -----------------------------------------------------------------
 def d0_first_screen(root: pathlib.Path) -> tuple[bool, str]:
+    """A README earns its first screen with a title, a plain sentence, and a way to start.
+
+    This used to require a badge wall and a dot-separated nav line, which is why this
+    repository's README looked like every other generated one. Decoration is not
+    information: what a reader needs in the first screen is what the thing is and how to
+    begin using it.
+    """
     readme = root / "README.md"
     if not readme.exists():
         return False, "no README.md"
-    head = readme.read_text(encoding="utf-8").splitlines()[:60]
+    head = readme.read_text(encoding="utf-8").splitlines()[:80]
     text = "\n".join(head)
-    # a bold claim may wrap across a soft line break — that is prose, not a defect
-    has_claim = bool(re.search(r"\*\*[^*]{15,}\*\*", text, re.S))
-    has_badges = text.count("img.shields.io") + text.count("badge.svg") >= 3
-    nav = re.search(r"^\[[^\n]*\]\([^\n]*\)( · \[[^\n]*\]\([^\n]*\))+", text, re.M)
-    missing = [n for n, ok in (("one-line claim", has_claim), ("badges", has_badges), ("nav", bool(nav))) if not ok]
+    has_title = bool(re.search(r"^# \S", text, re.M))
+    body = text.split("\n", 1)[1] if "\n" in text else ""
+    has_sentence = len(re.findall(r"[A-Za-z][^\n]{40,}", body)) >= 1
+    has_start = "```" in text or re.search(r"`[^`]*[a-z]+ [^`]*`", text) is not None
+    missing = [n for n, ok in (("title", has_title), ("description", has_sentence),
+                               ("a command to start", bool(has_start))) if not ok]
     return (not missing), ("first screen complete" if not missing else f"missing: {', '.join(missing)}")
 
 

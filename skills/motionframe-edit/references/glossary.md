@@ -20,7 +20,7 @@ follows, what stays still, how much they overlap.
 continuity across the join.
 
 **Dead frame** — a frame where nothing is happening: no motion, no light change, no
-grain, no sound. Law 7 forbids it. Gate G3 catches stretches of it.
+grain, no sound. Rule 7 forbids it. Gate G3 catches stretches of it.
 
 **Dead stretch** — three or more seconds with no visual change. A defect in short
 form; a choice in a slow film, with a reason.

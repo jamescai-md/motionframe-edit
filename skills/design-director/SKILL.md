@@ -19,7 +19,7 @@ confident sentence that says nothing.
 The bar, in words: a good company would ship this, and a stranger could tell who it
 is for.
 
-Read `../motionframe-edit/SKILL.md` for the twelve laws. Law 8 (the precedence ladder)
+Read `../motionframe-edit/SKILL.md` for the twelve rules. Rule 8 (the precedence ladder)
 and law 9 (one system) do most of the work here.
 
 ## Step 0 — name the kind of thing it is

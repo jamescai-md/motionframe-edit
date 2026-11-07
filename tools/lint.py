@@ -178,7 +178,7 @@ def main() -> int:
     check_all_markdown()
 
     check_required("skills/motionframe-edit/SKILL.md",
-                   ["twelve laws", "route", "gatekeeper", "no api key"])
+                   ["twelve rules", "route", "gatekeeper", "no api key"])
     check_required("skills/gatekeeper/SKILL.md", ["G0", "G7", "fix order"])
     check_required("skills/edit-supervisor/SKILL.md", ["output", "captions", "LUFS"])
     check_required("skills/motion-director/SKILL.md", ["beat", "easing", "lane"])
@@ -186,7 +186,7 @@ def main() -> int:
     check_required("skills/ui-motion/SKILL.md", ["should it animate", "reduced motion"])
     check_required("skills/taste-memory/SKILL.md", ["taste.md", "append"])
     check_required("AGENTS.md", ["non-negotiable", "doctor"])
-    check_required("README.md", ["gates", "install", "licence"])
+    check_required("README.md", ["install", "licence", "skills"])
 
     for f in ("LICENSE", "ATTRIBUTION.md", "CHANGELOG.md", "CONTRIBUTING.md",
               "specs/edl.schema.json", "tools/mfe.py", "install.sh"):

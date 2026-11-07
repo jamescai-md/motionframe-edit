@@ -1,200 +1,93 @@
-<div align="center">
-
-<img src=".github/banner.png" alt="motionframe-edit — one agent skill combining the best AI video editing, motion graphics and design skill repos, with eight measured gates" width="100%">
-
 # motionframe-edit
 
-**One skill instead of eighteen.**
-
-The best-known video editing, motion graphics and design skill repos, read rule by rule,
-merged into a single agent skill — with the contradictions decided in writing, and eight
-gates that measure the render before you ship it. Free, local, no API keys.
+One agent skill for editing video, animating motion graphics, and designing interfaces —
+made by merging eighteen existing skill repositories rather than inventing a nineteenth.
 
 [![ci](https://github.com/jamescai-md/motionframe-edit/actions/workflows/ci.yml/badge.svg)](https://github.com/jamescai-md/motionframe-edit/actions/workflows/ci.yml)
 [![license: MIT](https://img.shields.io/badge/license-MIT-2ea44f.svg)](LICENSE)
-[![python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776ab.svg)](https://www.python.org)
-[![no API keys](https://img.shields.io/badge/API%20keys-none-ff5c38.svg)](#free-and-local-by-design)
-[![skills](https://img.shields.io/badge/skills-7-6e7781.svg)](#the-seven-skills)
-[![sources absorbed](https://img.shields.io/badge/sources%20absorbed-18-6e7781.svg)](library/)
 
-[Quickstart](#quickstart) · [Install](#install) · [The library](#the-library--18-sources-in-one-place) · [Gates](#the-eight-gates) · [FAQ](#faq)
+Each of those eighteen repos is good at one thing and wrong about another: one cuts
+beautifully but needs a paid transcription API, one has the strictest correctness rules and
+only covers talking heads, one bans gradients while another builds everything from them. Left
+alone, an agent given all of them at once gives contradictory advice.
 
-</div>
+This repository reads them together, decides the disagreements in writing, and keeps the
+source material next to the decision so you can check it.
 
----
-
-## The problem this removes
-
-Every good editing, motion and design skill repo has one hole:
-
-- one is excellent at cutting but needs a paid transcription API;
-- one has the sharpest correctness rules but is talking-head only;
-- one bans gradients, another builds everything out of them;
-- one has beautiful motion doctrine and no verification;
-- one has gates and a toolchain too heavy to run.
-
-So you install eighteen, paste three into every chat, and get contradictory advice from
-skills that cannot see each other. `motionframe-edit` is those eighteen **read, arbitrated and
-merged** — with every rule given a home, every contradiction given a ruling, and the one
-thing none of them had: a way to prove the output is correct.
-
-## Quickstart
+## Install
 
 ```bash
 git clone https://github.com/jamescai-md/motionframe-edit.git
 cd motionframe-edit
-./install.sh                          # detects your agents, links all 7 skills
-python3 tools/mfe.py doctor            # what's installed, what's missing, what's free
-python3 tools/mfe.py demo --selftest   # renders a video, audits it, proves the gates can fail
+./install.sh
 ```
 
-Then ask normally:
+`install.sh` detects which agents you have and links the skills into place. To target one
+explicitly, or a tool it does not recognise:
 
-```
-"edit these takes into a 45-second Reel"     → edit-supervisor
-"animate this launch film"                   → motion-director
-"this landing page looks AI-made, fix it"    → design-director
-"make the sheet feel right"                  → ui-motion
-"is this done?" / "review it"                → gatekeeper
-```
+| Agent | Install |
+|---|---|
+| Claude Code | `./install.sh --target claude` |
+| ChatGPT / Codex | `./install.sh --target codex` |
+| Gemini CLI | `gemini extensions link .` |
+| Antigravity | `./install.sh --target antigravity` |
+| OpenCode | `./install.sh --target opencode` |
+| Cursor, Windsurf, Zed, Aider, Hermes | `./install.sh --dir <your skills directory>` |
 
-## Install
+Every platform reads the same `AGENTS.md` and `skills/`, with thin adapters per tool so they
+cannot drift. [docs/platforms.md](docs/platforms.md) has the details.
 
-| Agent | What it reads | Install |
-|---|---|---|
-| **Claude Code / Claude** | `skills/<name>/SKILL.md` | `./install.sh --target claude` |
-| **ChatGPT / Codex** | `AGENTS.md` | `./install.sh --target codex` |
-| **Gemini CLI** | `GEMINI.md` + extension manifest | `gemini extensions link .` |
-| **Antigravity** | `AGENTS.md` | `./install.sh --target antigravity` |
-| **OpenCode** | `AGENTS.md` + `opencode.json` | `./install.sh --target opencode` |
-| **Hermes / Cursor / Windsurf / Zed / Aider** | `AGENTS.md` | `./install.sh --dir <your skills dir>` |
+## The skills
 
-One source of truth (`AGENTS.md` + `skills/`), thin adapters per platform, so they cannot
-drift apart. Details: [docs/platforms.md](docs/platforms.md).
+| Skill | Ask for it when |
+|---|---|
+| [motionframe-edit](skills/motionframe-edit/SKILL.md) | you are not sure which of the others applies — it routes, and it settles conflicts between them |
+| [edit-supervisor](skills/edit-supervisor/SKILL.md) | you have footage and want a finished piece: cutting, captions, grade, mix, delivery |
+| [motion-director](skills/motion-director/SKILL.md) | something has to move: launch films, lower thirds, transitions, beat sheets |
+| [design-director](skills/design-director/SKILL.md) | pages, interfaces, decks, posters, brand systems |
+| [ui-motion](skills/ui-motion/SKILL.md) | interface animation feels wrong, or you need to know whether it should animate at all |
+| [gatekeeper](skills/gatekeeper/SKILL.md) | before calling something done — measures the render instead of trusting it |
+| [taste-memory](skills/taste-memory/SKILL.md) | you keep correcting the same thing and want it remembered |
 
-## The seven skills
+They are read on demand, not all at once: a captioning job loads the caption rules and nothing
+from the design system.
 
-| Skill | Use it when | Carries |
-|---|---|---|
-| **[motionframe-edit](skills/motionframe-edit/SKILL.md)** | always — it routes | twelve laws, the precedence ladder, the two STOP gates |
-| **[edit-supervisor](skills/edit-supervisor/SKILL.md)** | you have footage and want a finished piece | audio-first cutting, captions, grade, mix, delivery package |
-| **[motion-director](skills/motion-director/SKILL.md)** | anything moves | the designer's role, beat sheets, timing, transitions, three lanes |
-| **[design-director](skills/design-director/SKILL.md)** | pages, UIs, posters, decks, brands | kind-of-business logic, systems and tokens, anti-slop |
-| **[ui-motion](skills/ui-motion/SKILL.md)** | interface animation feels off | should-it-animate, springs, choreography, frame budget |
-| **[gatekeeper](skills/gatekeeper/SKILL.md)** | before anything is called done | eight measured gates, the fix order, the critic brief |
-| **[taste-memory](skills/taste-memory/SKILL.md)** | you're tired of repeating yourself | corrections become durable rules |
+## What it is built from
 
-## The library — 18 sources in one place
+All eighteen sources are in [library/](library/), each with its upstream URL, licence, pinned
+commit and what it is bad at. That is 1,824 files and 13.4 MB of the sources' own text —
+copied verbatim where the licence allows it, which is what makes the merge checkable instead
+of a claim.
 
-`library/` is the part that makes this a merge rather than a summary. **One folder per
-source**, and how each source sits there is decided by its licence, not by convenience:
+Four of them do not permit redistribution and are here on the maintainer's stated permission;
+each of those folders records the basis in `PERMISSION.md`. The MIT licence at the root covers
+this project's own writing only — see [NOTICE](NOTICE) for exactly what it does not cover,
+including Remotion's company-size threshold and hypit's commercial conditions.
 
-```
-library/
-├── editing/   i-hate-editing · video-use · freecut · herk-edit-kit · video-short ·
-│              open-edit · tiktok-short-edit · hypit
-├── motion/    motionmaxxing · motion-kit · reelmimic · hyperframes ·
-│              hyperframes-launches · remotion
-└── design/    taste-skill · ui-ux-pro-max · emil-skills · apple-design
-```
-
-```
-library/editing/video-use/
-├── SOURCE.md            upstream, licence, pinned commit, file count, what it gets wrong
-├── LICENCE.upstream     the upstream's licence, travelling with the text it covers
-├── NOTES.md             this project's editorial notes, where they exist
-└── upstream/            the source's own skill files, copied verbatim
-```
-
-**All 18 sources are copied verbatim** — 1,824 files, 13.4 MB, every one of them. How each
-is here follows its licence: fourteen under an explicit grant (MIT / Apache-2.0, with the
-upstream LICENCE and any NOTICE travelling alongside), and four on the maintainer's stated
-permission from the rights holder, recorded file-by-file in `PERMISSION.md`.
-
-The root MIT licence covers this project's own work only — not the copied text. See
-[`NOTICE`](NOTICE) for the exact scope, including the Remotion threshold and hypit's
-commercial conditions, which still bind anyone using that material.
-
-The skills load only the source a job needs — a captioning task does not pull in the design
-system. Start at any `SOURCE.md`.
-
-Per-source credit, licences and corrections: [ATTRIBUTION.md](ATTRIBUTION.md).
+Per-source credit: [ATTRIBUTION.md](ATTRIBUTION.md).
 Which rule came from where: [docs/absorption.md](docs/absorption.md).
 
-## The eight gates
+## Requirements
 
-Every render is measured against the same eight checks. A gate that cannot fail is
-decoration, so `mfe.py demo --selftest` feeds them deliberately broken renders — frozen
-picture, silent file, wrong aspect, unsafe captions, fabricated screenshot — and **fails the
-build if they do not catch them**.
+Python 3.10 or newer, and `ffmpeg` on the PATH. Transcription uses `whisper.cpp` or
+`faster-whisper` if you have either; everything else works without it.
 
-| Gate | Name | Passes when |
-|---|---|---|
-| **G0** | render exists | decodes, moves, duration within 1% of plan, audio present |
-| **G1** | delivery shape | exact dimensions, fps, codec, container for the destination |
-| **G2** | loudness | within ±2 LU of target, true peak ≤ −1 dBTP |
-| **G3** | picture alive | no freeze > 0.5 s, no stillness > 3 s |
-| **G4** | no black holes | no unintended black interval |
-| **G5** | cuts don't pop | no boundary spike > 6 dB over the local body level |
-| **G6** | captions safe | every cue inside the platform safe zone |
-| **G7** | honest proof | every asset declares an origin; nothing generated claims to be real |
+No API keys, no accounts, no credits, no telemetry. `python3 tools/mfe.py doctor` reports what
+is installed and the command to install what is missing.
 
-Full definitions: [specs/gates.json](specs/gates.json).
+## Documentation
 
-## Free and local by design
-
-No API keys, no accounts, no credits, no telemetry. Nothing leaves the machine.
-
-| Job | Free tool | The paid API you do not need |
-|---|---|---|
-| transcode, cut, composite, grade | `ffmpeg` | any cloud render farm |
-| transcription | `whisper.cpp` / `faster-whisper` | cloud ASR |
-| captions | `libass` (in ffmpeg) | caption SaaS |
-| motion graphics | HTML + GSAP + headless Chrome (free), or Remotion (own licence) | motion SaaS |
-| loudness | `loudnorm` / `ebur128` | mastering service |
-
-`mfe.py doctor` names what is missing and the free command to install it. A lint rule fails
-the build if a paid-API pattern ever appears in this repository.
-
-## Verified, not asserted
-
-```
-  gate report  ·  the repository itself
-  PASS  D0  first screen · D1 links · D2 frontmatter · D3 generated ·
-  PASS  D4  placeholders · D5 honesty · D6 provenance
-  verdict: PASS
-```
-
-`tools/gate-docs.py` measures this repository the way `gatekeeper` measures a render, and
-`--selftest` proves each check can fail. CI runs it alongside the engine tests on Python
-3.10/3.12/3.13, a clean-machine installer check, and the end-to-end self-audit.
-
-## FAQ
-
-**Is this a fork?**
-No. Nothing here is vendored or copied. Eighteen sources were read, and their doctrine was
-rewritten with every rule traced. Five could not be legally redistributed, which is one of
-several reasons a fork would have been the wrong shape.
-
-**Do I need eighteen repos installed?**
-No — that is the point. One clone, one install, seven skills, and a library the skills read
-on demand.
-
-**Does it work with ChatGPT?**
-Yes: `AGENTS.md` is the entry point for ChatGPT/Codex and any tool that reads that
-convention. [docs/platforms.md](docs/platforms.md) covers each of the six.
-
-**Is my footage uploaded anywhere?**
-No. There is no network code in the engine.
-
-**Can I use it commercially?**
-MIT for this repository. One optional motion lane (Remotion) has its own licence and is
-**not** free for companies — the lane table says so, and nothing else depends on it.
-
-**What is the biggest known gap?**
-Renders are validated against a synthetic fixture, not real footage. That is stated here
-rather than buried, and it is the first item on the plan.
+| | |
+|---|---|
+| [docs/platforms.md](docs/platforms.md) | how each agent loads the skills |
+| [docs/architecture.md](docs/architecture.md) | what the skills decide and what the tools measure |
+| [docs/absorption.md](docs/absorption.md) | which rule in `skills/` came from which source |
+| [docs/coverage.md](docs/coverage.md) | what was carried from each source, and what was not |
+| [docs/provenance.md](docs/provenance.md) | each source's strength, and the flaw another source covers |
+| [docs/plan.md](docs/plan.md) | what is unfinished, stated plainly |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | how to add a rule or a source |
 
 ## Licence
 
-MIT © motionframe-edit contributors. See [LICENSE](LICENSE).
+MIT for this project's own work — see [LICENSE](LICENSE) and [NOTICE](NOTICE) for the
+scope, since the copied sources keep their own terms.
