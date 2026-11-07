@@ -1,10 +1,13 @@
-# engine work dirs
+# engine work dirs and demo output
+.mfe-demo/
 .sv-demo/
 work/
+
+# media is generated, except the committed example
 *.mp4
+*.mov
 *.wav
-*.srt
-!examples/**/*.srt
+!examples/**/*.mp4
 
 # python
 __pycache__/

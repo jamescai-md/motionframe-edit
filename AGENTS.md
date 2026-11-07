@@ -13,7 +13,7 @@ design**. Seven skills, one engine (`tools/mfe.py`), one doctrine.
 ## How to use it
 
 1. **Read `skills/motionframe-edit/SKILL.md` once per session.** It defines the twelve
-   laws, the routing table and the loop. Everything else assumes it.
+   rules, the routing table and the loop. Everything else assumes it.
 2. **Route with the table** in that file. Load exactly one specialist skill; load a
    second only when the table says so.
 3. **Never preload references.** Each `references/*.md` is loaded when the task
@@ -76,6 +76,6 @@ python3 -m unittest discover -s tests -v
 ## The library
 
 `library/` holds the absorbed doctrine of the eighteen source skills this project merges —
-one digest per source: what it is, the rules worth keeping, what it gets wrong, where each
-rule landed. Read the digest for the domain you are working in, not all of them.
+the sources themselves, copied verbatim (1,824 files), each with its upstream licence, pinned
+commit and known weaknesses. Read the source for the domain you are working in, not all of them.
 `docs/absorption.md` is the generated map from source to skill.

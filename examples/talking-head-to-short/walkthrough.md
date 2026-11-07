@@ -1,7 +1,9 @@
 # Worked example — three takes to a 45-second Reel
 
-A real session, abbreviated. The interesting part is not the commands; it is the
-decisions and the audit.
+An illustrative session. The commands, the order and the reasoning are exactly what the skills
+produce; the footage is not included and the take durations in the transcript are stand-ins.
+Only the numbers in [../selftest/gate-report.json](../selftest/gate-report.json) are measured
+output. Treat this page as a walkthrough of the decisions, not as a transcript of a shoot.
 
 ## What the user said
 

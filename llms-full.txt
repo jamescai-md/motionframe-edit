@@ -16,7 +16,7 @@ design**. Seven skills, one engine (`tools/mfe.py`), one doctrine.
 ## How to use it
 
 1. **Read `skills/motionframe-edit/SKILL.md` once per session.** It defines the twelve
-   laws, the routing table and the loop. Everything else assumes it.
+   rules, the routing table and the loop. Everything else assumes it.
 2. **Route with the table** in that file. Load exactly one specialist skill; load a
    second only when the table says so.
 3. **Never preload references.** Each `references/*.md` is loaded when the task
@@ -79,8 +79,8 @@ python3 -m unittest discover -s tests -v
 ## The library
 
 `library/` holds the absorbed doctrine of the eighteen source skills this project merges —
-one digest per source: what it is, the rules worth keeping, what it gets wrong, where each
-rule landed. Read the digest for the domain you are working in, not all of them.
+the sources themselves, copied verbatim (1,824 files), each with its upstream licence, pinned
+commit and known weaknesses. Read the source for the domain you are working in, not all of them.
 `docs/absorption.md` is the generated map from source to skill.
 
 
@@ -2960,59 +2960,60 @@ A gate that cannot fail is decoration.
 
 
 <!-- ===== docs/plan.md ===== -->
-# Plan — motionframe-edit, one skill built from eighteen
+# Status, and what is not finished
 
-Written before implementation, in the shape **wayfinder** asks for: settled facts,
-open questions, exclusions, then a phased plan. Kept in the repo because a plan that
-disappears cannot be checked against what was actually built.
+This project is a first release, not a finished product. This page lists what is known to be
+unfinished or weak, in the order it matters, so nobody has to discover it by accident.
 
-## Settled
+## Known gaps
 
-| | |
-|---|---|
-| **Goal** | One installable skill that replaces the eighteen editing / motion / design skill repos a person otherwise copies into every chat. |
-| **Why** | Each of those repos is strong in one direction and weak in another, and the weaknesses are complementary — so people install many and get contradictions instead of coverage. |
-| **Product** | A repository, `motionframe-edit`: seven skills, a library of absorbed rules, and a free local engine that measures the result. |
-| **Hard constraints** | No paid API, no keys, no accounts. Local only. MIT. |
-| **Platforms** | Claude Code, ChatGPT/Codex, Gemini CLI/Antigravity, OpenCode, Hermes, and anything that reads `AGENTS.md` or `SKILL.md`. |
-| **Success** | A stranger clones it, installs in one command, and never needs another editing skill for a normal job — and a wrong render is caught by a gate, not by taste. |
-| **Build tools** | The seven agent skills supplied with the brief (superpowers, rea, addyosmani/agent-skills, anthropics/skills, mattpocock/skills, wayfinder, ponytail) were used to make this repository, and are credited as tools, not as sources. |
+**1. Renders are validated against a synthetic fixture, not real footage.**
+`mfe.py demo --selftest` builds a test clip with known defects — a freeze, a silent stretch, a
+wrong aspect — and proves the gates catch them. That tests the gates, not your camera. On real
+footage, expect to correct frame-rate and rotation mismatches the fixture never produces.
 
-## Questions that were open, and how they were settled
+**2. Rule-level tracing is partial.**
+`docs/absorption.md` maps each source to the files in `skills/` that carry its capability. That
+is a topic-level map. Only one source has been traced at the level of individual rules
+(`i-hate-editing`, in `skills/edit-supervisor/references/cutting.md`), where five rules the
+earlier draft missed were added. Until the rest are done, "combined" is a claim about ideas,
+not a line-by-line audit.
 
-| Question | Decision | Why |
-|---|---|---|
-| Fork each repo's files, or rewrite the doctrine? | **Rewrite, at rule level, with a named home for every rule.** | Five of the eighteen cannot be legally redistributed (no licence file or `NOASSERTION`), and verbatim merging reproduces the contradictions the project exists to remove. |
-| One giant SKILL.md, or several skills? | **A router plus six specialists, plus a library loaded on demand.** | Progressive disclosure: a captioning job must not load the design system. |
-| Where do 18 sources' rules live? | **`library/`** — one digest per source: what it is, the rules kept, what it gets wrong, and where each rule landed. | Keeps the loaded context small while making "combined" auditable. |
-| What happens when sources contradict? | **`skills/motionframe-edit/references/precedence.md`** — a published ladder with numbered rulings. | The contradiction is the reason to combine; hiding it would waste the exercise. |
-| Do we need an engine? | **Yes** — the one differentiator every source lacks is measuring the finished artifact. | No source can tell you its own render is correct. |
+**3. Loudness and safe zones are measured; whether the edit is any good is not.**
+The gates check duration, aspect, loudness, freeze, black, cut boundaries, caption placement
+and asset provenance. None of them can tell you the pacing is wrong.
 
-## Still unclear (deliberately deferred)
+**4. Four sources are here on the maintainer's stated permission.**
+`hypit`, `remotion`, `apple-design` and the TikTok short-edit document do not grant
+redistribution. Their folders record the basis in `PERMISSION.md`. If you are redistributing
+this repository further, read `NOTICE` first — the MIT licence does not cover them.
 
-- **Real footage.** Every render so far is validated against a synthetic `testsrc2` fixture.
-  This is the largest honest gap and it is stated as such in the README.
-- **Depth of absorption per source.** 18 digests exist; the rule-by-rule audit is complete
-  for the editing sources and partial for the design sources. `docs/absorption.md` tracks it.
+**5. One motion lane has its own licence.**
+Remotion is free only below a company-size threshold. It is optional: the other two lanes
+(HTML + GSAP + headless Chrome, and ffmpeg alone) carry no such condition.
 
-## Excluded
+**6. No Windows-native testing.**
+CI runs Python 3.10, 3.12 and 3.13 on Linux. `install.sh` is POSIX shell; on Windows it
+assumes WSL or Git Bash. Nobody has tested PowerShell.
 
-- Paid services, keys, accounts, telemetry — excluded permanently.
-- Redistributing any source's text or assets where the licence does not allow it.
-- Reimplementing `open-edit` and `hypit`: they are applications, not doctrine. Read, credited,
-  not merged.
+## What would move this forward
 
-## Phased plan
+1. **Finish the rule-level audit** for the other seventeen sources, in the format used for
+   `i-hate-editing`: every rule in the source, marked covered or missing, missing ones written.
+2. **Run the gates on real footage** from three cameras with different rotation metadata, and
+   record where they disagree with a human reviewer.
+3. **Windows check** on a fresh machine, then either support it or say plainly that it is
+   unsupported.
 
-1. **Port and rename** the proven engine and gates to `motionframe-edit` / `sv`. Nothing is
-   rewritten that already works (*ponytail*: the smallest complete change).
-2. **Absorb** — one digest per source in `library/`, every rule either kept (with a home) or
-   rejected (with a reason).
-3. **Curate** — seven skills in one voice, routed by the router, contradictions resolved in
-   `precedence.md`.
-4. **Enforce** — eight gates on renders, seven gates on the repository itself, and a selftest
-   proving both can fail.
-5. **Publish** — MIT, CI green, one-command install per platform.
+## How to see the current state for yourself
+
+```bash
+python3 tools/gate-docs.py          # the repository's own documentation checks
+python3 tools/absorb.py --check      # all 18 sources present, each with its licence basis
+python3 -m unittest discover -s tests
+```
+
+CI runs all three on every push, plus a clean-machine install.
 
 
 <!-- ===== docs/architecture.md ===== -->

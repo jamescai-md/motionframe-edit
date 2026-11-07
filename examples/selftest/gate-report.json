@@ -1,0 +1,108 @@
+{
+  "tool": "motionframe-edit 1.0.0",
+  "file": ".mfe-demo/out/demo.mp4",
+  "profile": "vertical-9x16",
+  "measured_at": "2026-11-07T10:39:16Z",
+  "media": {
+    "duration_s": 13.57,
+    "display_width": 1080,
+    "display_height": 1920,
+    "fps": 29.93,
+    "codec": "h264",
+    "audio_codec": "aac",
+    "rotation": 0
+  },
+  "gates": [
+    {
+      "id": "G0",
+      "name": "render exists",
+      "status": "pass",
+      "detail": "duration 13.57s vs planned 13.45s (\u03940.12s)",
+      "facts": {
+        "duration": 13.57,
+        "expected": 13.45
+      }
+    },
+    {
+      "id": "G1",
+      "name": "delivery shape",
+      "status": "pass",
+      "detail": "1080x1920 @29.93fps (want 1080x1920 @30fps)",
+      "facts": {
+        "width": 1080,
+        "height": 1920,
+        "fps": 29.93
+      }
+    },
+    {
+      "id": "G2",
+      "name": "loudness",
+      "status": "pass",
+      "detail": "-14.0 LUFS (target -14\u00b12), true peak -9.3 dBTP (max -0.9)",
+      "facts": {
+        "lufs": -14.0,
+        "true_peak": -9.3,
+        "target": -14.0
+      }
+    },
+    {
+      "id": "G3",
+      "name": "picture alive",
+      "status": "pass",
+      "detail": "no freeze >0.5s, no stillness >3.0s",
+      "facts": {
+        "freezes": [],
+        "stretches": []
+      }
+    },
+    {
+      "id": "G4",
+      "name": "no black holes",
+      "status": "pass",
+      "detail": "none detected",
+      "facts": {}
+    },
+    {
+      "id": "G5",
+      "name": "cuts don't pop",
+      "status": "pass",
+      "detail": "2 boundaries checked, 0 spike(s)",
+      "facts": {
+        "boundaries": [
+          {
+            "at": 5.2,
+            "peak_db": -11.9,
+            "body_rms_db": -15.76,
+            "delta_db": 3.87
+          },
+          {
+            "at": 10.9,
+            "peak_db": -9.45,
+            "body_rms_db": -16.75,
+            "delta_db": 7.3
+          }
+        ]
+      }
+    },
+    {
+      "id": "G6",
+      "name": "captions safe",
+      "status": "pass",
+      "detail": "14 cues, 0 outside the safe zone",
+      "facts": {
+        "violations": []
+      }
+    },
+    {
+      "id": "G7",
+      "name": "honest proof",
+      "status": "pass",
+      "detail": "1 asset(s), all origins declared",
+      "facts": {
+        "count": 1
+      }
+    }
+  ],
+  "verdict": "pass",
+  "warnings": 0
+}

@@ -1,9 +1,10 @@
 # Lineage — what came from where, and what it was missing
 
-`motionframe-edit` is a synthesis, not a wrapper. Nothing here is vendored, forked code:
-each source contributed a craft idea or a discipline, and the gaps in one are
-filled by another. This file is the honest map, so you can go upstream for depth
-when you need it.
+`motionframe-edit` is a synthesis, not a wrapper. The doctrine in `skills/` is written for this
+project, with each source contributing a craft idea or a discipline and the gaps in one filled
+by another. The sources' own text is kept verbatim in `library/` so the synthesis can be checked
+against it; that copy is reference material, not the product. This file is the map of which
+source accounts for what.
 
 **Licensing:** the doctrine was rewritten — no text and no code were copied, and nothing
 here is forked or vendored. Seventeen of the twenty-two repositories are MIT or

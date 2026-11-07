@@ -64,8 +64,11 @@ each of those folders records the basis in `PERMISSION.md`. The MIT licence at t
 this project's own writing only — see [NOTICE](NOTICE) for exactly what it does not cover,
 including Remotion's company-size threshold and hypit's commercial conditions.
 
-Per-source credit: [ATTRIBUTION.md](ATTRIBUTION.md).
-Which rule came from where: [docs/absorption.md](docs/absorption.md).
+This is not a fork, and the copies are not the product. A GitHub fork maps one repository to
+one repository, which cannot hold eighteen; the sources are here as reference material so the
+merge in `skills/` can be checked rather than trusted. Credit is per source in
+[ATTRIBUTION.md](ATTRIBUTION.md), and the rule-by-rule map is
+[docs/absorption.md](docs/absorption.md).
 
 ## Requirements
 
@@ -82,9 +85,9 @@ is installed and the command to install what is missing.
 | [docs/platforms.md](docs/platforms.md) | how each agent loads the skills |
 | [docs/architecture.md](docs/architecture.md) | what the skills decide and what the tools measure |
 | [docs/absorption.md](docs/absorption.md) | which rule in `skills/` came from which source |
-| [docs/coverage.md](docs/coverage.md) | what was carried from each source, and what was not |
-| [docs/provenance.md](docs/provenance.md) | each source's strength, and the flaw another source covers |
-| [docs/plan.md](docs/plan.md) | what is unfinished, stated plainly |
+| [docs/plan.md](docs/plan.md) | what is unfinished or weak, stated plainly |
+| [CHANGELOG.md](CHANGELOG.md) | what changed, and when |
+| [examples/selftest](examples/selftest/) | a real 13.6 s render and the gate report that measured it |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | how to add a rule or a source |
 
 ## Licence
