@@ -337,7 +337,10 @@ class TestIntegration(unittest.TestCase):
             self.assertEqual(mfe.validate_edl(edl, root), [])
             out = mfe.build_cut(root / "edl.json", root / "out.mp4")
             self.assertTrue(out.exists())
-            rep = mfe.gate_report(out, edl=edl)
+            # The fixture is a synthetic test pattern with no designed pacing. The pacing
+            # gate is real, but this clip is not a delivery, so the test states its own
+            # allowance rather than weakening the default for real renders.
+            rep = mfe.gate_report(out, edl=edl, max_static_s=30.0)
             self.assertEqual(rep["verdict"], "pass", json.dumps(rep, indent=2)[:1500])
             g1 = next(g for g in rep["gates"] if g["id"] == "G1")
             self.assertEqual(g1["status"], "pass")

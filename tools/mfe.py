@@ -924,7 +924,8 @@ def scene_change_times(path: str | Path, threshold: float = 0.25) -> list[float]
 def gate_report(path: str | Path, edl: dict[str, Any] | None = None,
                 profile: str | dict[str, Any] | None = None,
                 caption_boxes: dict[str, Any] | None = None,
-                expected_duration: float | None = None) -> dict[str, Any]:
+                expected_duration: float | None = None,
+                max_static_s: float | None = None) -> dict[str, Any]:
     path = Path(path)
     if not path.exists():
         die(f"nothing to gate: {path}")
@@ -1082,7 +1083,9 @@ def gate_report(path: str | Path, edl: dict[str, Any] | None = None,
         gaps = [(round(marks[i + 1] - marks[i], 2), round(marks[i], 2))
                 for i in range(len(marks) - 1)]
         worst, worst_at = max(gaps) if gaps else (0.0, 0.0)
-        cap = float((edl or {}).get("pacing", {}).get("max_static_s", 3.5))
+        cap = float(max_static_s
+                    or (edl or {}).get("pacing", {}).get("max_static_s")
+                    or 3.5)
         if worst > cap:
             gates.append(Gate("G8", "pace", "fail",
                               f"{worst:.2f}s with no visible change from {worst_at:.2f}s "
@@ -1582,7 +1585,7 @@ def cmd_gate(a: argparse.Namespace) -> int:
     edl = load_edl(a.edl) if a.edl else None
     boxes = json.loads(Path(a.boxes).read_text()) if a.boxes else None
     rep = gate_report(a.file, edl=edl, profile=a.profile, caption_boxes=boxes,
-                      expected_duration=a.expect)
+                      expected_duration=a.expect, max_static_s=a.max_static)
     print_report(rep)
     if a.out:
         Path(a.out).write_text(json.dumps(rep, indent=2) + "\n", encoding="utf-8")
@@ -1645,6 +1648,8 @@ def build_parser() -> argparse.ArgumentParser:
     ga.add_argument("--profile", default=None)
     ga.add_argument("--boxes", help="caption boxes JSON from `mfe captions`")
     ga.add_argument("--expect", type=float, help="expected duration in seconds")
+    ga.add_argument("--max-static", type=float, default=None, dest="max_static",
+                    help="longest allowed stretch with no visible change (default 3.5 s)")
     ga.add_argument("--out")
     ga.set_defaults(func=cmd_gate)
 
