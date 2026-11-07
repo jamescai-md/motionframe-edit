@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: How to use it with my agent
+    url: https://github.com/jamescai-md/supervision/blob/main/docs/platforms.md
+    about: Claude Code, Codex, Gemini CLI, Antigravity, OpenCode, Hermes, and anything that reads AGENTS.md
+  - name: Why a rule says what it says
+    url: https://github.com/jamescai-md/supervision/blob/main/docs/lineage.md
+    about: Where each doctrine came from, and which gap it fills

@@ -1,0 +1,14 @@
+# engine work dirs
+.sv-demo/
+work/
+*.mp4
+*.wav
+*.srt
+!examples/**/*.srt
+
+# python
+__pycache__/
+*.pyc
+
+# os
+.DS_Store

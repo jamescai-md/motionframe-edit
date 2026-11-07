@@ -1,0 +1,13 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["AGENTS.md", "skills/supervision/SKILL.md"],
+  "permission": {
+    "bash": {
+      "python3 tools/sv.py *": "allow",
+      "ffmpeg *": "allow",
+      "ffprobe *": "allow",
+      "whisper*": "allow",
+      "git *": "ask"
+    }
+  }
+}

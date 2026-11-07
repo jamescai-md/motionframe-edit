@@ -1,0 +1,60 @@
+name: Bug report
+description: Something broke — a render, a gate, an install, or a skill instruction that led you wrong.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The fastest bug reports include a command, the output, and what you expected.
+        `python3 tools/sv.py doctor --json` is safe to paste (it reports no secrets).
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you ran, and the actual output including the error.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected instead
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version / commit
+      placeholder: output of `git rev-parse --short HEAD`, or the release tag
+    validations:
+      required: true
+  - type: textarea
+    id: doctor
+    attributes:
+      label: Capability scan
+      description: Output of `python3 tools/sv.py doctor --json`
+      render: json
+    validations:
+      required: false
+  - type: dropdown
+    id: agent
+    attributes:
+      label: Which agent
+      options:
+        - Claude Code / Claude
+        - ChatGPT / Codex
+        - Gemini CLI / Antigravity
+        - OpenCode
+        - Hermes / Cursor / other
+        - Engine only (no agent)
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before filing
+      options:
+        - label: I reproduced this on the latest `main`
+          required: true
+        - label: This is not a question about a paid API — the answer will always be "use the free path"
+          required: false

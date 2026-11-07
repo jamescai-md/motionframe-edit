@@ -1,0 +1,129 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: lint skills and docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: lint
+        run: python3 tools/lint.py
+      - name: the repository passes its own gates
+        # D0-D6: first screen, links, skill frontmatter, generated drift, unfinished
+        # text, unqualified superlatives, provenance. It caught a real defect the
+        # first time it ran.
+        run: python3 tools/gate-docs.py
+      - name: the gates can fail
+        run: python3 tools/gate-docs.py --selftest
+      - name: generated files are in sync
+        # llms-full.txt is generated from the skills. If it drifts, the single-file
+        # context dump silently lies about the repo.
+        run: python3 tools/make-llms-full.py --check
+      - name: validate specs and the EDL contract
+        # No third-party deps on purpose: the specs are JSON, and the contract is
+        # enforced by the engine's own validator. If this step needs jsonschema to
+        # pass, the check is in the wrong place.
+        run: |
+          python3 - <<'PY'
+          import glob, json, sys
+          for f in sorted(glob.glob("specs/*.json")):
+              json.load(open(f))
+              print("ok json:", f)
+          sys.path.insert(0, "tools")
+          import sv
+          minimal = {
+              "version": 1, "profile": "vertical-9x16",
+              "sources": {"A": "a.mp4"},
+              "segments": [{"id": "s1", "source": "A", "start": 0.0, "end": 2.0}],
+          }
+          errs = sv.validate_edl(minimal)
+          assert not errs, errs
+          print("ok contract: the minimal EDL validates clean")
+          bad = json.loads(json.dumps(minimal))
+          bad["segments"][0]["start"] = 3.0   # start after end = inverted segment
+          assert sv.validate_edl(bad), "validator accepted an inverted segment"
+          print("ok contract: the validator still rejects a broken segment")
+          PY
+
+  test:
+    name: engine tests (py${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: install a free static ffmpeg
+        run: pip install imageio-ffmpeg
+      - name: unit tests
+        run: python3 -m unittest discover -s tests -v
+      - name: integration test (renders, then gates its own output)
+        run: SV_INTEGRATION=1 python3 -m unittest tests.test_engine.TestIntegration -v
+
+  self-audit:
+    name: pipeline + gates can be trusted
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install imageio-ffmpeg
+      - name: capability scan
+        run: python3 tools/sv.py doctor --json | tee doctor.json
+      - name: render a real video and audit it
+        run: python3 tools/sv.py demo --selftest --workdir .sv-demo
+      - name: the gates must be able to fail
+        run: |
+          # if the selftest above passed, every gate tripped on broken input.
+          # this step re-asserts the report exists and says PASS, so a silently
+          # broken audit cannot pass CI.
+          test -f .sv-demo/gate-report.json
+          python3 - <<'PY'
+          import json
+          rep = json.load(open(".sv-demo/gate-report.json"))
+          assert rep["verdict"] == "pass", rep["verdict"]
+          assert len(rep["gates"]) >= 7, len(rep["gates"])
+          print("gates:", [(g["id"], g["status"]) for g in rep["gates"]])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gate-report
+          path: |
+            .sv-demo/gate-report.json
+            .sv-demo/work/sheet.jpg
+          retention-days: 14
+
+  install:
+    name: installer works on a clean machine
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: dry run
+        run: ./install.sh --dry-run
+      - name: real install into a temp dir
+        run: |
+          ./install.sh --dir "$RUNNER_TEMP/skills"
+          test -L "$RUNNER_TEMP/skills/supervision"
+          test -f "$RUNNER_TEMP/skills/supervision/SKILL.md"
+          ls "$RUNNER_TEMP/skills"
+      - name: copy mode
+        run: |
+          ./install.sh --copy --dir "$RUNNER_TEMP/skills2"
+          test -f "$RUNNER_TEMP/skills2/gatekeeper/SKILL.md"

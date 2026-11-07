@@ -1,0 +1,46 @@
+name: Feature or craft improvement
+description: A new rule, gate, skill, render lane, or a gap in the doctrine.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Two things get a feature request accepted quickly:
+        1. it makes the work **measurably** better, and
+        2. it can be **checked** rather than merely written down.
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What goes wrong today, in a real piece of work. A concrete example beats a principle.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: The proposal
+      description: What should happen instead. If it is a rule, where is it enforced?
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of change
+      options:
+        - New craft rule (prose)
+        - New or changed gate (measured)
+        - New skill
+        - New render lane
+        - Engine feature
+        - Docs / SEO / repo hygiene
+    validations:
+      required: true
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Constraints this project will not bend on
+      options:
+        - label: No paid dependency, API key, or account is involved
+          required: true
+        - label: If it is a gate, I understand a failing fixture must be added with it
+          required: false

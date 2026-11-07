@@ -1,0 +1,65 @@
+{
+  "$comment": "The gate contract. Every entry is measurable or binary. A gate that cannot fail is decoration; sv demo --selftest proves these can.",
+  "version": 1,
+  "gates": [
+    {
+      "id": "G0", "name": "render exists", "kind": "measured", "blocking": true,
+      "pass": "decodes, non-blank, duration within max(1%, 0.35s) of the plan, audio stream present",
+      "measured_by": "tools/sv.py gate",
+      "catches": "a render that completed but is truncated, empty, or silent"
+    },
+    {
+      "id": "G1", "name": "delivery shape", "kind": "measured", "blocking": true,
+      "pass": "display width x height and fps equal the profile; codec and pixel format correct",
+      "measured_by": "tools/sv.py gate",
+      "catches": "a vertical edit sized as landscape from rotation metadata; wrong fps; odd dimensions"
+    },
+    {
+      "id": "G2", "name": "loudness", "kind": "measured", "blocking": true,
+      "pass": "|integrated - target| <= 2 LU and true peak <= -1 dBTP + 0.1",
+      "measured_by": "tools/sv.py gate (ebur128)",
+      "catches": "the silent-quiet render that passes every visual check"
+    },
+    {
+      "id": "G3", "name": "picture alive", "kind": "measured", "blocking": true,
+      "pass": "no freeze > 0.5s and no stretch > max_dead_stretch_s with no visual change",
+      "measured_by": "tools/sv.py gate (freezedetect + per-frame YDIF at 4/s)",
+      "catches": "a frozen frame, a stalled scene, a slide pretending to be a film"
+    },
+    {
+      "id": "G4", "name": "no black holes", "kind": "measured", "blocking": false,
+      "pass": "no unintended black interval > 0.15s",
+      "measured_by": "tools/sv.py gate (blackdetect)",
+      "catches": "a gap between segments, a source that did not decode"
+    },
+    {
+      "id": "G5", "name": "cuts don't pop", "kind": "measured", "blocking": true,
+      "pass": "no boundary spike > 6 dB over the local body level within 120ms of a cut, and no peak above -6 dBFS there",
+      "measured_by": "tools/sv.py gate (astats peak vs local RMS)",
+      "catches": "a missing 30ms micro-fade: audible clicks at every cut"
+    },
+    {
+      "id": "G6", "name": "captions safe", "kind": "measured", "blocking": true,
+      "pass": "every cue box inside the profile safe zone; caption text height >= 3.5% of frame height",
+      "measured_by": "tools/sv.py gate + caption boxes from tools/sv.py captions",
+      "catches": "text under the platform UI, captions over the mouth, unreadable caption size"
+    },
+    {
+      "id": "G7", "name": "honest proof", "kind": "binary", "blocking": true,
+      "pass": "every asset declares origin in provenance.json; nothing with claims_reality=true is generated",
+      "measured_by": "tools/sv.py gate + provenance.json",
+      "catches": "a generated image implying a screenshot of a real product"
+    },
+    {
+      "id": "D0-D8", "name": "design gates", "kind": "binary", "blocking": true,
+      "pass": "nine binary checks: renders, legibility, hierarchy, one system, specificity, content reality, states, accessibility, one deviation",
+      "measured_by": "by eye, procedure in skills/gatekeeper/references/gates-for-design.md",
+      "catches": "the competent, forgettable, templated page"
+    }
+  ],
+  "policy": {
+    "max_audit_passes": 3,
+    "on_unsatisfiable_gate": "state it in the report with the reason; never fake the number and never silently skip",
+    "handoff_requires": ["per-gate status", "the one warning kept and why", "what was not checked", "measurements"]
+  }
+}
