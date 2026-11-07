@@ -3,46 +3,32 @@
 **Upstream:** https://github.com/dickwu/apple-design-skill  
 **Licence:** no licence file  
 **Pinned at commit:** `ff4ebddf0488`  
-**Mode:** summarise  
-**Doctrine files:** 0  
-**Bytes:** 0
+**Mode:** copy-permission  
+**Doctrine files:** 131  
+**Bytes:** 1,230,596
 
-## Why nothing was copied
+## What this is
 
-The licence (no licence file) does not permit redistribution, so no text, code or asset
-from this source is included. What follows is a summary written for this project:
-the ideas, in this project's words, which is what copyright does not cover.
+The source's doctrine, copied verbatim. Its licence (no licence file) does not grant
+redistribution, so it is here **on the maintainer's assertion of permission from
+the rights holder** — see `PERMISSION.md` in this folder for the basis, the date,
+and exactly what this repository did and did not verify.
 
-If you want the source itself, use the upstream link above. If its terms suit you
-better than these notes, that is a legitimate reason to go there — the point of this
-repository is not to stop you reading the originals.
+This repository's own MIT licence does **not** extend to these files. The upstream
+terms still govern the text copied here.
 
-## Summary used by this project
+## What was taken
 
-# apple-design-skill — a HIG-grounded review rubric
+Skill definitions, rule files, references and guides — the material that changes a
+decision. Each file keeps its original relative path so it can be diffed against
+upstream.
 
-**Licence:** none stated — **summarised, not redistributed** ·
-**Source:** https://github.com/dickwu/apple-design-skill · **Absorbed:** 2026-11-07
+## What was left out
 
-## What it is
-A review skill that audits interfaces through Apple's Human Interface Guidelines, with
-references loaded by what is on screen, plus a code-audit pass for platform marks and
-payment buttons.
+Binary assets, translations, release notes, tests, packaging and tooling. 0 file(s) were byte-identical mirrors of files already copied (sources ship the same skill under `.claude/skills/` and `.agents/skills/`).
 
-## Rules worth keeping
-1. **Audit through fixed lenses, in a fixed order** — platform conventions, hierarchy,
-   typography, colour/contrast, motion — so two reviewers reach comparable verdicts.
-2. **Load the reference by what is on screen**, not the whole guideline set: a review that
-   cites everything cites nothing.
-3. **Platform convention is a correctness issue, not a taste issue.** A wrong back-button,
-   a misused payment mark, or a broken safe area is a defect.
-4. **Write a report with severities**, not a list of opinions.
+## How it is used here
 
-## What it gets wrong
-Review only — it will tell you what is wrong and never how to build it right. And with no
-licence file, only the ideas were taken.
-
-## Where this landed
-`gatekeeper/references/critic.md` (1, 4 — the fixed-lens order and severity report) ·
-`design-director/references/anti-slop.md` (2, 3) · the design gates D0–D8 in
-`specs/gates.json`.
+`skills/` routes to it. Nothing in this folder is edited by this project: it is
+reference material, loaded on demand, so the merged doctrine in `skills/` can always
+be checked against the sources it came from.

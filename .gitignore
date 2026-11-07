@@ -12,6 +12,3 @@ __pycache__/
 
 # os
 .DS_Store
-
-# fetched locally on demand, never redistributed
-library/*/*/local/

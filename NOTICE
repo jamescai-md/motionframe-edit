@@ -1,0 +1,46 @@
+# Licence scope
+
+This repository contains three kinds of material, under three different sets of terms.
+The root `LICENSE` (MIT) covers **only the first**.
+
+## 1. This project's own work — MIT
+
+`skills/`, `tools/`, `specs/`, `docs/`, `examples/`, `tests/`, the top-level Markdown files,
+and the `SOURCE.md` / `NOTES.md` / `library/README.md` files written for this project.
+
+## 2. Sources copied under an explicit licence grant — their own licences
+
+`library/**/upstream/` for:
+
+| Source | Licence |
+|---|---|
+| i-hate-editing, video-use, freecut, herk-edit-kit, video-short, motion-kit, reelmimic, taste-skill, ui-ux-pro-max, emil-skills | MIT |
+| open-edit, motionmaxxing, hyperframes, hyperframes-launches | Apache-2.0 |
+
+The full text of each travels beside the files as `LICENCE.upstream`. Apache-2.0 `NOTICE`
+files, where the upstream ships one, travel as `NOTICE.upstream`. Nothing in these folders is
+relicensed by this repository; if an upstream licence and this repository's MIT licence
+disagree about a file in `upstream/`, the upstream licence wins.
+
+## 3. Sources copied on asserted permission — upstream terms still apply
+
+| Source | Upstream licence | Basis for inclusion |
+|---|---|---|
+| hypit | Apache-2.0 with added commercial conditions | maintainer's assertion of permission, 2026-11-07 |
+| remotion | Remotion licence (not free above a company-size threshold) | as above |
+| apple-design | no licence file — copyright retained by the author | as above |
+| tiktok-short-edit | published document | as above |
+
+Each folder carries `PERMISSION.md`: the date, what was asserted, and the fact that this
+repository verified no licence grant for these four. **The MIT licence at the root does not
+apply to them**, and the upstream terms continue to bind anyone who uses the copied text —
+including the Remotion company-size threshold and hypit's commercial conditions.
+
+If you are a rights holder and you object to material here, open an issue and the folder
+will be removed.
+
+## 4. Material that is excluded entirely
+
+Binary assets, fonts, themes, images and example films are not included — roughly 1.5 GB
+across the sources, under licences and terms that differ per asset. Their instructions are
+here; their media is not.

@@ -106,17 +106,14 @@ library/editing/video-use/
 └── upstream/            the source's own skill files, copied verbatim
 ```
 
-**14 sources are copied verbatim** — 1,066 files, 9.4 MB, every one licensed for it — because MIT and Apache-2.0 permit it
-and a copy is more useful than a description of a copy. **4 are paraphrased and never
-copied**: `hypit` (Apache-2.0 with added commercial conditions), `remotion` (Remotion licence,
-free only under a company-size threshold), `apple-design-skill` (no licence file), and
-`tiktok-short-edit` (a published document). Shipping their text would spread a licence
-obligation to everyone who installs this.
+**All 18 sources are copied verbatim** — 1,824 files, 13.4 MB, every one of them. How each
+is here follows its licence: fourteen under an explicit grant (MIT / Apache-2.0, with the
+upstream LICENCE and any NOTICE travelling alongside), and four on the maintainer's stated
+permission from the rights holder, recorded file-by-file in `PERMISSION.md`.
 
-The three sources that cannot legally be redistributed are **fetched, not republished**:
-`python3 tools/fetch-restricted.py` clones `hypit`, `remotion` and `apple-design` onto your
-machine at their pinned commits, into a gitignored `local/` folder. Fifteen sources arrive
-with the clone; the last three are one command away, on your disk, under their own licences.
+The root MIT licence covers this project's own work only — not the copied text. See
+[`NOTICE`](NOTICE) for the exact scope, including the Remotion threshold and hypit's
+commercial conditions, which still bind anyone using that material.
 
 The skills load only the source a job needs — a captioning task does not pull in the design
 system. Start at any `SOURCE.md`.

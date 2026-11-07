@@ -31,8 +31,9 @@ Two failures this skill exists to prevent:
 ## The library — where the depth lives
 
 Seven skills are the curated layer. `library/` holds the material of all eighteen sources
-combined here: fourteen copied verbatim under `upstream/` (their licences permit it), four
-paraphrased because theirs do not.
+combined here — every one copied verbatim under `upstream/`: fourteen under an explicit
+licence grant, four on the maintainer's stated permission, with the basis recorded in each
+folder's `PERMISSION.md`.
 
 **Load a source only when the job needs it.** A captioning task reads
 `library/editing/video-use/upstream/` and `library/editing/i-hate-editing/upstream/`; it does

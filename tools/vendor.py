@@ -57,20 +57,20 @@ SOURCES = [
     ("herk-edit-kit", "editing", "copy", "https://github.com/nateherkai/herk-edit-kit", "MIT"),
     ("video-short", "editing", "copy", "https://github.com/petergyang/video-short", "MIT"),
     ("open-edit", "editing", "copy", "https://github.com/veedstudio/open-edit", "Apache-2.0"),
-    ("hypit", "editing", "summarise", "https://github.com/hypit-ai/hypit",
+    ("hypit", "editing", "copy-permission", "https://github.com/hypit-ai/hypit",
      "modified Apache-2.0 (commercial conditions)"),
     ("motionmaxxing", "motion", "copy", "https://github.com/Tejashmakwana/motionmaxxing", "Apache-2.0"),
     ("motion-kit", "motion", "copy", "https://github.com/hughminhphan/motion-kit", "MIT"),
     ("reelmimic", "motion", "copy", "https://github.com/edenfunf/reelmimic", "MIT"),
     ("hyperframes", "motion", "copy", "https://github.com/heygen-com/hyperframes", "Apache-2.0"),
     ("hyperframes-launches", "motion", "copy", "https://github.com/heygen-com/hyperframes-launches", "Apache-2.0"),
-    ("remotion", "motion", "summarise", "https://github.com/remotion-dev/remotion",
+    ("remotion", "motion", "copy-permission", "https://github.com/remotion-dev/remotion",
      "Remotion licence (not free for companies)"),
     ("taste-skill", "design", "copy", "https://github.com/Leonxlnx/taste-skill", "MIT"),
     ("ui-ux-pro-max", "design", "copy", "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill", "MIT"),
     ("emil-skills", "design", "copy", "https://github.com/emilkowalski/skills", "MIT"),
-    ("apple-design", "design", "summarise", "https://github.com/dickwu/apple-design-skill", "no licence file"),
-    ("tiktok-short-edit", "editing", "summarise", "https://www.marwieang.com/tiktok-short-edit.md",
+    ("apple-design", "design", "copy-permission", "https://github.com/dickwu/apple-design-skill", "no licence file"),
+    ("tiktok-short-edit", "editing", "copy-permission", "https://www.marwieang.com/tiktok-short-edit.md",
      "published document (all rights reserved by default)"),
 ]
 
@@ -123,14 +123,27 @@ def write_source_md(dest: pathlib.Path, name: str, mode: str, upstream: str, lic
             f"**Mode:** {mode}  ",
             f"**Doctrine files:** {len(files)}  ",
             f"**Bytes:** {sum(f.stat().st_size for f in files):,}", ""]
-    if mode == "copy":
+    if mode.startswith("copy"):
+        body += ["## What this is", ""]
+        if mode == "copy-permission":
+            body += [
+                f"The source's doctrine, copied verbatim. Its licence ({licence}) does not grant",
+                "redistribution, so it is here **on the maintainer's assertion of permission from",
+                "the rights holder** — see `PERMISSION.md` in this folder for the basis, the date,",
+                "and exactly what this repository did and did not verify.",
+                "",
+                "This repository's own MIT licence does **not** extend to these files. The upstream",
+                "terms still govern the text copied here.",
+                "",
+            ]
+        else:
+            body += [
+                "The source's doctrine, copied verbatim under its own licence. Its LICENCE file",
+                "travels with it as `LICENCE.upstream`, so the terms are in the same folder as the",
+                "text they cover.",
+                "",
+            ]
         body += [
-            "## What this is",
-            "",
-            "The source's doctrine, copied verbatim under its own licence. Its LICENCE file",
-            "travels with it as `LICENCE.upstream`, so the terms are in the same folder as the",
-            "text they cover.",
-            "",
             "## What was taken",
             "",
             "Skill definitions, rule files, references and guides — the material that changes a",
@@ -189,14 +202,14 @@ def main() -> int:
             continue
 
         d = src_root / name
-        if mode == "copy":
+        if mode.startswith("copy"):
             if not d.exists():
                 problems.append(f"source clone not found: {d}")
                 continue
             files, dups = doctrine_files(d)
             kept, total, over = [], 0, 0
             for f in files:
-                if total + f.stat().st_size > 4_500_000:      # per-source ceiling
+                if False:      # no ceiling: the brief is "all of it"
                     over += 1
                     continue
                 kept.append(f); total += f.stat().st_size
@@ -209,6 +222,13 @@ def main() -> int:
             lic = find_licence(d)
             if lic:
                 shutil.copy2(lic, dest / "LICENCE.upstream")
+            elif mode == "copy-permission":
+                (dest / "LICENCE.upstream").write_text(
+                    f"No licence file exists in {upstream}.\n\n"
+                    "Copyright is therefore retained by the author by default. The text in\n"
+                    "`upstream/` is included on the maintainer's assertion of permission — see\n"
+                    "PERMISSION.md — and carries no grant of rights from this repository.\n",
+                    encoding="utf-8")
             else:
                 problems.append(f"no licence file found for {name} — refusing to copy")
                 shutil.rmtree(dest); continue
@@ -222,6 +242,23 @@ def main() -> int:
                            and f.name.lower().startswith("notice")), None)
             if notice:
                 shutil.copy2(notice, dest / "NOTICE.upstream")
+            if mode == "copy-permission":
+                with (dest / "PERMISSION.md").open("w", encoding="utf-8") as fh:
+                    fh.write(
+                        f"# Basis for inclusion\n\n"
+                        f"`{name}` is included in this repository at the maintainer's instruction.\n"
+                        f"The maintainer states they have permission from the rights holder to\n"
+                        f"redistribute it here.\n\n"
+                        f"- **Upstream:** {upstream}\n"
+                        f"- **Upstream licence:** {licence}\n"
+                        f"- **Date asserted:** 2026-11-07\n"
+                        f"- **Verified by this repository:** no — no licence grant is stated in the\n"
+                        f"  upstream repository. The assertion is recorded, not independently\n"
+                        f"  evidenced. If you are the rights holder and object, open an issue and the\n"
+                        f"  folder will be removed.\n\n"
+                        f"The upstream licence file, where one exists, travels alongside as\n"
+                        f"`LICENCE.upstream`. That licence still governs the copied text:\n"
+                        f"this repository's own MIT licence does not extend to it.\n")
             write_source_md(dest, name, mode, upstream, licence, commit_of(d), kept, excluded)
             rows.append((name, area, mode, len(kept), total, dups))
         else:
