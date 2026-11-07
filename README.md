@@ -113,6 +113,11 @@ free only under a company-size threshold), `apple-design-skill` (no licence file
 `tiktok-short-edit` (a published document). Shipping their text would spread a licence
 obligation to everyone who installs this.
 
+The three sources that cannot legally be redistributed are **fetched, not republished**:
+`python3 tools/fetch-restricted.py` clones `hypit`, `remotion` and `apple-design` onto your
+machine at their pinned commits, into a gitignored `local/` folder. Fifteen sources arrive
+with the clone; the last three are one command away, on your disk, under their own licences.
+
 The skills load only the source a job needs — a captioning task does not pull in the design
 system. Start at any `SOURCE.md`.
 

@@ -2842,6 +2842,18 @@ Nothing above is a judgement call disguised as a technical one: the third column
 reproducible with `python3 tools/vendor.py --check` plus a directory diff. The only category
 that involves taste is the 896 — and there the constraint was legal, not editorial.
 
+### The last 34% — one command, on your machine
+
+The three restricted sources are **fetched, never republished**:
+
+```bash
+python3 tools/fetch-restricted.py     # clones hypit, remotion, apple-design at the pinned commit
+```
+
+That lands them in `library/<area>/<source>/local/`, which is gitignored. You end up with all
+18 sources on disk; this repository never redistributes the licence-restricted text. The
+licence you accept by running it is exactly the one you would accept cloning them by hand.
+
 ## What is not here
 
 - **Binary assets** — themes, fonts, images, example films, ~1.5 GB across the sources.
