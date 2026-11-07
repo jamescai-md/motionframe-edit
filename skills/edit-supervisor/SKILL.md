@@ -158,6 +158,14 @@ official material about the subject → a designed graphic → a generated image
 Never upload a still image as B-roll: an image is only the first frame of a
 generated clip, a scrolling page capture, or a receipt.
 
+### Before you set type
+
+Captions, titles, lower thirds and thumbnails are typography decisions, and this skill does
+not own the type scale. Load `../design-director/references/system.md` for family count, scale
+ratio and tracking, and `../design-director/references/anti-slop.md` for the failure modes
+that make an edit look assembled rather than made. It is a short read and it is the difference
+between captions that look designed and captions that look like a template.
+
 ## 5. Captions
 
 ```bash

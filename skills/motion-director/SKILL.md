@@ -67,6 +67,20 @@ different beat to build first.
    focusing. Fades are for a single object or a privacy dissolve, not for a
    scene change and not between every beat.
 
+## Type, colour and layout are not decided here
+
+Motion is one layer over a composition that already has to work as a still. The moment a
+frame carries a headline, a lower third, a caption or a grid, the decisions belong to the
+design system:
+
+- **Type** — family count, scale ratio, weight pairing, tracking at size: `../design-director/references/system.md`.
+- **Colour and contrast** — tokens, not picked-by-eye values; the same file.
+- **Whether the frame reads as generic** — `../design-director/references/anti-slop.md`, loaded before the first render, not after.
+
+If a beat needs type bigger than the scale allows, that is a composition problem, not a
+licence to break the scale. When the design system and a motion instinct disagree, the ruling
+is already written: `references/precedence.md`.
+
 ## The beat sheet
 
 Before any code, write a beat sheet. It is the EDL of motion, and it is what makes
