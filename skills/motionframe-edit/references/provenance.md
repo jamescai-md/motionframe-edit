@@ -1,6 +1,6 @@
 # Lineage — what came from where, and what it was missing
 
-`supervision` is a synthesis, not a wrapper. Nothing here is vendored, forked code:
+`motionframe-edit` is a synthesis, not a wrapper. Nothing here is vendored, forked code:
 each source contributed a craft idea or a discipline, and the gaps in one are
 filled by another. This file is the honest map, so you can go upstream for depth
 when you need it.
@@ -15,7 +15,7 @@ Full notices: `/ATTRIBUTION.md`.
 
 ## The agent-engineering sources
 
-| Source | Its strength | Its gap (why you'd otherwise open another skill) | In supervision |
+| Source | Its strength | Its gap (why you'd otherwise open another skill) | In motionframe-edit |
 |---|---|---|---|
 | [**obra/superpowers**](https://github.com/obra/superpowers) | process discipline: brainstorm → plan → execute → verify, parallel subagents, "verification before completion" | entirely software engineering; says nothing about how a cut or a page should *feel* | the loop and the two STOP gates; `gatekeeper` is its verification culture applied to media |
 | [**morluto/rea**](https://github.com/morluto/rea) | investigating a real artifact down to the implementation before reimagining it | a heavyweight MCP server for binary/app analysis; no editorial craft | the investigative posture behind law 6: capture the real thing, never a mockup of it |
@@ -27,7 +27,7 @@ Full notices: `/ATTRIBUTION.md`.
 
 ## The video and motion sources
 
-| Source | Its strength | Its gap | In supervision |
+| Source | Its strength | Its gap | In motionframe-edit |
 |---|---|---|---|
 | [**i-hate-editing**](https://github.com/ranahaani/i-hate-editing) | the full studio: taste memory, hard rules won from rejected renders, a real delivery package | depends on a signed-in browser for voice enhancement and a local image proxy; talking-head only | law 12 (taste memory), the hard rules, the delivery package — all reimplemented with no accounts |
 | [**video-use**](https://github.com/browser-use/video-use) | the sharpest correctness rules anywhere: captions last, per-segment concat, 30 ms fades, PTS-shifted overlays, output-timeline SRT | ElevenLabs/Scribe API keys | those rules became the engine's behaviour *and* gate G5/G6; local ASR replaces the API |
@@ -45,7 +45,7 @@ Full notices: `/ATTRIBUTION.md`.
 
 ## The design sources
 
-| Source | Its strength | Its gap | In supervision |
+| Source | Its strength | Its gap | In motionframe-edit |
 |---|---|---|---|
 | [**ui-ux-pro-max**](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) | breadth: brand, tokens, slides, banners, component styling | encourages gradients, glow and "premium" effects that read as slop elsewhere; no adjudication | the token/system discipline (`design-director/references/system.md`); its visual register is overruled by `precedence.md` |
 | [**taste-skill**](https://github.com/Leonxlnx/taste-skill) | art direction from reference images plus a browser check, instead of accepting a generic generated page; an anti-slop stance | web only; extremely prescriptive; contradicts the source above with no tie-breaker | `design-director`'s reference-first authoring and `references/anti-slop.md`; the contradictions are resolved in `precedence.md` |
@@ -56,10 +56,10 @@ Full notices: `/ATTRIBUTION.md`.
 
 | Flaw in the sources | Who covers it |
 |---|---|
-| Paid APIs and accounts everywhere | `supervision` law: free and local; `sv` uses ffmpeg + stdlib only |
+| Paid APIs and accounts everywhere | `motionframe-edit` law: free and local; `sv` uses ffmpeg + stdlib only |
 | Correctness rules in one place, craft in another | both live in the engine and the gates, not in prose |
 | Contradictory taste advice (gradients, motion, restraint) | `references/precedence.md` — a ladder, plus twelve documented resolutions |
-| No verification of the finished artifact | `gatekeeper` — eight measured gates, and `sv demo --selftest` proving they can fail |
+| No verification of the finished artifact | `gatekeeper` — eight measured gates, and `mfe demo --selftest` proving they can fail |
 | Framework lock-in (HyperFrames, Remotion, a specific NLE) | three lanes, one motion spec, chosen by need |
 | Nothing remembers corrections | `taste-memory` |
 | Twenty skills to install, twenty descriptions to route | one router with a table, seven specialists, progressive disclosure |

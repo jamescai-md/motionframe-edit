@@ -1,9 +1,9 @@
 {
-  "name": "supervision",
+  "name": "motionframe-edit",
   "version": "1.0.0",
   "description": "Video editing, motion graphics and design direction: seven skills, twelve laws, eight measured gates, one free local engine.",
-  "author": { "name": "supervision contributors" },
-  "homepage": "https://github.com/<you>/supervision",
+  "author": { "name": "motionframe-edit contributors" },
+  "homepage": "https://github.com/<you>/motionframe-edit",
   "license": "MIT",
   "keywords": ["video-editing", "motion-graphics", "design", "ffmpeg", "captions", "remotion", "gsap", "agent-skills"]
 }

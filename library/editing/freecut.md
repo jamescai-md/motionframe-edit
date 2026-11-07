@@ -19,5 +19,5 @@ It is an editor, so it optimises for its own UI. There is no design doctrine, no
 doctrine, and its optional paid backends undermine the local-first stance it opens with.
 
 ## Where this landed
-The local-ASR default became law in `supervision/SKILL.md` and a `doctor` behaviour:
+The local-ASR default became law in `motionframe-edit/SKILL.md` and a `doctor` behaviour:
 when no transcriber is installed, the message names the free one and nothing else.

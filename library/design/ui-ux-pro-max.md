@@ -21,5 +21,5 @@ of this collection, and it adjudicates nothing. It encourages range without rest
 
 ## Where this landed
 `design-director/references/system.md` (1, 2, 3, 4) · its register is **overruled** by
-`supervision/references/precedence.md` ruling 4: restraint wins unless the brand argues
+`motionframe-edit/references/precedence.md` ruling 4: restraint wins unless the brand argues
 otherwise in writing.

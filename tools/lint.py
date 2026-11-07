@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-lint.py — repository hygiene for supervision.
+lint.py — repository hygiene for motionframe-edit.
 
 Checks the things that silently rot in a skill repo:
   * frontmatter present, valid YAML-ish, and the name matches the directory
@@ -133,7 +133,7 @@ def check_skill(path: Path) -> None:
 
 def check_all_markdown() -> None:
     for p in sorted(ROOT.rglob("*.md")):
-        if any(part in {".git", "node_modules", ".sv-demo"} for part in p.parts):
+        if any(part in {".git", "node_modules", ".mfe-demo"} for part in p.parts):
             continue
         rel = p.relative_to(ROOT).as_posix()
         text = p.read_text(encoding="utf-8")
@@ -175,7 +175,7 @@ def main() -> int:
 
     check_all_markdown()
 
-    check_required("skills/supervision/SKILL.md",
+    check_required("skills/motionframe-edit/SKILL.md",
                    ["twelve laws", "route", "gatekeeper", "no api key"])
     check_required("skills/gatekeeper/SKILL.md", ["G0", "G7", "fix order"])
     check_required("skills/edit-supervisor/SKILL.md", ["output", "captions", "LUFS"])
@@ -187,11 +187,11 @@ def main() -> int:
     check_required("README.md", ["gates", "install", "licence"])
 
     for f in ("LICENSE", "ATTRIBUTION.md", "CHANGELOG.md", "CONTRIBUTING.md",
-              "specs/edl.schema.json", "tools/sv.py", "install.sh"):
+              "specs/edl.schema.json", "tools/mfe.py", "install.sh"):
         if not (ROOT / f).exists():
             err(f, "missing")
 
-    print(f"\n  supervision lint — {len(skill_dirs)} skills, {len(list(ROOT.rglob('*.md')))} markdown files\n")
+    print(f"\n  motionframe-edit lint — {len(skill_dirs)} skills, {len(list(ROOT.rglob('*.md')))} markdown files\n")
     for w in warnings:
         print(f"  WARN  {w}")
     for e in errors:

@@ -10,7 +10,7 @@ duplicated per platform; the adapters are pointers, which is why they cannot dri
 | **Gemini CLI** | `GEMINI.md` context file + `gemini-extension.json` | `gemini extensions link .` |
 | **Antigravity** | `AGENTS.md`; skills convention `~/.gemini/antigravity/skills/` | `./install.sh --target antigravity` |
 | **OpenCode** | `AGENTS.md`; skills in `${XDG_CONFIG_HOME:-~/.config}/opencode/skills/` | `./install.sh --target opencode` |
-| **Hermes / Cursor / Windsurf / Zed / Aider / anything else** | `AGENTS.md` | `./install.sh --dir <your skills dir>`, or set `SV_SKILLS_DIR` |
+| **Hermes / Cursor / Windsurf / Zed / Aider / anything else** | `AGENTS.md` | `./install.sh --dir <your skills dir>`, or set `MFE_SKILLS_DIR` |
 
 ## The three ways to mount it
 
@@ -28,7 +28,7 @@ is the whole reason the suite is seven skills rather than one enormous file.
 markdown file. Paste or reference `AGENTS.md`, and point at the router:
 
 ```
-Read AGENTS.md, then skills/supervision/SKILL.md before starting. Load other
+Read AGENTS.md, then skills/motionframe-edit/SKILL.md before starting. Load other
 skills from skills/<name>/SKILL.md only when the routing table says to.
 ```
 
@@ -42,7 +42,7 @@ Agent skill directories move as tooling matures. If your tool reads skills from 
 path that is not listed above, do not edit `install.sh` — override it:
 
 ```bash
-SV_SKILLS_DIR=~/.my-agent/skills ./install.sh
+MFE_SKILLS_DIR=~/.my-agent/skills ./install.sh
 ```
 
 If a target prints a path that does not exist on your machine, that is expected:
@@ -55,7 +55,7 @@ targets, not a guarantee about any particular build.
   beats, hooks for a pre-delivery gate. `.claude-plugin/plugin.json` makes it
   installable as a plugin.
 - **Codex / ChatGPT**: `AGENTS.md` plus skills where supported. Codex is strongest
-  at the engine work (`sv.py`) because it can run commands in a loop and read the
+  at the engine work (`mfe.py`) because it can run commands in a loop and read the
   gate report.
 - **Gemini CLI / Antigravity**: the extension manifest gives it `GEMINI.md` as
   context. Good at long-reference reading (`docs/lineage.md`, the lane docs).

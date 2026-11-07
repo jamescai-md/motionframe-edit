@@ -8,7 +8,7 @@ never reaches a skill is a name-drop, so the two files answer different question
 actually loads — `skills/**/*.md` and `AGENTS.md` — on 2026-11-07. A hit means the
 capability is *present*, not that it is *good*: presence is necessary, not sufficient. The
 quality argument is `tools/gate-docs.py`, which measures the repository, and
-`tools/sv.py demo --selftest`, which measures whether the gates can fail.
+`tools/mfe.py demo --selftest`, which measures whether the gates can fail.
 
 Result: **22 of 23 capabilities present. 2 sources deliberately not carried. 1 idea unpinned.**
 
@@ -19,12 +19,12 @@ Result: **22 of 23 capabilities present. 2 sources deliberately not carried. 1 i
 | [browser-use/video-use](https://github.com/browser-use/video-use) | correctness rules: 30 ms fades, per-segment lossless concat, PTS-shifted overlays, output-timeline captions | `skills/edit-supervisor/SKILL.md`, `references/cutting.md` |
 | [ranahaani/i-hate-editing](https://github.com/ranahaani/i-hate-editing) | hard rules won from rejected renders; `taste.md` as durable memory | `skills/edit-supervisor/`, `skills/taste-memory/SKILL.md` |
 | [walterlow/freecut](https://github.com/walterlow/freecut) | local Whisper by default — no account in the path | `skills/edit-supervisor/SKILL.md` |
-| [obra/superpowers](https://github.com/obra/superpowers) | verification before completion; the two STOP gates | `skills/supervision/SKILL.md` §"STOP 1 / STOP 2" |
+| [obra/superpowers](https://github.com/obra/superpowers) | verification before completion; the two STOP gates | `skills/motionframe-edit/SKILL.md` §"STOP 1 / STOP 2" |
 | [anthropics/skills](https://github.com/anthropics/skills) | progressive disclosure; `SKILL.md` frontmatter as routing | every `skills/*/SKILL.md` |
 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) | the quality bar written as a contract | `skills/gatekeeper/`, `specs/gates.json` |
 | [mattpocock/skills](https://github.com/mattpocock/skills) | imperative, unhyped writing for agents | all doctrine files |
 | [morluto/rea](https://github.com/morluto/rea) | examine the real artifact before reimagining it | `skills/design-director/SKILL.md` |
-| [wayfinder](https://www.marwieang.com/wayfinder-skill.md) | plan in plain English, approved before building | `skills/supervision/SKILL.md` §"STOP 1" |
+| [wayfinder](https://www.marwieang.com/wayfinder-skill.md) | plan in plain English, approved before building | `skills/motionframe-edit/SKILL.md` §"STOP 1" |
 | [nateherkai/herk-edit-kit](https://github.com/nateherkai/herk-edit-kit) | motion handoffs; arrival from oversize | `skills/edit-supervisor/references/cutting.md` |
 | [heygen-com/hyperframes](https://github.com/heygen-com/hyperframes) | lane B: HTML/GSAP captured in headless Chrome | `skills/motion-director/references/lanes.md` |
 | [remotion-dev/remotion](https://github.com/remotion-dev/remotion) | lane C: React compositions with `useCurrentFrame` | `skills/motion-director/references/lanes.md` |
@@ -82,4 +82,4 @@ claim about ideas, not about rules.
 - **That the sources are unchanged.** They are other people's repos; they move.
 - **That nothing was lost in the rewrite.** Prose was rewritten, not copied, so a rule can
   survive in spirit and drift in the retelling. The strongest evidence against that is the
-  executed behaviour: `specs/gates.json` + `sv demo --selftest`.
+  executed behaviour: `specs/gates.json` + `mfe demo --selftest`.

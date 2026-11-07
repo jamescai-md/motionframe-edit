@@ -8,15 +8,15 @@ decisions and the audit.
 > "I filmed three takes about our new offline mode. Make me a Reel. Keep it tight,
 > I hate waffle. No music."
 
-That is a brief. Not a spec. Everything below is supervision filling it in.
+That is a brief. Not a spec. Everything below is motionframe-edit filling it in.
 
 ## 0 · Taste and inventory
 
 ```bash
-sv.py scaffold ./offline-reel
+mfe.py scaffold ./offline-reel
 # → brief.md, taste.md, edl.json, provenance.json, footage/
 
-sv.py probe footage/*.mp4
+mfe.py probe footage/*.mp4
 ```
 
 ```
@@ -97,9 +97,9 @@ does not need a look.
 ## 4 · Draft, then the audit nobody skips
 
 ```bash
-sv.py captions --edl edl.json --words work/take-03.words.json --remap A --out captions.ass
-sv.py render   --edl edl.json --out work/draft.mp4 --preview
-sv.py gate     --file work/draft.mp4 --edl edl.json --boxes captions.boxes.json
+mfe.py captions --edl edl.json --words work/take-03.words.json --remap A --out captions.ass
+mfe.py render   --edl edl.json --out work/draft.mp4 --preview
+mfe.py gate     --file work/draft.mp4 --edl edl.json --boxes captions.boxes.json
 ```
 
 First pass — **failed**, as first passes do:
@@ -132,7 +132,7 @@ G3 allows and the plan intended).
 ## 5 · Look
 
 ```bash
-sv.py sheet --file work/draft.mp4 --out work/sheet.jpg --every 2
+mfe.py sheet --file work/draft.mp4 --out work/sheet.jpg --every 2
 ```
 
 Six frames described in one sentence each — the discipline that catches what numbers

@@ -46,7 +46,7 @@ SANS_B = FONT_DIR / "DejaVuSans-Bold.ttf"
 SANS = FONT_DIR / "DejaVuSans.ttf"
 MONO = FONT_DIR / "DejaVuSansMono.ttf"
 
-NAME = "supervision"
+NAME = "motionframe-edit"
 KICKER = "ONE SKILL  ·  EIGHTEEN SOURCES  ·  MIT  ·  v1.0.0"
 TAGLINE = "Eighteen editing, motion and design skills — merged into one."
 SUB = "Every rule given a home. Every contradiction ruled on. Eight gates that measure the render."

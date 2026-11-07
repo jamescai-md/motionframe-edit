@@ -22,13 +22,13 @@ Nothing else. No process notes, no self-congratulation, no restating the brief.
 
 ## 2. `gate-report.json` — for the machine and the next session
 
-Produced by `sv gate`. Keep it in the output folder. It is how a future session
+Produced by `mfe gate`. Keep it in the output folder. It is how a future session
 knows what was already verified, and it is the only proof that anything was
 audited at all.
 
 ```json
 {
-  "tool": "supervision 1.0.0",
+  "tool": "motionframe-edit 1.0.0",
   "file": "out/final.mp4",
   "profile": "vertical-9x16",
   "media": { "duration_s": 52.1, "display_width": 1080, "display_height": 1920, "fps": 30 },
@@ -47,4 +47,4 @@ Every handoff ends with the thing you could not verify:
 > speaker. Everything else is measured."
 
 You are not allowed to imply you checked something you did not. That single
-sentence is what separates supervision from a confident guess.
+sentence is what separates motionframe-edit from a confident guess.

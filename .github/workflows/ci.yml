@@ -74,7 +74,7 @@ jobs:
       - name: unit tests
         run: python3 -m unittest discover -s tests -v
       - name: integration test (renders, then gates its own output)
-        run: SV_INTEGRATION=1 python3 -m unittest tests.test_engine.TestIntegration -v
+        run: MFE_INTEGRATION=1 python3 -m unittest tests.test_engine.TestIntegration -v
 
   self-audit:
     name: pipeline + gates can be trusted
@@ -86,18 +86,18 @@ jobs:
           python-version: "3.12"
       - run: pip install imageio-ffmpeg
       - name: capability scan
-        run: python3 tools/sv.py doctor --json | tee doctor.json
+        run: python3 tools/mfe.py doctor --json | tee doctor.json
       - name: render a real video and audit it
-        run: python3 tools/sv.py demo --selftest --workdir .sv-demo
+        run: python3 tools/mfe.py demo --selftest --workdir .mfe-demo
       - name: the gates must be able to fail
         run: |
           # if the selftest above passed, every gate tripped on broken input.
           # this step re-asserts the report exists and says PASS, so a silently
           # broken audit cannot pass CI.
-          test -f .sv-demo/gate-report.json
+          test -f .mfe-demo/gate-report.json
           python3 - <<'PY'
           import json
-          rep = json.load(open(".sv-demo/gate-report.json"))
+          rep = json.load(open(".mfe-demo/gate-report.json"))
           assert rep["verdict"] == "pass", rep["verdict"]
           assert len(rep["gates"]) >= 7, len(rep["gates"])
           print("gates:", [(g["id"], g["status"]) for g in rep["gates"]])
@@ -106,8 +106,8 @@ jobs:
         with:
           name: gate-report
           path: |
-            .sv-demo/gate-report.json
-            .sv-demo/work/sheet.jpg
+            .mfe-demo/gate-report.json
+            .mfe-demo/work/sheet.jpg
           retention-days: 14
 
   install:
@@ -120,8 +120,8 @@ jobs:
       - name: real install into a temp dir
         run: |
           ./install.sh --dir "$RUNNER_TEMP/skills"
-          test -L "$RUNNER_TEMP/skills/supervision"
-          test -f "$RUNNER_TEMP/skills/supervision/SKILL.md"
+          test -L "$RUNNER_TEMP/skills/motionframe-edit"
+          test -f "$RUNNER_TEMP/skills/motionframe-edit/SKILL.md"
           ls "$RUNNER_TEMP/skills"
       - name: copy mode
         run: |

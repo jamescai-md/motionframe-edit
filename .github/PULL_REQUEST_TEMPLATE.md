@@ -10,7 +10,7 @@
 
 - [ ] `python3 tools/lint.py` passes
 - [ ] `python3 -m unittest discover -s tests -v` passes
-- [ ] `python3 tools/sv.py demo --selftest` passes (needs ffmpeg)
+- [ ] `python3 tools/mfe.py demo --selftest` passes (needs ffmpeg)
 - [ ] If I added or changed a **rule**, it is enforced somewhere (a gate, a lint check, a test) — not just prose
 - [ ] If I added or changed a **gate**, I added a fixture that proves it can fail
 - [ ] If I carried an idea across from another project, `ATTRIBUTION.md` is updated

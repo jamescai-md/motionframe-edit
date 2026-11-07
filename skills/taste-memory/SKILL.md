@@ -18,7 +18,7 @@ This is the smallest skill in the suite and the one that changes the most.
 
 ## The file
 
-`taste.md` lives at the project root, created by `sv scaffold`. It is read **before**
+`taste.md` lives at the project root, created by `mfe scaffold`. It is read **before**
 any decision and appended to **after** every correction.
 
 ```markdown

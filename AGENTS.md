@@ -1,4 +1,4 @@
-# AGENTS.md — supervision
+# AGENTS.md — motionframe-edit
 
 Canonical instructions for any agent that reads `AGENTS.md` (Codex, OpenCode,
 Antigravity, Cursor, Windsurf, Zed, Aider, Hermes, …).
@@ -7,18 +7,18 @@ Antigravity, Cursor, Windsurf, Zed, Aider, Hermes, …).
 
 ## What this repository is
 
-`supervision` is an agent skill suite for **video editing, motion graphics and
-design**. Seven skills, one engine (`tools/sv.py`), one doctrine.
+`motionframe-edit` is an agent skill suite for **video editing, motion graphics and
+design**. Seven skills, one engine (`tools/mfe.py`), one doctrine.
 
 ## How to use it
 
-1. **Read `skills/supervision/SKILL.md` once per session.** It defines the twelve
+1. **Read `skills/motionframe-edit/SKILL.md` once per session.** It defines the twelve
    laws, the routing table and the loop. Everything else assumes it.
 2. **Route with the table** in that file. Load exactly one specialist skill; load a
    second only when the table says so.
 3. **Never preload references.** Each `references/*.md` is loaded when the task
    genuinely needs it. Loading everything is how context dies.
-4. **Run `python3 tools/sv.py doctor` once** at the start of media work. Do not
+4. **Run `python3 tools/mfe.py doctor` once** at the start of media work. Do not
    guess what is installed.
 5. **`gatekeeper` is never optional.** Nothing is presented or called complete
    without a gate report.
@@ -39,7 +39,7 @@ seems to override them:
 - **Two STOP gates.** Do not build past an unapproved plan. Do not present an
   unaudited render.
 - **Output timeline only.** Captions, overlays and notes use output time, never
-  source time. Use `sv captions --remap`.
+  source time. Use `mfe captions --remap`.
 - **Every correction becomes a rule** in `taste.md`, read before the next piece.
 
 ## Layout
@@ -47,7 +47,7 @@ seems to override them:
 ```
 skills/<name>/SKILL.md              frontmatter: name, description, license
 skills/<name>/references/*.md       loaded on demand
-tools/sv.py                         the engine — probe, cut, captions, gate, demo
+tools/mfe.py                         the engine — probe, cut, captions, gate, demo
 specs/                              EDL schema, gate definitions
 examples/                           a worked end-to-end walkthrough
 docs/                               architecture, platforms, lineage
@@ -61,14 +61,14 @@ docs/                               architecture, platforms, lineage
   otherwise. Say which.
 - New rules go where they are enforced. A rule that lives only in prose is a
   suggestion.
-- If you add a gate, prove it can fail (see `sv demo --selftest`).
+- If you add a gate, prove it can fail (see `mfe demo --selftest`).
 - Keep `ATTRIBUTION.md` accurate when you carry an idea across from a source.
 
 ## Commands
 
 ```bash
-python3 tools/sv.py doctor
-python3 tools/sv.py demo --selftest          # proves pipeline + gates
+python3 tools/mfe.py doctor
+python3 tools/mfe.py demo --selftest          # proves pipeline + gates
 python3 tools/lint.py                        # frontmatter, links, prose hygiene
 python3 -m unittest discover -s tests -v
 ```

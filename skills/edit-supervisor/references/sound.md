@@ -13,7 +13,7 @@ measurements and a waveform, and you have to be honest about the difference.
 | Broadcast | −23 LUFS | ≤ −2 dBTP | EBU R128 |
 | Any | — | ≤ −1 dBTP | a true peak above 0 clips on encode |
 
-`sv gate` measures both with `ebur128` and fails outside ±2 LU of target.
+`mfe gate` measures both with `ebur128` and fails outside ±2 LU of target.
 Normalise with `loudnorm` in the same pass that composites — not afterwards,
 which re-encodes the picture for an audio change.
 
@@ -78,4 +78,4 @@ One line, every time:
 > "Measured −14.2 LUFS, true peak −1.3 dBTP, music ducks 6 dB under speech. I can't
 > hear it — check that the music sits under the voice on a phone speaker."
 
-That sentence is the difference between supervision and wishful thinking.
+That sentence is the difference between motionframe-edit and wishful thinking.

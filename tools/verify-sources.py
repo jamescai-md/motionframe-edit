@@ -37,7 +37,7 @@ LICENCE_ALIASES = {
 
 
 def fetch(url: str, token: str | None) -> tuple[int, dict | None]:
-    headers = {"Accept": "application/vnd.github+json", "User-Agent": "supervision-audit"}
+    headers = {"Accept": "application/vnd.github+json", "User-Agent": "motionframe-edit-audit"}
     if token:
         headers["Authorization"] = f"Bearer {token}"
     try:
@@ -52,7 +52,7 @@ def fetch(url: str, token: str | None) -> tuple[int, dict | None]:
 def alive(url: str) -> int:
     """Status of a plain document link — no JSON parsing, HTML and markdown are fine."""
     try:
-        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 supervision-audit"})
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 motionframe-edit-audit"})
         with urllib.request.urlopen(req, timeout=20) as r:
             return r.status
     except urllib.error.HTTPError as e:

@@ -42,7 +42,7 @@ EXT_LINK = re.compile(r"\[[^\]]*\]\((https?://[^)]+)\)")
 
 def md_files(root: pathlib.Path) -> list[pathlib.Path]:
     return [p for p in root.rglob("*.md")
-            if not any(x in p.parts for x in (".git", "node_modules", ".sv-demo"))]
+            if not any(x in p.parts for x in (".git", "node_modules", ".mfe-demo"))]
 
 
 # --- gates -----------------------------------------------------------------
@@ -187,7 +187,7 @@ def selftest() -> int:
 
     def build(fault: str) -> pathlib.Path:
         d = pathlib.Path(tempfile.mkdtemp()) / "repo"
-        shutil.copytree(ROOT, d, ignore=shutil.ignore_patterns(".git", ".sv-demo", "*.png"))
+        shutil.copytree(ROOT, d, ignore=shutil.ignore_patterns(".git", ".mfe-demo", "*.png"))
         if fault == "d0":
             (d / "README.md").write_text("# x\n\nnothing interesting here.\n")
         elif fault == "d1":

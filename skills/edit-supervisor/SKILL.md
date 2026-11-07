@@ -15,7 +15,7 @@ Input: raw footage. Output: a package someone can publish without opening an edi
 
 **The bar:** if a professional editor returned this, would the client accept it?
 
-Read `../supervision/SKILL.md` first if you have not — the twelve laws apply here
+Read `../motionframe-edit/SKILL.md` first if you have not — the twelve laws apply here
 and are not repeated.
 
 ## 0. Taste, then inventory
@@ -23,7 +23,7 @@ and are not repeated.
 All commands below use `$SV` for the engine:
 
 ```bash
-SV=/absolute/path/to/supervision/tools/sv.py   # set once; resolved in skills/supervision/SKILL.md
+SV=/absolute/path/to/motionframe-edit/tools/mfe.py   # set once; resolved in skills/motionframe-edit/SKILL.md
 ```
 
 ```bash
@@ -254,6 +254,6 @@ exists to solve.
 | Text hidden behind a lower third | overlay applied after captions | captions composite last, always |
 | Edit feels slow | cuts on breath, not on words | tighten to 80–150 ms padding |
 | Edit feels frantic | padding below 30 ms, no air after commas | 150–300 ms after punctuation |
-| Audio "looks fine" but is quiet | nobody measured | `sv gate` → G2 |
+| Audio "looks fine" but is quiet | nobody measured | `mfe gate` → G2 |
 | Aimless middle third | the plan had no shape | re-plan the beats, don't patch B-roll |
 | Generated image reads as a fake screenshot | trust rule violated | capture the real thing |

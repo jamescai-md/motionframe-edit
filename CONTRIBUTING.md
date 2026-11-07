@@ -11,19 +11,19 @@ work measurably better, and it must not break anyone else's.
    for press feedback, because…" is.
 3. **A rule without enforcement is a suggestion.** If you add a rule that can be
    checked, add the check. If you add a gate, prove it can fail — see
-   `sv demo --selftest`.
+   `mfe demo --selftest`.
 4. **Say what you measured.** A change to a gate threshold needs the data that
    motivated it.
 5. **Keep the routing table honest.** Adding a skill means updating
-   `skills/supervision/SKILL.md`, the README and `AGENTS.md`.
+   `skills/motionframe-edit/SKILL.md`, the README and `AGENTS.md`.
 
 ## Before you open a PR
 
 ```bash
 python3 tools/lint.py                    # frontmatter, links, hygiene
 python3 -m unittest discover -s tests -v
-python3 tools/sv.py demo --selftest      # pipeline + gates (needs ffmpeg)
-python3 tools/sv.py doctor --json        # what your machine can prove
+python3 tools/mfe.py demo --selftest      # pipeline + gates (needs ffmpeg)
+python3 tools/mfe.py doctor --json        # what your machine can prove
 ```
 
 ## Writing a skill

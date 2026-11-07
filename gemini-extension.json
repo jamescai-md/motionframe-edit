@@ -1,5 +1,5 @@
 {
-  "name": "supervision",
+  "name": "motionframe-edit",
   "version": "1.0.0",
   "description": "Video editing, motion graphics and design direction with a free local ffmpeg engine and eight measured quality gates.",
   "contextFileName": "GEMINI.md",

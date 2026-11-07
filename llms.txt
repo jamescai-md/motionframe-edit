@@ -1,4 +1,4 @@
-# supervision
+# motionframe-edit
 
 > One agent skill for AI video editing, motion graphics and design. Twenty-five
 > open-source skill repositories distilled into one doctrine, one free local ffmpeg
@@ -6,11 +6,11 @@
 > no accounts, no telemetry. MIT.
 
 Entry point for agents: `AGENTS.md` (Codex, OpenCode, Antigravity, Cursor, Hermes) or
-`skills/supervision/SKILL.md` (Claude, and any SKILL.md-compatible loader).
+`skills/motionframe-edit/SKILL.md` (Claude, and any SKILL.md-compatible loader).
 
 ## Skills
 
-- [supervision](skills/supervision/SKILL.md): router, twelve laws, precedence ladder for conflicting taste advice.
+- [motionframe-edit](skills/motionframe-edit/SKILL.md): router, twelve laws, precedence ladder for conflicting taste advice.
 - [edit-supervisor](skills/edit-supervisor/SKILL.md): footage to publishable package — cutting, captions, grade, sound, delivery.
 - [motion-director](skills/motion-director/SKILL.md): beat sheets, timing tables, transitions, three free render lanes.
 - [design-director](skills/design-director/SKILL.md): art direction, systems and tokens, anti-slop tells with fixes.
@@ -29,7 +29,7 @@ Entry point for agents: `AGENTS.md` (Codex, OpenCode, Antigravity, Cursor, Herme
 
 ## Engine
 
-`tools/sv.py` — one file, Python standard library plus an `ffmpeg` binary.
+`tools/mfe.py` — one file, Python standard library plus an `ffmpeg` binary.
 Commands: `doctor`, `probe`, `scaffold`, `validate`, `render`, `captions`, `gate`,
 `sheet`, `demo`. `demo --selftest` proves the gates can fail.
 

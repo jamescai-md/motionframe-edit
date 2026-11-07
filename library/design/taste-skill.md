@@ -25,7 +25,7 @@ banned here, load-bearing there) with no tie-breaker of its own.
 
 ## Where this landed
 `design-director/SKILL.md` step 0 (1, 2) · `references/anti-slop.md` (3, 4, 5) ·
-the contradiction with `ui-ux-pro-max` is resolved in `supervision/references/precedence.md`.
+the contradiction with `ui-ux-pro-max` is resolved in `motionframe-edit/references/precedence.md`.
 
 > **Correction history.** An earlier version of this project's attribution claimed
 > taste-skill did not state the kind-of-business idea. That was wrong — it is the source's

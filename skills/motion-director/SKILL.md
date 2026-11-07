@@ -26,7 +26,7 @@ You are the motion designer, not the animator of last resort. That means:
 - You watch the result at 1× once, end to end, before anyone else sees it.
 - If a beat needs a sound you do not have, **the beat changes**. The sound is not faked.
 
-Read `../supervision/SKILL.md` for the twelve laws. Two matter most here:
+Read `../motionframe-edit/SKILL.md` for the twelve laws. Two matter most here:
 **no dead frame**, and **one system per piece**.
 
 ## Decide before you animate
@@ -34,7 +34,7 @@ Read `../supervision/SKILL.md` for the twelve laws. Two matter most here:
 All commands below use `$SV` for the engine:
 
 ```bash
-SV=/absolute/path/to/supervision/tools/sv.py   # set once; resolved in skills/supervision/SKILL.md
+SV=/absolute/path/to/motionframe-edit/tools/mfe.py   # set once; resolved in skills/motionframe-edit/SKILL.md
 ```
 
 Answer these five in writing. If you cannot, you are not ready to animate — pick a

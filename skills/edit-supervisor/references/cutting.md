@@ -160,7 +160,7 @@ OUTPUT  JSON only:
 Given a finished file rather than footage, work in this order — the first two are
 the only ones that are actually broken rather than merely wrong:
 
-1. Measure it: `sv gate --file cut.mp4 --out gate.json`.
+1. Measure it: `mfe gate --file cut.mp4 --out gate.json`.
 2. Re-time captions first if they drift. Cheapest real fix.
 3. Fix tone and loudness. Second cheapest.
 4. Only then consider re-cutting — and say honestly when a re-cut is cheaper than

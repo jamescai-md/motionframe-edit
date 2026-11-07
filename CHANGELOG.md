@@ -10,7 +10,7 @@ skill, with the bookkeeping that makes "merged" checkable.
 
 ### Added
 
-- **Seven skills** — `supervision` (router: twelve laws, precedence ladder, two STOP gates),
+- **Seven skills** — `motionframe-edit` (router: twelve laws, precedence ladder, two STOP gates),
   `edit-supervisor`, `motion-director`, `design-director`, `ui-motion`, `gatekeeper`,
   `taste-memory`. Progressive disclosure: each loads only when its job matches.
 - **`library/`** — one digest per source, eighteen in total, each with what the source is,
@@ -23,7 +23,7 @@ skill, with the bookkeeping that makes "merged" checkable.
   conditions plus six judgement conditions.
 - **`docs/plan.md`** — the plan this repository was built against: settled, open, excluded,
   phased.
-- **`tools/sv.py`** — the engine: `doctor`, `probe`, `scaffold`, `validate`, `render`,
+- **`tools/mfe.py`** — the engine: `doctor`, `probe`, `scaffold`, `validate`, `render`,
   `captions`, `gate`, `sheet`, `demo`. Standard library plus an `ffmpeg` binary.
 - **Eight gates** G0–G7 on every render, and `demo --selftest` feeds them deliberately
   broken renders and fails if they pass.

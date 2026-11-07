@@ -32,7 +32,7 @@ project.
 
 Maintainers may edit, lock, or remove contributions that break this, and may block
 accounts for repeated or severe behaviour. Reports go to the maintainers via a
-[private advisory](https://github.com/jamescai-md/supervision/security/advisories/new)
+[private advisory](https://github.com/jamescai-md/motionframe-edit/security/advisories/new)
 if the matter is sensitive, or by opening an issue if it is not.
 
 ## Attribution

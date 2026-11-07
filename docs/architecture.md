@@ -5,7 +5,7 @@
 ```
         JUDGEMENT                          MEASUREMENT
    ┌──────────────────┐              ┌────────────────────┐
-   │  the skills      │              │     tools/sv.py    │
+   │  the skills      │              │     tools/mfe.py    │
    │  (markdown)      │  ──────────▶ │  (one file, ffmpeg)│
    │  what to do,     │   commands   │  probe, cut,       │
    │  why, and when   │  ◀────────── │  caption, gate     │
@@ -17,7 +17,7 @@ is confident work with defects nobody caught. This project puts every checkable
 claim into an executable, and leaves prose responsible only for the things that
 cannot be measured — taste, hierarchy, rhythm, whether an idea is worth making.
 
-**Rule of thumb:** if a claim can be verified, it belongs in `sv.py` or a gate. If
+**Rule of thumb:** if a claim can be verified, it belongs in `mfe.py` or a gate. If
 it lives only in prose, it is a suggestion, and it will be skipped under pressure.
 
 ## Data flow
@@ -67,13 +67,13 @@ class of defect in assembled cuts.
 
 **4. Gates return data, not vibes.**
 `gate_report()` returns JSON: per-gate status, the number judged, and the facts
-behind it. That is what makes `sv demo --selftest` possible — you cannot feed a
+behind it. That is what makes `mfe demo --selftest` possible — you cannot feed a
 vibe a broken render and assert it notices.
 
 ## Progressive disclosure
 
 ```
-skills/supervision/SKILL.md      ~150 lines   always loaded
+skills/motionframe-edit/SKILL.md      ~150 lines   always loaded
   └─ references/precedence.md          ~120 lines   loaded when rules conflict
   └─ references/lineage.md             ~130 lines   loaded when provenance matters
 skills/edit-supervisor/SKILL.md        ~200 lines   loaded when editing footage
@@ -96,7 +96,7 @@ is active rather than failing silently:
 |---|---|
 | ffprobe | parse `ffmpeg -i` for duration, streams and rotation |
 | ASR | refuse to guess; ask for a transcript or an SRT, and say why |
-| libass | `sv captions` still writes a valid `.ass`; burning needs libass |
+| libass | `mfe captions` still writes a valid `.ass`; burning needs libass |
 | Node / Chrome | the HTML/React lanes are unavailable; the ffmpeg lane still works |
 | fonts | warn; captions render in a fallback face with a different metric |
 
@@ -106,7 +106,7 @@ the answer is "this is unavailable, here is the free path", never a silent uploa
 ## Extending
 
 - **New destination** (a platform with a new aspect): add a profile to
-  `PROFILES` in `tools/sv.py` and a row to the table in
+  `PROFILES` in `tools/mfe.py` and a row to the table in
   `skills/edit-supervisor/references/delivery.md`.
 - **New gate**: add it to `gate_report()`, to `specs/gates.json`, to the table in
   `skills/gatekeeper/SKILL.md`, and to the selftest with a fixture it must catch.

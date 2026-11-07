@@ -19,7 +19,7 @@ A piece is done when **all** of the following are true. Not "mostly". Not "excep
 | 7 | Every caption cue is inside the platform safe zone | gate G6 |
 | 8 | Every asset declares an origin; nothing generated claims to be real | gate G7 |
 
-Run `sv gate --file <render> --edl <edl.json>` and the report says PASS or FAIL with
+Run `mfe gate --file <render> --edl <edl.json>` and the report says PASS or FAIL with
 numbers. A human "looks fine" is not one of the conditions.
 
 ## What "good" means

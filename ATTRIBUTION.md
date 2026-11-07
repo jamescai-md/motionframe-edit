@@ -12,7 +12,7 @@ reproduced exactly the contradictions this project exists to settle.
 
 **It is a merge with an audit trail.** Each source has a digest in `library/` with four
 parts: what it is, the rules worth keeping, what it gets wrong, and where each kept rule
-landed. Where two sources disagree, `skills/supervision/references/precedence.md` rules on
+landed. Where two sources disagree, `skills/motionframe-edit/references/precedence.md` rules on
 it in writing.
 
 Check it yourself:

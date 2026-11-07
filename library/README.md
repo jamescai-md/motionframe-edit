@@ -54,4 +54,4 @@ is unclear, only publicly observable ideas were used. Full notices: `../ATTRIBUT
   Reading them changed this project's shape (the tool is not the deliverable), not its rules.
 - **Their assets.** No themes, fonts, examples or style libraries are redistributed.
 - **Their conflicts.** Where two sources disagree, the digest names the disagreement and
-  `../skills/supervision/references/precedence.md` decides it.
+  `../skills/motionframe-edit/references/precedence.md` decides it.

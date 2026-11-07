@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-sv — the supervision engine.
+mfe — the motionframe-edit engine.
 
 One executable that does the measurable half of the work so the agent can do the
 judgement half: probe footage, drive an EDL, cut and compose with ffmpeg, build
@@ -12,7 +12,7 @@ Design rules this file obeys:
   3. A missing optional tool degrades to a clear message, never a silent wrong result.
   4. Nothing here decides taste. It measures, so the human and the model can decide.
 
-Usage: sv.py <command> [options]      (see `sv.py doctor` and `sv.py --help`)
+Usage: mfe.py <command> [options]      (see `mfe.py doctor` and `mfe.py --help`)
 """
 
 from __future__ import annotations
@@ -30,7 +30,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Iterable
 
-SV_VERSION = "1.0.0"
+MFE_VERSION = "1.0.0"
 SCHEMA_VERSION = 1
 
 # ---------------------------------------------------------------------------
@@ -596,7 +596,7 @@ def build_cut(edl_path: str | Path, out: str | Path, *, preview: bool = False,
         die(f"{len(errs)} EDL error(s) — nothing was rendered.")
     prof = resolve_profile(edl)
     out = Path(out)
-    with tempfile.TemporaryDirectory(prefix="sv-cut-") as tmp:
+    with tempfile.TemporaryDirectory(prefix="mfe-cut-") as tmp:
         segs = cut_segments(edl, base, Path(tmp), preview=preview)
         draft = concat_lossless(segs, Path(tmp) / "concat.mp4")
         caps = None
@@ -1046,7 +1046,7 @@ def gate_report(path: str | Path, edl: dict[str, Any] | None = None,
                           "no provenance.json — declare origins if any asset claims reality"))
 
     report = {
-        "tool": f"supervision {SV_VERSION}",
+        "tool": f"motionframe-edit {MFE_VERSION}",
         "file": str(path),
         "profile": prof.get("name", "custom"),
         "measured_at": _now(),
@@ -1137,10 +1137,10 @@ def contact_sheet(path: str | Path, out: str | Path, every: float = 1.0,
 # ---------------------------------------------------------------------------
 
 PROJECT_TEMPLATE = {
-    "supervision.json": {
+    "motionframe-edit.json": {
         "version": SCHEMA_VERSION,
         "profile": DEFAULT_PROFILE,
-        "created_with": f"supervision {SV_VERSION}",
+        "created_with": f"motionframe-edit {MFE_VERSION}",
     },
     "edl.json": {
         "version": SCHEMA_VERSION,
@@ -1225,7 +1225,7 @@ def doctor(as_json: bool = False) -> dict[str, Any]:
     node = ver(["node", "--version"])
     chrome = shutil.which("chromium") or shutil.which("chromium-browser") or shutil.which("google-chrome") or shutil.which("chrome")
     result = {
-        "supervision": SV_VERSION,
+        "motionframe-edit": MFE_VERSION,
         "ffmpeg": {"path": TC.ffmpeg, "version": TC.ffmpeg_version,
                    "filters_ok": sorted(TC.can)},
         "ffprobe": TC.ffprobe,
@@ -1246,7 +1246,7 @@ def doctor(as_json: bool = False) -> dict[str, Any]:
         print(json.dumps(result, indent=2))
         return result
 
-    print(f"\n  {c('supervision', '1')} {SV_VERSION}  ·  capability scan\n")
+    print(f"\n  {c('motionframe-edit', '1')} {MFE_VERSION}  ·  capability scan\n")
     if TC.ffmpeg:
         ok("ffmpeg", f"{TC.ffmpeg_version} — {len(TC.can)}/11 core filters available")
     else:
@@ -1260,7 +1260,7 @@ def doctor(as_json: bool = False) -> dict[str, Any]:
     info("fonts", f"{result['fonts']} available" + ("" if result["fonts"] > 2 else " — install a font package for captions"))
     keys = result["paid_keys_detected"]
     if keys:
-        warn("paid keys", f"present in env but IGNORED by supervision: {', '.join(keys)}")
+        warn("paid keys", f"present in env but IGNORED by motionframe-edit: {', '.join(keys)}")
     else:
         ok("paid keys", "none in use — this toolchain is fully local")
     print()
@@ -1289,7 +1289,7 @@ def _paid_env_vars() -> list[str]:
 
 # ---------------------------------------------------------------------------
 # Demo: a self-contained proof that the pipeline and the gates both work.
-# `sv demo` must pass. `sv demo --selftest` must fail in the ways it claims to.
+# `mfe demo` must pass. `mfe demo --selftest` must fail in the ways it claims to.
 # ---------------------------------------------------------------------------
 
 def _make_demo_fixture(dirpath: Path) -> tuple[Path, Path]:
@@ -1309,7 +1309,7 @@ def _make_demo_fixture(dirpath: Path) -> tuple[Path, Path]:
         "2\n00:00:02,600 --> 00:00:05,200\nnot rendering. The renderer is the easy part.\n\n"
         "3\n00:00:05,400 --> 00:00:08,100\nWhat nobody tells you is that a cut\n\n"
         "4\n00:00:08,300 --> 00:00:11,000\nhas to be audited, frame by frame.\n\n"
-        "5\n00:00:11,200 --> 00:00:13,600\nThat is what supervision is for.\n",
+        "5\n00:00:11,200 --> 00:00:13,600\nThat is what motionframe-edit is for.\n",
         encoding="utf-8")
     return src, srt
 
@@ -1364,7 +1364,7 @@ def demo(workdir: str | Path, selftest: bool = False, keep: bool = False) -> int
     ok("captions", f"{len(json.loads((root / 'work' / 'caption-boxes.json').read_text())['boxes'])} cues → captions.ass")
 
     out = root / "out" / "demo.mp4"
-    with tempfile.TemporaryDirectory(prefix="sv-demo-") as tmp:
+    with tempfile.TemporaryDirectory(prefix="mfe-demo-") as tmp:
         segs = cut_segments(edl, root, Path(tmp) / "segs")
         draft = concat_lossless(segs, Path(tmp) / "concat.mp4")
         composite(edl, root, draft, out, captions=root / "captions.ass", prof=prof)
@@ -1542,8 +1542,8 @@ def cmd_demo(a: argparse.Namespace) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(prog="sv", description="supervision — the measurable half of editing.")
-    p.add_argument("--version", action="version", version=f"supervision {SV_VERSION}")
+    p = argparse.ArgumentParser(prog="mfe", description="motionframe-edit — the measurable half of editing.")
+    p.add_argument("--version", action="version", version=f"motionframe-edit {MFE_VERSION}")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     d = sub.add_parser("doctor", help="capability scan (what is installed, what is not)")
@@ -1584,7 +1584,7 @@ def build_parser() -> argparse.ArgumentParser:
     ga.add_argument("--file", required=True)
     ga.add_argument("--edl")
     ga.add_argument("--profile", default=None)
-    ga.add_argument("--boxes", help="caption boxes JSON from `sv captions`")
+    ga.add_argument("--boxes", help="caption boxes JSON from `mfe captions`")
     ga.add_argument("--expect", type=float, help="expected duration in seconds")
     ga.add_argument("--out")
     ga.set_defaults(func=cmd_gate)
@@ -1596,7 +1596,7 @@ def build_parser() -> argparse.ArgumentParser:
     sh.set_defaults(func=cmd_sheet)
 
     de = sub.add_parser("demo", help="build a synthetic project end-to-end and audit it")
-    de.add_argument("--workdir", default=".sv-demo")
+    de.add_argument("--workdir", default=".mfe-demo")
     de.add_argument("--selftest", action="store_true", help="also prove the gates fail on bad input")
     de.set_defaults(func=cmd_demo)
     return p

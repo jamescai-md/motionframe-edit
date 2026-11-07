@@ -1,7 +1,7 @@
 # Lineage — why these twenty-five
 
 The full per-source table (strength, gap, where the gap is filled) lives in
-[`skills/supervision/references/provenance.md`](../skills/supervision/references/provenance.md),
+[`skills/motionframe-edit/references/provenance.md`](../skills/motionframe-edit/references/provenance.md),
 where the agent can reach it. This page is the human-facing version: why these
 sources, and what the combination actually fixed.
 
@@ -13,18 +13,18 @@ the weaknesses
 tend to be complementary. That is why people install ten of them and still get bad
 output: the tools are complementary, but **nobody arbitrated between them**.
 
-`supervision` is that arbitration, plus the missing layer none of them had — a
+`motionframe-edit` is that arbitration, plus the missing layer none of them had — a
 measured audit of the finished artifact.
 
 ## The five systematic flaws, and what covers each
 
 | Flaw | Where it appears | Covered by |
 |---|---|---|
-| **Paid dependency** — a cloud ASR, voice, image or music API in the happy path | video-use, i-hate-editing, video-short, motionmaxxing | one local engine (`tools/sv.py`), ffmpeg-only, and a lint rule that fails the build on a paid key |
+| **Paid dependency** — a cloud ASR, voice, image or music API in the happy path | video-use, i-hate-editing, video-short, motionmaxxing | one local engine (`tools/mfe.py`), ffmpeg-only, and a lint rule that fails the build on a paid key |
 | **Correctness without craft** — impeccable hard rules, no opinion about whether the thing is any good | video-use, freecut | the craft references (cutting, timing, anti-slop) load alongside the rules |
 | **Craft without correctness** — beautiful doctrine, silent breakage | herk-edit-kit, motionmaxxing, taste-skill | the hard rules became the engine's behaviour *and* gates G5/G6 |
 | **Contradictory taste** — gradients banned in one, load-bearing in another; animate everything vs animate nothing | taste-skill ↔ ui-ux-pro-max, emil-skills ↔ motionmaxxing | `references/precedence.md`: a seven-rung ladder and twelve documented rulings |
-| **No verification** — "verification before completion" as a slogan, never a measurement of a *video* | essentially all of them | `gatekeeper`: eight gates with numbers, plus `sv demo --selftest` proving they can fail |
+| **No verification** — "verification before completion" as a slogan, never a measurement of a *video* | essentially all of them | `gatekeeper`: eight gates with numbers, plus `mfe demo --selftest` proving they can fail |
 
 Two more that matter in daily use:
 

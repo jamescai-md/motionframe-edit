@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# supervision — installer
+# motionframe-edit — installer
 # Links the seven skills into whichever agent(s) you have, and tells you exactly
 # what it did. No network calls, no sudo, nothing written outside the paths below.
 set -euo pipefail
@@ -12,7 +12,7 @@ DRY=0
 
 usage() {
   cat <<'USAGE'
-supervision install
+motionframe-edit install
 
   ./install.sh [options]
 
@@ -86,7 +86,7 @@ fi
 
 # --- install -----------------------------------------------------------------
 echo
-echo "  supervision · $(skills | wc -l | tr -d ' ') skills · ${MODE}"
+echo "  motionframe-edit · $(skills | wc -l | tr -d ' ') skills · ${MODE}"
 echo
 for entry in "${DEST_DIRS[@]}"; do
   name="${entry%%|*}"; dest="${entry##*|}"
@@ -111,8 +111,8 @@ if [ "$DRY" = "0" ]; then
   echo "  done. Restart your agent so it re-scans its skills directory."
   echo
   echo "  verify the engine:"
-  echo "    python3 \"$REPO_DIR/tools/sv.py\" doctor"
-  echo "    python3 \"$REPO_DIR/tools/sv.py\" demo --selftest"
+  echo "    python3 \"$REPO_DIR/tools/mfe.py\" doctor"
+  echo "    python3 \"$REPO_DIR/tools/mfe.py\" demo --selftest"
   echo
   case " ${TARGETS[*]:-} " in
     *" gemini "*|*" all "*)

@@ -91,7 +91,7 @@ def main() -> int:
         "",
         f"**{len(rows)} sources · {total_rules} rules kept and given a home.** Every other rule in",
         "those repositories was either redundant with a stronger source, tool-specific, or a",
-        "contradiction already settled in `skills/supervision/references/precedence.md`.",
+        "contradiction already settled in `skills/motionframe-edit/references/precedence.md`.",
         "",
         "| Source | Domain | Licence | Rules kept | Where they landed |",
         "|---|---|---:|---:|---|",

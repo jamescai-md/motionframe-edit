@@ -23,7 +23,7 @@ where every embarrassing result lives.
 All commands below use `$SV` for the engine:
 
 ```bash
-SV=/absolute/path/to/supervision/tools/sv.py   # set once; resolved in skills/supervision/SKILL.md
+SV=/absolute/path/to/motionframe-edit/tools/mfe.py   # set once; resolved in skills/motionframe-edit/SKILL.md
 ```
 
 ```bash
@@ -33,14 +33,14 @@ python3 "$SV" gate --file out/final.mp4 --edl edl.json \
 
 | Gate | Name | Passes when | Measured by |
 |---|---|---|---|
-| **G0** | render exists | decodes, non-blank, duration within 1% (or 0.35 s) of the plan, audio present | `sv gate` |
-| **G1** | delivery shape | exact width×height and fps for the profile; correct codec, container, pixel format | `sv gate` |
-| **G2** | loudness | integrated within ±2 LU of target, true peak ≤ −1 dBTP | `sv gate` (ebur128) |
-| **G3** | picture alive | no freeze > 0.5 s, no stretch > 3 s with no visual change | `sv gate` (freezedetect + frame deltas) |
-| **G4** | no black holes | no unintended black interval > 0.15 s | `sv gate` |
-| **G5** | cuts don't pop | no boundary spike > 6 dB over the local body level in the 120 ms around a cut | `sv gate` (astats) |
-| **G6** | captions safe | every cue box inside the platform safe zone; text height ≥ 3.5% of frame | `sv gate` + boxes |
-| **G7** | honest proof | every asset declares an origin; nothing generated claims to be real | `sv gate` + `provenance.json` |
+| **G0** | render exists | decodes, non-blank, duration within 1% (or 0.35 s) of the plan, audio present | `mfe gate` |
+| **G1** | delivery shape | exact width×height and fps for the profile; correct codec, container, pixel format | `mfe gate` |
+| **G2** | loudness | integrated within ±2 LU of target, true peak ≤ −1 dBTP | `mfe gate` (ebur128) |
+| **G3** | picture alive | no freeze > 0.5 s, no stretch > 3 s with no visual change | `mfe gate` (freezedetect + frame deltas) |
+| **G4** | no black holes | no unintended black interval > 0.15 s | `mfe gate` |
+| **G5** | cuts don't pop | no boundary spike > 6 dB over the local body level in the 120 ms around a cut | `mfe gate` (astats) |
+| **G6** | captions safe | every cue box inside the platform safe zone; text height ≥ 3.5% of frame | `mfe gate` + boxes |
+| **G7** | honest proof | every asset declares an origin; nothing generated claims to be real | `mfe gate` + `provenance.json` |
 
 For pages, UIs and stills, the analogue is named and binary — see
 `references/gates-for-design.md`. Same principle: no gate, no verdict.
@@ -98,7 +98,7 @@ not measure it, say you did not measure it.
 ## Three failure modes of the auditor
 
 1. **The vacuous gate.** A check that cannot fail is decoration. Prove your gates
-   can fail: `sv demo --selftest` deliberately feeds broken renders to G2, G3, G1,
+   can fail: `mfe demo --selftest` deliberately feeds broken renders to G2, G3, G1,
    G6 and G7 and asserts they trip. Do the same for any check you add.
 2. **The infinite audit.** Three passes, then report. Past three, you are no longer
    improving the piece; you are avoiding the handoff.

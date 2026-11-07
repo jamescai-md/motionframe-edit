@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src=".github/banner.png" alt="supervision — one agent skill combining the best AI video editing, motion graphics and design skill repos, with eight measured gates" width="100%">
+<img src=".github/banner.png" alt="motionframe-edit — one agent skill combining the best AI video editing, motion graphics and design skill repos, with eight measured gates" width="100%">
 
-# supervision
+# motionframe-edit
 
 **One skill instead of eighteen.**
 
@@ -10,7 +10,7 @@ The best-known video editing, motion graphics and design skill repos, read rule 
 merged into a single agent skill — with the contradictions decided in writing, and eight
 gates that measure the render before you ship it. Free, local, no API keys.
 
-[![ci](https://github.com/jamescai-md/supervision/actions/workflows/ci.yml/badge.svg)](https://github.com/jamescai-md/supervision/actions/workflows/ci.yml)
+[![ci](https://github.com/jamescai-md/motionframe-edit/actions/workflows/ci.yml/badge.svg)](https://github.com/jamescai-md/motionframe-edit/actions/workflows/ci.yml)
 [![license: MIT](https://img.shields.io/badge/license-MIT-2ea44f.svg)](LICENSE)
 [![python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776ab.svg)](https://www.python.org)
 [![no API keys](https://img.shields.io/badge/API%20keys-none-ff5c38.svg)](#free-and-local-by-design)
@@ -34,18 +34,18 @@ Every good editing, motion and design skill repo has one hole:
 - one has gates and a toolchain too heavy to run.
 
 So you install eighteen, paste three into every chat, and get contradictory advice from
-skills that cannot see each other. `supervision` is those eighteen **read, arbitrated and
+skills that cannot see each other. `motionframe-edit` is those eighteen **read, arbitrated and
 merged** — with every rule given a home, every contradiction given a ruling, and the one
 thing none of them had: a way to prove the output is correct.
 
 ## Quickstart
 
 ```bash
-git clone https://github.com/jamescai-md/supervision.git
-cd supervision
+git clone https://github.com/jamescai-md/motionframe-edit.git
+cd motionframe-edit
 ./install.sh                          # detects your agents, links all 7 skills
-python3 tools/sv.py doctor            # what's installed, what's missing, what's free
-python3 tools/sv.py demo --selftest   # renders a video, audits it, proves the gates can fail
+python3 tools/mfe.py doctor            # what's installed, what's missing, what's free
+python3 tools/mfe.py demo --selftest   # renders a video, audits it, proves the gates can fail
 ```
 
 Then ask normally:
@@ -76,7 +76,7 @@ drift apart. Details: [docs/platforms.md](docs/platforms.md).
 
 | Skill | Use it when | Carries |
 |---|---|---|
-| **[supervision](skills/supervision/SKILL.md)** | always — it routes | twelve laws, the precedence ladder, the two STOP gates |
+| **[motionframe-edit](skills/motionframe-edit/SKILL.md)** | always — it routes | twelve laws, the precedence ladder, the two STOP gates |
 | **[edit-supervisor](skills/edit-supervisor/SKILL.md)** | you have footage and want a finished piece | audio-first cutting, captions, grade, mix, delivery package |
 | **[motion-director](skills/motion-director/SKILL.md)** | anything moves | the designer's role, beat sheets, timing, transitions, three lanes |
 | **[design-director](skills/design-director/SKILL.md)** | pages, UIs, posters, decks, brands | kind-of-business logic, systems and tokens, anti-slop |
@@ -110,7 +110,7 @@ Which rule came from where: [docs/absorption.md](docs/absorption.md).
 ## The eight gates
 
 Every render is measured against the same eight checks. A gate that cannot fail is
-decoration, so `sv.py demo --selftest` feeds them deliberately broken renders — frozen
+decoration, so `mfe.py demo --selftest` feeds them deliberately broken renders — frozen
 picture, silent file, wrong aspect, unsafe captions, fabricated screenshot — and **fails the
 build if they do not catch them**.
 
@@ -139,7 +139,7 @@ No API keys, no accounts, no credits, no telemetry. Nothing leaves the machine.
 | motion graphics | HTML + GSAP + headless Chrome (free), or Remotion (own licence) | motion SaaS |
 | loudness | `loudnorm` / `ebur128` | mastering service |
 
-`sv.py doctor` names what is missing and the free command to install it. A lint rule fails
+`mfe.py doctor` names what is missing and the free command to install it. A lint rule fails
 the build if a paid-API pattern ever appears in this repository.
 
 ## Verified, not asserted
@@ -183,4 +183,4 @@ rather than buried, and it is the first item on the plan.
 
 ## Licence
 
-MIT © supervision contributors. See [LICENSE](LICENSE).
+MIT © motionframe-edit contributors. See [LICENSE](LICENSE).

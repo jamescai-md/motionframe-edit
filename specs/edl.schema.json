@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/<you>/supervision/specs/edl.schema.json",
-  "title": "supervision EDL",
+  "$id": "https://github.com/<you>/motionframe-edit/specs/edl.schema.json",
+  "title": "motionframe-edit EDL",
   "description": "The edit decision list: the single source of truth for a cut. Everything downstream (captions, overlays, sound, notes, gates) is derived from it and expressed in OUTPUT time.",
   "type": "object",
   "required": ["version", "profile", "sources", "segments"],

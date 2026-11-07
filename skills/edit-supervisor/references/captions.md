@@ -16,7 +16,7 @@ work with the sound off, the piece does not work.
 ## The mechanics that fail silently
 
 - **Output-timeline times.** `output = word_start − segment_start + segment_offset`.
-  In this suite that is `sv captions --remap <source_id>`; never hand-compute it.
+  In this suite that is `mfe captions --remap <source_id>`; never hand-compute it.
 - **Language pinned.** Auto-detected language can *translate* instead of
   transcribe. Every downstream timestamp is then wrong.
 - **Word-level ASR only** where the script supports it. Phrase-level loses the
@@ -63,7 +63,7 @@ Four rules that hold in both columns:
 ```
 
 Keep the caption block inside the middle of the frame horizontally too — the right
-13% is the share/like rail. `sv captions` derives the character budget from the
+13% is the share/like rail. `mfe captions` derives the character budget from the
 frame and the margins so lines do not run under it; the gate rejects any cue whose
 box leaves the zone.
 

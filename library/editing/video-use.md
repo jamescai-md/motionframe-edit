@@ -28,6 +28,6 @@ refuses. The rules themselves are free; only the transcription vendor was not.
 
 ## Where this landed
 `edit-supervisor/references/cutting.md` (2, 3, 6, 7) · `captions.md` (1, 5) ·
-`specs/gates.json` G5 (3, measured) · `sv.py captions --remap` (5, executed) ·
+`specs/gates.json` G5 (3, measured) · `mfe.py captions --remap` (5, executed) ·
 gates G0/G1 were derived from its failure list. Transcription replaced with local
 `whisper.cpp`; `doctor` says so.

@@ -1,5 +1,5 @@
 ---
-name: supervision
+name: motionframe-edit
 description: >-
   Video editing, motion graphics and design direction in one skill. Use whenever the work
   involves footage, a cut, a render, a short/Reel/TikTok, a promo, a launch film, motion
@@ -143,30 +143,30 @@ subscriptions.** That is a design constraint, not a limitation:
 
 If a tool is missing, degrade honestly — say what is unavailable and what the
 free fallback is. Never silently substitute a paid endpoint, and never accept an
-API key into a project. `sv doctor` reports exactly what is installed.
+API key into a project. `mfe doctor` reports exactly what is installed.
 
 ## The measurable half: `sv`
 
 Prose cannot check a render. This repo ships one executable that can.
 
 ```bash
-sv.py doctor                       # what is installed; what is not
-sv.py scaffold ./my-short          # brief.md, taste.md, edl.json, provenance.json
-sv.py probe footage/*.mp4          # display dimensions, fps, rotation, audio
-sv.py validate --edl edl.json      # catch EDL errors before rendering
-sv.py render --edl edl.json --out work/draft.mp4 --preview
-sv.py captions --edl edl.json --words words.json --remap A --out captions.ass
-sv.py gate --file work/draft.mp4 --edl edl.json --boxes captions.boxes.json --out gate.json
-sv.py sheet --file work/draft.mp4 --out work/sheet.jpg
-sv.py demo --selftest              # proves the pipeline AND that the gates can fail
+mfe.py doctor                       # what is installed; what is not
+mfe.py scaffold ./my-short          # brief.md, taste.md, edl.json, provenance.json
+mfe.py probe footage/*.mp4          # display dimensions, fps, rotation, audio
+mfe.py validate --edl edl.json      # catch EDL errors before rendering
+mfe.py render --edl edl.json --out work/draft.mp4 --preview
+mfe.py captions --edl edl.json --words words.json --remap A --out captions.ass
+mfe.py gate --file work/draft.mp4 --edl edl.json --boxes captions.boxes.json --out gate.json
+mfe.py sheet --file work/draft.mp4 --out work/sheet.jpg
+mfe.py demo --selftest              # proves the pipeline AND that the gates can fail
 ```
 
-`sv.py demo --selftest` is the honest one: it renders a synthetic project, audits
+`mfe.py demo --selftest` is the honest one: it renders a synthetic project, audits
 it, then feeds the gates deliberately broken renders and fails if they do *not*
 catch them. A gate that cannot fail is decoration.
 
 Resolve the tool relative to this skill's directory:
-`python3 "<skill>/../../tools/sv.py"`. Run `doctor` once per session, not per command.
+`python3 "<skill>/../../tools/mfe.py"`. Run `doctor` once per session, not per command.
 
 ## Working with a human
 

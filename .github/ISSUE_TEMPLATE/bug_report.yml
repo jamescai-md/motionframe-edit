@@ -6,7 +6,7 @@ body:
     attributes:
       value: |
         The fastest bug reports include a command, the output, and what you expected.
-        `python3 tools/sv.py doctor --json` is safe to paste (it reports no secrets).
+        `python3 tools/mfe.py doctor --json` is safe to paste (it reports no secrets).
   - type: textarea
     id: what-happened
     attributes:
@@ -32,7 +32,7 @@ body:
     id: doctor
     attributes:
       label: Capability scan
-      description: Output of `python3 tools/sv.py doctor --json`
+      description: Output of `python3 tools/mfe.py doctor --json`
       render: json
     validations:
       required: false

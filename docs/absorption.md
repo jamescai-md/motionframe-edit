@@ -5,13 +5,13 @@ edit the digest and regenerate.*
 
 **18 sources · 89 rules kept and given a home.** Every other rule in
 those repositories was either redundant with a stronger source, tool-specific, or a
-contradiction already settled in `skills/supervision/references/precedence.md`.
+contradiction already settled in `skills/motionframe-edit/references/precedence.md`.
 
 | Source | Domain | Licence | Rules kept | Where they landed |
 |---|---|---:|---:|---|
 | [i-hate-editing](https://github.com/ranahaani/i-hate-editing) | editing | MIT | 7 | `edit-supervisor/references/cutting.md` (rules 1–4, plus the six "what to cut precisely" rules added |
 | [video-use](https://github.com/browser-use/video-use) | editing | MIT | 7 | `edit-supervisor/references/cutting.md` (2, 3, 6, 7) · `captions.md` (1, 5) · `specs/gates.json` G5  |
-| [freecut](https://github.com/Moh4696/freecut) | editing | MIT | 3 | The local-ASR default became law in `supervision/SKILL.md` and a `doctor` behaviour: when no transcr |
+| [freecut](https://github.com/Moh4696/freecut) | editing | MIT | 3 | The local-ASR default became law in `motionframe-edit/SKILL.md` and a `doctor` behaviour: when no transcr |
 | [herk-edit-kit](https://github.com/nateherkai/herk-edit-kit) | editing · motion | NOASSERTION | 4 | `motion-director/references/transitions.md` (the trap list) · `edit-supervisor` cut-review step (1,  |
 | [video-short](https://github.com/petergyang/video-short) | editing | MIT | 6 | `edit-supervisor` layout table and receipt rule (1–3) · the two-pass review and QA stills (4, 5) bec |
 | [tiktok-short-edit](https://www.marwieang.com/tiktok-short-edit.md) | editing | document | 7 | `safe zones` (3) and `2–3 s` (4) are enforced by gate G6 and G3 respectively · loudness (2) by G2 ·  |
@@ -24,7 +24,7 @@ contradiction already settled in `skills/supervision/references/precedence.md`.
 | [hyperframes-launches](https://github.com/heygen-com/hyperframes-launches) | motion | Apache-2.0 | 4 | `motion-director/references/transitions.md` and `lanes.md` (2 — the trap list) · `gatekeeper` (1) ·  |
 | [remotion](https://github.com/remotion-dev/remotion) | motion (runtime) | Remotion licence | 4 | `motion-director/references/lanes.md` lane C, including the licence warning in the lane table and in |
 | [taste-skill](https://github.com/Leonxlnx/taste-skill) | design | MIT | 5 | `design-director/SKILL.md` step 0 (1, 2) · `references/anti-slop.md` (3, 4, 5) · the contradiction w |
-| [ui-ux-pro-max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) | design | MIT | 4 | `design-director/references/system.md` (1, 2, 3, 4) · its register is **overruled** by `supervision/ |
+| [ui-ux-pro-max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) | design | MIT | 4 | `design-director/references/system.md` (1, 2, 3, 4) · its register is **overruled** by `motionframe-edit/ |
 | [emil-skills](https://github.com/emilkowalski/skills) | design · ui motion | MIT | 7 | `ui-motion/SKILL.md`, almost whole (1–7) · `motion-director/references/timing.md` (5) for the spring |
 | [apple-design-skill](https://github.com/dickwu/apple-design-skill) | design | none stated | 4 | `gatekeeper/references/critic.md` (1, 4 — the fixed-lens order and severity report) · `design-direct |
 
