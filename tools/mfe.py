@@ -1389,6 +1389,9 @@ def _demo_edl(srt_words: list[dict[str, Any]]) -> dict[str, Any]:
         "sources": {"A": "footage/take-01.mp4"},
         "segments": segs, "overlays": [],
         "captions": {"enabled": True, "style": "bold-pop", "file": "captions.ass"},
+        # the demo is a fixture, not a delivery: one locked-off shot by construction, so the
+        # pacing gate would be measuring the fixture rather than the engine
+        "pacing": {"max_static_s": 15.0},
     }
 
 
