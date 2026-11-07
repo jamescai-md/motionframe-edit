@@ -1,9 +1,20 @@
 {
   "name": "motionframe-edit",
   "version": "1.0.0",
-  "description": "Video editing, motion graphics and design direction: seven skills, twelve laws, eight measured gates, one free local engine.",
-  "author": { "name": "motionframe-edit contributors" },
-  "homepage": "https://github.com/<you>/motionframe-edit",
+  "description": "Video editing, motion graphics and design direction: seven skills, one free local ffmpeg engine, and eight quality gates that measure the render.",
+  "author": {
+    "name": "motionframe-edit contributors"
+  },
   "license": "MIT",
-  "keywords": ["video-editing", "motion-graphics", "design", "ffmpeg", "captions", "remotion", "gsap", "agent-skills"]
+  "keywords": [
+    "video-editing",
+    "motion-graphics",
+    "design",
+    "ffmpeg",
+    "captions",
+    "remotion",
+    "gsap",
+    "agent-skills"
+  ],
+  "repository": "https://github.com/jamescai-md/motionframe-edit"
 }
