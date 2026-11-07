@@ -18,6 +18,14 @@ Input: raw footage. Output: a package someone can publish without opening an edi
 Read `../motionframe-edit/SKILL.md` first if you have not — the twelve rules apply here
 and are not repeated.
 
+## 0a. If there is a reference folder
+
+When the footage arrives with a reference piece ("use the style of animation-1"), deconstruct
+it before the first cut: `python3 tools/mfe.py style --ref <reference>`, then
+`../motion-director/references/reference-work.md` for the three-sentence grammar and the
+must-not-copy column. A reference given for *graphics* does not override the cut decisions the
+raw material needs — it styles the layer you add on top.
+
 ## 0. Taste, then inventory
 
 All commands below use `$SV` for the engine:

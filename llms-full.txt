@@ -563,6 +563,14 @@ Input: raw footage. Output: a package someone can publish without opening an edi
 Read `../motionframe-edit/SKILL.md` first if you have not — the twelve rules apply here
 and are not repeated.
 
+## 0a. If there is a reference folder
+
+When the footage arrives with a reference piece ("use the style of animation-1"), deconstruct
+it before the first cut: `python3 tools/mfe.py style --ref <reference>`, then
+`../motion-director/references/reference-work.md` for the three-sentence grammar and the
+must-not-copy column. A reference given for *graphics* does not override the cut decisions the
+raw material needs — it styles the layer you add on top.
+
 ## 0. Taste, then inventory
 
 All commands below use `$SV` for the engine:
@@ -1338,6 +1346,21 @@ If a beat needs type bigger than the scale allows, that is a composition problem
 licence to break the scale. When the design system and a motion instinct disagree, the ruling
 is already written: `references/precedence.md`.
 
+## When the brief includes a reference video
+
+A reference sets the grammar; it does not set the content. Before any animation work:
+
+1. `python3 tools/mfe.py style --ref <reference> --out work/reference.style.json` — aspect,
+   cadence, longest hold, palette with proportions.
+2. Name the entry, the hold and the transition in one sentence each. If you cannot, you have
+   not understood the piece yet.
+3. Write the must-match / may-adapt / must-not-copy table.
+4. Gate the result with `--style`, so pace and palette are judged against that reference
+   instead of a generic short-form rule.
+
+The full procedure, including how to handle a pure-graphics reference over footage that has a
+person in it, is `references/reference-work.md`. Read it before the first frame is rendered.
+
 ## The decoration test, before you build a single graphic
 
 Every graphic earns its place or it does not get built. Write one line per planned element:
@@ -1552,6 +1575,87 @@ Three checks catch nearly all motion bugs:
 2. **Last frame** is the settled pose, fully resolved, no half-eased remainder.
 3. **Determinism**: render the same frame twice; it must be identical. If it is
    not, some state leaked into the animation.
+
+
+<!-- ===== skills/motion-director/references/reference-work.md ===== -->
+# Working from a reference
+
+When the user hands you a video and says "this style", they are giving you a grammar, not a
+subject. Two things must be separated before you animate anything:
+
+- **Form** — palette, contrast, typography treatment, how things enter, how long they hold,
+  what the composition is doing. This is what you copy.
+- **Content** — the reference's numbers, its words, its specific story, its subject. This you
+  never copy. Borrowing the form of a piece about *your* material, and filling it with *their*
+  content, is the single most common way a reference-driven edit turns into impersonation.
+
+## 1. Measure it, do not eyeball it
+
+```bash
+python3 tools/mfe.py style --ref reference/animation-1.mp4 --out work/reference.style.json
+```
+
+This writes what a file can tell you: aspect, the span that actually has picture (references
+often end with a black tail), edit count and cadence, longest hold, mean luminance, and the
+palette with the share each colour occupies.
+
+## 2. Name the grammar by hand — the tool cannot
+
+Watch the frames once and write three sentences:
+
+- **Entry** — how does an element arrive? Draw-on, fade, scale, wipe, nothing at all?
+- **Hold** — how long does a composition sit before it changes? The measured
+  `longest_static_s` is the answer for the reference; match it within ~25%.
+- **Exit and transition** — hard cut, morph, or does the previous element stay and the new one
+  grow out of it?
+
+Anything you cannot state in one sentence is not a rule yet, and you cannot follow it.
+
+## 3. Write the three-column table before building
+
+| Must match | May adapt | Must not copy |
+|---|---|---|
+| palette and its proportions | exact hex values, if the brand dictates otherwise | the reference's numbers |
+| type treatment (weight, letterspacing, case) | the family, if licensing demands | its copy, captions or script |
+| hold length and cadence | timing around your own audio | its subject or story |
+| how graphics enter | whether an element is drawn or revealed | its logo, icons that belong to it |
+
+## 4. The decoration test still applies
+
+A reference's graphics carry *its* content. Copying the form and leaving the content empty
+gives you a beautiful frame that says nothing — the failure mode is a stat card holding a
+number the viewer just heard in the voiceover. Before building each element:
+
+> "After this, the viewer knows ______ that they did not know from the audio."
+
+If the blank repeats the voiceover, cut it. A reference cannot license decoration; it can only
+license *style*.
+
+## 5. When the reference has no subject and yours does
+
+A pure graphics reference applied to footage with a person in it is a hybrid, and the mix is a
+decision you have to state out loud:
+
+- graphics as a **layer** over the subject (captions, annotations, punch-in emphasis), or
+- graphics as **structure** around the subject (full-frame cards between beats), or
+- both, with a rule for when each happens.
+
+Say which you chose and why. An unstated mix is how a talking head ends up with a launch-film
+overlay pasted on top of it.
+
+## 6. Gate it against the reference, not against a generic rule
+
+```bash
+python3 tools/mfe.py gate --file work/master.mp4 --style work/reference.style.json
+```
+
+`G8 pace` takes its limit from the reference's own longest hold once a style spec is supplied —
+imitating a slow piece is not a defect. `G9 reference match` reports how much of your picture
+sits inside the reference's palette, and fails an aspect change outright: a style transfer that
+changes the frame shape is a new piece, not a transfer.
+
+Both gates measure form. Whether the graphics earn their place is the decoration test above,
+and it is your call, not the tool's.
 
 
 <!-- ===== skills/motion-director/references/transitions.md ===== -->
@@ -2430,7 +2534,7 @@ a piece being called complete. Not because the checks are profound, but because
 **a completed render is not a correct render**, and the gap between those two is
 where every embarrassing result lives.
 
-## The nine gates
+## The ten gates
 
 All commands below use `$SV` for the engine:
 
@@ -2453,7 +2557,8 @@ python3 "$SV" gate --file out/final.mp4 --edl edl.json \
 | **G5** | cuts don't pop | no boundary spike > 6 dB over the local body level in the 120 ms around a cut | `mfe gate` (astats) |
 | **G6** | captions safe | every cue box inside the platform safe zone; text height ≥ 3.5% of frame | `mfe gate` + boxes |
 | **G7** | honest proof | every asset declares an origin; nothing generated claims to be real | `mfe gate` + `provenance.json` |
-| **G8** | pace | no stretch over 3.5 s without a visible change, for anything under 90 s | `mfe gate` (scene detection) |
+| **G8** | pace | no stretch over 3.5 s without a visible change; when a style spec is supplied, the reference's own longest hold sets the limit | `mfe gate` (scene detection) |
+| **G9** | reference match | aspect matches the reference; most of the picture sits inside its palette | `mfe gate --style` |
 
 For pages, UIs and stills, the analogue is named and binary — see
 `references/gates-for-design.md`. Same principle: no gate, no verdict.
@@ -2925,7 +3030,7 @@ writing, not the upstream's.
 <!-- ===== specs/gates.json ===== -->
 {
   "$comment": "The gate contract. Every entry is measurable or binary. A gate that cannot fail is decoration; mfe demo --selftest proves these can.",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "gates": [
     {
       "id": "G0",
@@ -3007,6 +3112,16 @@ writing, not the upstream's.
       "pass": "no stretch longer than max_static_s (3.5 s) without a visible change, for any piece under 90 s — from the pacing rule in tiktok-short-edit: something changes every 2-3 s",
       "measured_by": "mfe.py gate — ffmpeg scene detection, so a moving subject is not counted as an edit",
       "skip_when": "over 90 s; long-form sets its own pace"
+    },
+    {
+      "id": "G9",
+      "name": "reference match",
+      "kind": "threshold",
+      "blocking": true,
+      "pass": "aspect within 0.04 of the reference and at least 60% of lit pixels inside its palette (40% fails)",
+      "measured_by": "mfe.py gate --style, spec from mfe.py style",
+      "skip_when": "no reference spec supplied",
+      "note": "measures form only: it cannot tell whether the graphics carry content"
     },
     {
       "id": "D0-D8",

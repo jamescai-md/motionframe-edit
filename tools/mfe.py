@@ -104,6 +104,103 @@ def die(msg: str, code: int = 2) -> "NoReturn":  # noqa: F821
     raise SystemExit(code)
 
 
+
+# ---------------------------------------------------------------------------
+# Reference deconstruction. A reference is a style, and a style is measurable:
+# palette, cadence, picture span, aspect. What it cannot measure is why the
+# graphics were worth making — that stays a written judgement.
+# ---------------------------------------------------------------------------
+
+def frame_stats(path: str | Path, fps_sample: float = 2.0) -> list[dict[str, Any]]:
+    """Per-sample-frame mean luminance and a 16x16 RGB grid, from one ffmpeg pass."""
+    ff = require_ffmpeg()
+    raw = subprocess.run(
+        [ff, "-v", "error", "-i", str(path), "-vf",
+         f"fps={fps_sample},scale=16:16,format=rgb24", "-f", "rawvideo", "-"],
+        capture_output=True).stdout
+    frames, size = [], 16 * 16 * 3
+    for i in range(0, len(raw) - size + 1, size):
+        chunk = raw[i:i + size]
+        luma = sum(0.2126 * chunk[j] + 0.7152 * chunk[j + 1] + 0.0722 * chunk[j + 2]
+                   for j in range(0, size, 3)) / (size / 3)
+        frames.append({"t": round(len(frames) / fps_sample, 2), "luma": round(luma, 1),
+                       "rgb": chunk})
+    return frames
+
+
+def palette_of(frames: list[dict[str, Any]], min_luma: float = 12.0,
+               top: int = 6) -> list[dict[str, Any]]:
+    """Colours that actually appear in the picture, with share, darkest first excluded."""
+    counts: dict[tuple[int, int, int], int] = {}
+    total = 0
+    for f in frames:
+        if f["luma"] < min_luma:
+            continue
+        rgb = f["rgb"]
+        for j in range(0, len(rgb), 3):
+            key = (rgb[j] // 24 * 24, rgb[j + 1] // 24 * 24, rgb[j + 2] // 24 * 24)
+            counts[key] = counts.get(key, 0) + 1
+            total += 1
+    if not total:
+        return []
+    return [{"hex": f"#{r:02x}{g:02x}{b:02x}", "share": round(100 * n / total, 1)}
+            for (r, g, b), n in sorted(counts.items(), key=lambda kv: -kv[1])[:top]]
+
+
+def style_spec(reference: str | Path) -> dict[str, Any]:
+    """Turn a reference video into numbers a render can be checked against."""
+    reference = Path(reference)
+    if not reference.exists():
+        die(f"no reference at {reference}")
+    md = probe(reference)
+    frames = frame_stats(reference)
+    lit = [f for f in frames if f["luma"] >= 12]
+    picture_start = lit[0]["t"] if lit else 0.0
+    picture_end = lit[-1]["t"] if lit else float(md.get("duration_s") or 0)
+    cuts = [c for c in scene_change_times(reference, 0.2) if c > 0.05]
+    marks = [0.0] + cuts + [picture_end]
+    longest = max((round(marks[i + 1] - marks[i], 2) for i in range(len(marks) - 1)), default=0.0)
+    span = max(picture_end - picture_start, 0.1)
+    return {
+        "reference": str(reference),
+        "aspect": round((md.get("display_width") or 1) / (md.get("display_height") or 1), 3),
+        "width": md.get("display_width"), "height": md.get("display_height"),
+        "fps": md.get("fps"),
+        "duration_s": md.get("duration_s"),
+        "has_audio": bool(md.get("has_audio")),
+        "picture_span_s": [picture_start, picture_end],
+        "cuts": cuts,
+        "cuts_per_min": round(len(cuts) / (span / 60), 1) if span else 0.0,
+        "longest_static_s": longest,
+        "mean_picture_luma": round(sum(f["luma"] for f in lit) / len(lit), 1) if lit else 0.0,
+        "palette": palette_of(frames),
+        "observed": "measured from the file",
+        "not_measured": "typography, transition grammar, whether the graphics earn their place — write these down by hand",
+    }
+
+
+def palette_match(render: str | Path, spec: dict[str, Any], tolerance: int = 40) -> dict[str, Any]:
+    """How much of the render sits inside the reference's colour world."""
+    frames = frame_stats(render)
+    wanted = [tuple(int(h["hex"][i:i + 2], 16) for i in (1, 3, 5))
+              for h in spec.get("palette", [])]
+    if not wanted:
+        return {"share": None, "detail": "reference palette is empty"}
+    hit = total = 0
+    for f in frames:
+        if f["luma"] < 12:
+            continue
+        rgb = f["rgb"]
+        for j in range(0, len(rgb), 3):
+            px = (rgb[j], rgb[j + 1], rgb[j + 2])
+            total += 1
+            if any(abs(px[0] - w[0]) <= tolerance and abs(px[1] - w[1]) <= tolerance
+                   and abs(px[2] - w[2]) <= tolerance for w in wanted):
+                hit += 1
+    return {"share": round(100 * hit / total, 1) if total else None,
+            "tolerance": tolerance, "palette": spec.get("palette", [])}
+
+
 # ---------------------------------------------------------------------------
 # ffmpeg discovery. We accept a system ffmpeg, else the static build shipped by
 # imageio-ffmpeg (pip installable, free), else nothing.
@@ -925,7 +1022,8 @@ def gate_report(path: str | Path, edl: dict[str, Any] | None = None,
                 profile: str | dict[str, Any] | None = None,
                 caption_boxes: dict[str, Any] | None = None,
                 expected_duration: float | None = None,
-                max_static_s: float | None = None) -> dict[str, Any]:
+                max_static_s: float | None = None,
+                style: dict[str, Any] | None = None) -> dict[str, Any]:
     path = Path(path)
     if not path.exists():
         die(f"nothing to gate: {path}")
@@ -1083,13 +1181,19 @@ def gate_report(path: str | Path, edl: dict[str, Any] | None = None,
         gaps = [(round(marks[i + 1] - marks[i], 2), round(marks[i], 2))
                 for i in range(len(marks) - 1)]
         worst, worst_at = max(gaps) if gaps else (0.0, 0.0)
-        cap = float(max_static_s
-                    or (edl or {}).get("pacing", {}).get("max_static_s")
-                    or 3.5)
+        if max_static_s:
+            cap, cap_source = float(max_static_s), "declared"
+        elif (edl or {}).get("pacing", {}).get("max_static_s"):
+            cap, cap_source = float(edl["pacing"]["max_static_s"]), "edl"
+        elif style and style.get("longest_static_s"):
+            # a reference sets its own pace: imitating a slow piece is not a defect
+            cap, cap_source = float(style["longest_static_s"]) * 1.25, "reference"
+        else:
+            cap, cap_source = 3.5, "default"
         if worst > cap:
             gates.append(Gate("G8", "pace", "fail",
                               f"{worst:.2f}s with no visible change from {worst_at:.2f}s "
-                              f"(max {cap:.1f}s) — {len(cuts)} edit point(s) in "
+                              f"(max {cap:.1f}s, {cap_source}) — {len(cuts)} edit point(s) in "
                               f"{md.get('duration_s', 0):.1f}s",
                               {"longest_static_s": worst, "at_s": worst_at,
                                "cuts": cuts, "max_static_s": cap}))
@@ -1105,6 +1209,36 @@ def gate_report(path: str | Path, edl: dict[str, Any] | None = None,
     else:
         gates.append(Gate("G8", "pace", "skip",
                           f"{dur_s:.0f}s is long-form — pacing is the piece's own, not a rule"))
+
+
+    # G9 — reference match: does the render live in the reference's colour world?
+    if style:
+        pm = palette_match(path, style)
+        share = pm.get("share")
+        aspect = round((md.get("display_width") or 1) / (md.get("display_height") or 1), 3)
+        want = style.get("aspect")
+        aspect_ok = want is None or abs(aspect - float(want)) <= 0.04
+        facts = {"aspect": aspect, "reference_aspect": want,
+                 "palette_share": share, "reference_palette": pm.get("palette")}
+        if not aspect_ok:
+            gates.append(Gate("G9", "reference match", "fail",
+                              f"aspect {aspect:.2f} against the reference's {float(want):.2f} — "
+                              f"a style transfer that changes the frame shape is a new piece", facts))
+        elif share is None:
+            gates.append(Gate("G9", "reference match", "skip", "reference palette empty", facts))
+        elif share < 40:
+            gates.append(Gate("G9", "reference match", "fail",
+                              f"only {share}% of the picture sits in the reference's palette "
+                              f"({', '.join(c['hex'] for c in pm['palette'][:3])})", facts))
+        elif share < 60:
+            gates.append(Gate("G9", "reference match", "warn",
+                              f"{share}% palette overlap with the reference — loose", facts))
+        else:
+            gates.append(Gate("G9", "reference match", "pass",
+                              f"{share}% of the picture inside the reference's palette; "
+                              f"aspect {aspect:.2f} matches", facts))
+    else:
+        gates.append(Gate("G9", "reference match", "skip", "no reference spec supplied"))
 
     report = {
         "tool": f"motionframe-edit {MFE_VERSION}",
@@ -1587,13 +1721,32 @@ def cmd_captions(a: argparse.Namespace) -> int:
 def cmd_gate(a: argparse.Namespace) -> int:
     edl = load_edl(a.edl) if a.edl else None
     boxes = json.loads(Path(a.boxes).read_text()) if a.boxes else None
+    style = json.loads(Path(a.style).read_text()) if a.style else None
     rep = gate_report(a.file, edl=edl, profile=a.profile, caption_boxes=boxes,
-                      expected_duration=a.expect, max_static_s=a.max_static)
+                      expected_duration=a.expect, max_static_s=a.max_static, style=style)
     print_report(rep)
     if a.out:
         Path(a.out).write_text(json.dumps(rep, indent=2) + "\n", encoding="utf-8")
         print(f"  report: {a.out}\n")
     return 0 if rep["verdict"] == "pass" else 1
+
+
+
+def cmd_style(a: argparse.Namespace) -> int:
+    spec = style_spec(a.ref)
+    out = Path(a.out or (Path(a.ref).with_suffix(".style.json")))
+    out.write_text(json.dumps(spec, indent=2) + "\n", encoding="utf-8")
+    print(f"\n  style spec  {Path(a.ref).name}\n")
+    print(f"    aspect        {spec['aspect']}  ({spec['width']}x{spec['height']})")
+    print(f"    picture       {spec['picture_span_s'][0]:.2f}s → {spec['picture_span_s'][1]:.2f}s "
+          f"of {spec['duration_s']:.2f}s   (audio: {'yes' if spec['has_audio'] else 'none'})")
+    print(f"    edits         {len(spec['cuts'])} in the picture span  ·  "
+          f"{spec['cuts_per_min']} per minute  ·  longest hold {spec['longest_static_s']:.2f}s")
+    print("    palette       " + "  ".join(f"{c['hex']} {c['share']}%" for c in spec['palette'][:4]))
+    print(f"    mean luma     {spec['mean_picture_luma']}")
+    print(f"\n    {spec['not_measured']}.\n")
+    print(f"  written to {out}\n")
+    return 0
 
 
 def cmd_sheet(a: argparse.Namespace) -> int:
@@ -1645,12 +1798,18 @@ def build_parser() -> argparse.ArgumentParser:
                     help="remap source-time words onto the output timeline using --edl")
     ca.set_defaults(func=cmd_captions)
 
+    st = sub.add_parser("style", help="deconstruct a reference video into a measurable spec")
+    st.add_argument("--ref", required=True, help="the reference video")
+    st.add_argument("--out", help="where to write the spec JSON")
+    st.set_defaults(func=cmd_style)
+
     ga = sub.add_parser("gate", help="audit a render against the gates")
     ga.add_argument("--file", required=True)
     ga.add_argument("--edl")
     ga.add_argument("--profile", default=None)
     ga.add_argument("--boxes", help="caption boxes JSON from `mfe captions`")
     ga.add_argument("--expect", type=float, help="expected duration in seconds")
+    ga.add_argument("--style", help="style spec JSON from `mfe style`")
     ga.add_argument("--max-static", type=float, default=None, dest="max_static",
                     help="longest allowed stretch with no visible change (default 3.5 s)")
     ga.add_argument("--out")

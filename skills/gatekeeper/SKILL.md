@@ -18,7 +18,7 @@ a piece being called complete. Not because the checks are profound, but because
 **a completed render is not a correct render**, and the gap between those two is
 where every embarrassing result lives.
 
-## The nine gates
+## The ten gates
 
 All commands below use `$SV` for the engine:
 
@@ -41,7 +41,8 @@ python3 "$SV" gate --file out/final.mp4 --edl edl.json \
 | **G5** | cuts don't pop | no boundary spike > 6 dB over the local body level in the 120 ms around a cut | `mfe gate` (astats) |
 | **G6** | captions safe | every cue box inside the platform safe zone; text height ≥ 3.5% of frame | `mfe gate` + boxes |
 | **G7** | honest proof | every asset declares an origin; nothing generated claims to be real | `mfe gate` + `provenance.json` |
-| **G8** | pace | no stretch over 3.5 s without a visible change, for anything under 90 s | `mfe gate` (scene detection) |
+| **G8** | pace | no stretch over 3.5 s without a visible change; when a style spec is supplied, the reference's own longest hold sets the limit | `mfe gate` (scene detection) |
+| **G9** | reference match | aspect matches the reference; most of the picture sits inside its palette | `mfe gate --style` |
 
 For pages, UIs and stills, the analogue is named and binary — see
 `references/gates-for-design.md`. Same principle: no gate, no verdict.

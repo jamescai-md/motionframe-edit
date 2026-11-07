@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import pathlib
 import os
 import sys
 import tempfile
@@ -368,3 +369,23 @@ class TestPaceGate(unittest.TestCase):
         marks = [0.0] + times + [10.0]
         gaps = [marks[i + 1] - marks[i] for i in range(len(marks) - 1)]
         self.assertAlmostEqual(max(gaps), 5.77, places=2)
+
+
+class TestReferenceStyle(unittest.TestCase):
+    """A reference must produce numbers, and the defaults must not depend on one existing."""
+
+    def test_palette_excludes_dark_and_ranks_by_share(self):
+        frames = [{"t": 0.0, "luma": 5.0, "rgb": bytes([0, 0, 0] * 256)},      # black: ignored
+                  {"t": 0.5, "luma": 90.0, "rgb": bytes([240, 240, 40] * 128 + [20, 20, 20] * 128)}]
+        pal = mfe.palette_of(frames)
+        self.assertTrue(pal, "a lit frame must yield a palette")
+        # colours are bucketed to 24-value steps, so #f0f028 lands in #f0f018
+        self.assertEqual(pal[0]["hex"], "#f0f018")
+        self.assertAlmostEqual(sum(c["share"] for c in pal), 100.0, places=1)
+
+    def test_spec_shape_is_stable(self):
+        required = {"aspect", "picture_span_s", "cuts", "cuts_per_min", "longest_static_s",
+                    "palette", "has_audio", "not_measured"}
+        src = (pathlib.Path(__file__).resolve().parent.parent / "tools" / "mfe.py").read_text()
+        for key in required:
+            self.assertIn(f'"{key}"', src, f"style_spec must still emit {key}")

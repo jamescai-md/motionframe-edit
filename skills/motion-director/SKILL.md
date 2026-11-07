@@ -81,6 +81,21 @@ If a beat needs type bigger than the scale allows, that is a composition problem
 licence to break the scale. When the design system and a motion instinct disagree, the ruling
 is already written: `references/precedence.md`.
 
+## When the brief includes a reference video
+
+A reference sets the grammar; it does not set the content. Before any animation work:
+
+1. `python3 tools/mfe.py style --ref <reference> --out work/reference.style.json` — aspect,
+   cadence, longest hold, palette with proportions.
+2. Name the entry, the hold and the transition in one sentence each. If you cannot, you have
+   not understood the piece yet.
+3. Write the must-match / may-adapt / must-not-copy table.
+4. Gate the result with `--style`, so pace and palette are judged against that reference
+   instead of a generic short-form rule.
+
+The full procedure, including how to handle a pure-graphics reference over footage that has a
+person in it, is `references/reference-work.md`. Read it before the first frame is rendered.
+
 ## The decoration test, before you build a single graphic
 
 Every graphic earns its place or it does not get built. Write one line per planned element:

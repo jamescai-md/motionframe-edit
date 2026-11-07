@@ -30,6 +30,7 @@ ORDER = [
     "skills/edit-supervisor/references/delivery.md",
     "skills/motion-director/SKILL.md",
     "skills/motion-director/references/timing.md",
+    "skills/motion-director/references/reference-work.md",
     "skills/motion-director/references/transitions.md",
     "skills/motion-director/references/lanes.md",
     "skills/design-director/SKILL.md",

@@ -1,6 +1,6 @@
 {
   "$comment": "The gate contract. Every entry is measurable or binary. A gate that cannot fail is decoration; mfe demo --selftest proves these can.",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "gates": [
     {
       "id": "G0",
@@ -82,6 +82,16 @@
       "pass": "no stretch longer than max_static_s (3.5 s) without a visible change, for any piece under 90 s — from the pacing rule in tiktok-short-edit: something changes every 2-3 s",
       "measured_by": "mfe.py gate — ffmpeg scene detection, so a moving subject is not counted as an edit",
       "skip_when": "over 90 s; long-form sets its own pace"
+    },
+    {
+      "id": "G9",
+      "name": "reference match",
+      "kind": "threshold",
+      "blocking": true,
+      "pass": "aspect within 0.04 of the reference and at least 60% of lit pixels inside its palette (40% fails)",
+      "measured_by": "mfe.py gate --style, spec from mfe.py style",
+      "skip_when": "no reference spec supplied",
+      "note": "measures form only: it cannot tell whether the graphics carry content"
     },
     {
       "id": "D0-D8",
