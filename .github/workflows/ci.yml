@@ -20,9 +20,6 @@ jobs:
           python-version: "3.12"
       - name: lint
         run: python3 tools/lint.py
-      - name: fork pins match the manifest
-        # local check only: gitlinks vs .gitmodules. No network, no submodule fetch.
-        run: python3 tools/forks.py --check
       - name: the repository passes its own gates
         # D0-D6: first screen, links, skill frontmatter, generated drift, unfinished
         # text, unqualified superlatives, provenance. It caught a real defect the

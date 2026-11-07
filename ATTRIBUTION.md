@@ -2,22 +2,14 @@
 
 ## What this repository is — and is not
 
-**It is seventeen forks, pinned, plus a merged doctrine layer.**
+**It is a merge, not a fork.** The sources were read, and their doctrine was rewritten at
+rule level into `skills/` and digests in `library/`.
 
-Every forkable source is a real GitHub fork on `jamescai-md` — same history, upstream
-linked, licence untouched — and each is pinned into this repository as a git submodule
-under `forks/`. Nine are live and pinned today; eight are pending GitHub's per-account
-fork throttle, and `tools/forks.py` pins each the moment it exists. The eighteenth source
-(`tiktok-short-edit`) is a published document, not a repository.
-
-On top of the forks sits what a fork alone cannot give you: the doctrine read rule by rule
-into `skills/` and `library/`, with the sources' contradictions settled in
-`precedence.md`. A plain fork of eighteen repositories inherits eighteen sets of
-contradictions and no verification; the forks are the provenance, and the merge is the
-product.
-
-Status for every source, live: [docs/forks.md](docs/forks.md) · `forks.json` ·
-`python3 tools/forks.py --pending`.
+Forking was tried and reverted: a GitHub fork is one repository, 1:1, with its own
+independent history — it cannot hold another repository, so "fork eighteen repos into one"
+is not an operation GitHub offers. Creating eighteen forks would have put eighteen new
+repositories on the account and merged nothing; they were deleted. The combine happens in
+this repository, in writing, where it can be reviewed.
 
 **It is a merge with an audit trail.** Each source has a digest in `library/` with four
 parts: what it is, the rules worth keeping, what it gets wrong, and where each kept rule

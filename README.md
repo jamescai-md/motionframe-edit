@@ -84,20 +84,6 @@ drift apart. Details: [docs/platforms.md](docs/platforms.md).
 | **[gatekeeper](skills/gatekeeper/SKILL.md)** | before anything is called done | eight measured gates, the fix order, the critic brief |
 | **[taste-memory](skills/taste-memory/SKILL.md)** | you're tired of repeating yourself | corrections become durable rules |
 
-## The forks — literal, on your account
-
-Seventeen of the eighteen sources are **real GitHub forks** on `jamescai-md`, each pinned into
-this repository as a git submodule under `forks/`:
-
-```bash
-git clone --recurse-submodules https://github.com/jamescai-md/motionframe-edit.git   # full tree
-git clone https://github.com/jamescai-md/motionframe-edit.git                        # lean, install-ready
-```
-
-Eight remain pending on GitHub's per-account fork throttle (`403 was submitted too quickly`);
-`tools/forks.py --pending` lists them and `tools/forks.py` pins each one as soon as it exists.
-[The fork network, in full →](docs/forks.md)
-
 ## The library — 18 sources in one place
 
 `library/` is the part that makes this a merge rather than a summary. **One digest per
