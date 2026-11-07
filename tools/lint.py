@@ -133,6 +133,8 @@ def check_skill(path: Path) -> None:
 
 def check_all_markdown() -> None:
     for p in sorted(ROOT.rglob("*.md")):
+        if "library" in p.parts and "upstream" in p.parts:
+            continue        # copied source material: its broken links are upstream's problem
         if any(part in {".git", "node_modules", ".mfe-demo"} for part in p.parts):
             continue
         rel = p.relative_to(ROOT).as_posix()
@@ -191,7 +193,7 @@ def main() -> int:
         if not (ROOT / f).exists():
             err(f, "missing")
 
-    print(f"\n  motionframe-edit lint — {len(skill_dirs)} skills, {len(list(ROOT.rglob('*.md')))} markdown files\n")
+    print(f"\n  motionframe-edit lint — {len(skill_dirs)} skills, {len([p for p in ROOT.rglob("*.md") if not ("library" in p.parts and "upstream" in p.parts)])} markdown files\n")
     for w in warnings:
         print(f"  WARN  {w}")
     for e in errors:

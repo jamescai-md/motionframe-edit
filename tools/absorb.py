@@ -1,14 +1,19 @@
 #!/usr/bin/env python3
 """
-absorb.py — prove that "combined" is true.
+absorb.py — prove the combination, and generate the index from the material itself.
 
-Every source in the brief must have a digest in library/, every digest must have the four
-required sections, and every digest must name where its rules landed. This checks that, and
-generates docs/absorption.md from the digests themselves so the coverage table cannot drift
-from the content.
+Every source in the brief must be present in `library/`, and its handling must match its
+licence:
 
-    python3 tools/absorb.py            # write docs/absorption.md
-    python3 tools/absorb.py --check    # verify only; exit 1 if anything is missing
+  copy      → `upstream/` exists, `LICENCE.upstream` travels with it, `SOURCE.md` records
+              the upstream commit
+  summarise → no copied text at all, only `SOURCE.md` with the paraphrase
+
+This writes `library/README.md` and `docs/absorption.md` from the vendored tree, so the
+tables cannot drift from what is actually on disk.
+
+    python3 tools/absorb.py            # check + regenerate both indexes
+    python3 tools/absorb.py --check    # verify only; exit 1 on any gap
 """
 
 from __future__ import annotations
@@ -19,105 +24,173 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 LIB = ROOT / "library"
-OUT = ROOT / "docs" / "absorption.md"
 
-# (digest path, display name, domain, licence, url)
+# name, area, mode, licence label, upstream
 SOURCES = [
-    ("editing/i-hate-editing.md", "i-hate-editing", "editing", "MIT", "https://github.com/ranahaani/i-hate-editing"),
-    ("editing/video-use.md", "video-use", "editing", "MIT", "https://github.com/browser-use/video-use"),
-    ("editing/freecut.md", "freecut", "editing", "MIT", "https://github.com/Moh4696/freecut"),
-    ("editing/herk-edit-kit.md", "herk-edit-kit", "editing · motion", "NOASSERTION", "https://github.com/nateherkai/herk-edit-kit"),
-    ("editing/video-short.md", "video-short", "editing", "MIT", "https://github.com/petergyang/video-short"),
-    ("editing/tiktok-short-edit.md", "tiktok-short-edit", "editing", "document", "https://www.marwieang.com/tiktok-short-edit.md"),
-    ("editing/open-edit.md", "open-edit", "editing (application)", "Apache-2.0", "https://github.com/veedstudio/open-edit"),
-    ("editing/hypit.md", "hypit", "editing (application)", "NOASSERTION", "https://github.com/hypit-ai/hypit"),
-    ("motion/motionmaxxing.md", "motionmaxxing", "motion", "Apache-2.0", "https://github.com/Tejashmakwana/motionmaxxing"),
-    ("motion/motion-kit.md", "motion-kit", "motion", "MIT", "https://github.com/hughminhphan/motion-kit"),
-    ("motion/reelmimic.md", "reelmimic", "motion", "MIT", "https://github.com/edenfunf/reelmimic"),
-    ("motion/hyperframes.md", "hyperframes", "motion (runtime)", "Apache-2.0", "https://github.com/heygen-com/hyperframes"),
-    ("motion/hyperframes-launches.md", "hyperframes-launches", "motion", "Apache-2.0", "https://github.com/heygen-com/hyperframes-launches"),
-    ("motion/remotion.md", "remotion", "motion (runtime)", "Remotion licence", "https://github.com/remotion-dev/remotion"),
-    ("design/taste-skill.md", "taste-skill", "design", "MIT", "https://github.com/Leonxlnx/taste-skill"),
-    ("design/ui-ux-pro-max.md", "ui-ux-pro-max", "design", "MIT", "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill"),
-    ("design/emil-skills.md", "emil-skills", "design · ui motion", "MIT", "https://github.com/emilkowalski/skills"),
-    ("design/apple-design.md", "apple-design-skill", "design", "none stated", "https://github.com/dickwu/apple-design-skill"),
+    ("i-hate-editing", "editing", "copy", "MIT", "https://github.com/ranahaani/i-hate-editing"),
+    ("video-use", "editing", "copy", "MIT", "https://github.com/browser-use/video-use"),
+    ("freecut", "editing", "copy", "MIT", "https://github.com/Moh4696/freecut"),
+    ("herk-edit-kit", "editing", "copy", "MIT", "https://github.com/nateherkai/herk-edit-kit"),
+    ("video-short", "editing", "copy", "MIT", "https://github.com/petergyang/video-short"),
+    ("open-edit", "editing", "copy", "Apache-2.0", "https://github.com/veedstudio/open-edit"),
+    ("tiktok-short-edit", "editing", "summarise", "published document",
+     "https://www.marwieang.com/tiktok-short-edit.md"),
+    ("hypit", "editing", "summarise", "modified Apache-2.0", "https://github.com/hypit-ai/hypit"),
+    ("motionmaxxing", "motion", "copy", "Apache-2.0", "https://github.com/Tejashmakwana/motionmaxxing"),
+    ("motion-kit", "motion", "copy", "MIT", "https://github.com/hughminhphan/motion-kit"),
+    ("reelmimic", "motion", "copy", "MIT", "https://github.com/edenfunf/reelmimic"),
+    ("hyperframes", "motion", "copy", "Apache-2.0", "https://github.com/heygen-com/hyperframes"),
+    ("hyperframes-launches", "motion", "copy", "Apache-2.0",
+     "https://github.com/heygen-com/hyperframes-launches"),
+    ("remotion", "motion", "summarise", "Remotion licence", "https://github.com/remotion-dev/remotion"),
+    ("taste-skill", "design", "copy", "MIT", "https://github.com/Leonxlnx/taste-skill"),
+    ("ui-ux-pro-max", "design", "copy", "MIT", "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill"),
+    ("emil-skills", "design", "copy", "MIT", "https://github.com/emilkowalski/skills"),
+    ("apple-design", "design", "summarise", "no licence file", "https://github.com/dickwu/apple-design-skill"),
 ]
 
-REQUIRED = ["What it is", "Rules worth keeping", "What it gets wrong", "Where this landed"]
 
-
-def parse(path: pathlib.Path) -> tuple[dict[str, str], bool]:
-    text = path.read_text(encoding="utf-8")
-    sections = {}
-    for m in re.finditer(r"^## (.+?)$(.*?)(?=^## |\Z)", text, re.M | re.S):
-        sections[m.group(1).strip()] = m.group(2)
-    has_intro = not text.lstrip().startswith("##")
-    return sections, has_intro
+def landed_where(source_md: pathlib.Path, notes: pathlib.Path) -> str:
+    for f in (notes, source_md):
+        if not f.exists():
+            continue
+        t = f.read_text(encoding="utf-8")
+        m = re.search(r"## Where this landed\n+(.*?)(?=\n## |\Z)", t, re.S)
+        if m:
+            return " ".join(m.group(1).split())[:150]
+    return "—"
 
 
 def main() -> int:
     check = "--check" in sys.argv
-    problems, rows = [], []
-    for rel, name, domain, lic, url in SOURCES:
-        p = LIB / rel
-        if not p.exists():
-            problems.append(f"missing digest: library/{rel}")
+    rows, problems = [], []
+    for name, area, mode, licence, upstream in SOURCES:
+        d = LIB / area / name
+        src = d / "SOURCE.md"
+        if not src.exists():
+            problems.append(f"missing library/{area}/{name}/SOURCE.md")
             continue
-        sections, _ = parse(p)
-        missing = [s for s in REQUIRED if not any(k.lower().startswith(s.lower()) for k in sections)]
-        if missing:
-            problems.append(f"library/{rel}: missing section(s) {', '.join(missing)}")
-        landed = next((v for k, v in sections.items() if k.lower().startswith("where this landed")), "")
-        rules = next((v for k, v in sections.items() if k.lower().startswith("rules worth keeping")), "")
-        n_rules = len(re.findall(r"^\d+\.\s", rules, re.M))
-        rows.append((name, domain, lic, url, n_rules, landed.strip().replace("\n", " ")[:100]))
+        files, size = 0, 0
+        up = d / "upstream"
+        if mode == "copy":
+            if not up.exists():
+                problems.append(f"library/{area}/{name}: mode is copy but there is no upstream/")
+            if not (d / "LICENCE.upstream").exists():
+                problems.append(f"library/{area}/{name}: no LICENCE.upstream (licence terms must travel)")
+            files = len(list(up.rglob("*.md"))) if up.exists() else 0
+            size = sum(p.stat().st_size for p in up.rglob("*") if p.is_file()) if up.exists() else 0
+        else:
+            if up.exists() and any(up.rglob("*.md")):
+                problems.append(f"library/{area}/{name}: mode is summarise but text was copied")
+        rows.append({"name": name, "area": area, "mode": mode, "licence": licence,
+                     "upstream": upstream, "files": files, "size": size,
+                     "landed": landed_where(src, d / "NOTES.md")})
 
     if problems:
         print("  absorption check FAILED")
         for p in problems:
             print(f"    - {p}")
         return 1
-
-    total_rules = sum(r[4] for r in rows)
     if check:
-        print(f"  absorption check PASS — {len(rows)} digests, {total_rules} kept rules, all four sections present")
+        copied = sum(r["files"] for r in rows)
+        print(f"  absorption check PASS — {len(rows)} sources · {copied} files vendored · "
+              f"{len([r for r in rows if r['mode'] == 'copy'])} copied, "
+              f"{len([r for r in rows if r['mode'] == 'summarise'])} summarised")
         return 0
 
+    total_files = sum(r["files"] for r in rows)
+    total_bytes = sum(r["size"] for r in rows)
+    copied = [r for r in rows if r["mode"] == "copy"]
+    summarised = [r for r in rows if r["mode"] == "summarise"]
+
+    # ---- library/README.md -------------------------------------------------
     lines = [
-        "# Absorption — which rule came from where",
+        "# The library — eighteen sources, combined",
         "",
-        "*Generated by `tools/absorb.py` from the digests in `library/`. Do not edit by hand;",
-        "edit the digest and regenerate.*",
+        "This folder is the combination. Every source in the brief is here, and how it is here",
+        "depends on its licence — not on convenience:",
         "",
-        f"**{len(rows)} sources · {total_rules} rules kept and given a home.** Every other rule in",
-        "those repositories was either redundant with a stronger source, tool-specific, or a",
-        "contradiction already settled in `skills/motionframe-edit/references/precedence.md`.",
+        "| Mode | Meaning |",
+        "|---|---|",
+        "| **copy** | The source's licence permits redistribution. Its skill files, rules and references are",
+        "|  | copied verbatim under `upstream/`, and its LICENCE travels alongside as `LICENCE.upstream`. |",
+        "| **summarise** | The licence does *not* permit redistribution. Nothing is copied; `SOURCE.md` carries a",
+        "|  | paraphrase written for this project, and says so plainly. |",
         "",
-        "| Source | Domain | Licence | Rules kept | Where they landed |",
-        "|---|---|---:|---:|---|",
+        f"**{len(copied)} sources copied · {len(summarised)} summarised · "
+        f"{total_files} files · {total_bytes:,} bytes.**",
+        "",
+        "| Source | Area | Mode | Licence | Files | Bytes |",
+        "|---|---|---|---|---:|---:|",
     ]
-    for name, domain, lic, url, n, landed in rows:
-        lines.append(f"| [{name}]({url}) | {domain} | {lic} | {n} | {landed or '—'} |")
+    for r in rows:
+        lines.append(f"| [{r['name']}]({r['area']}/{r['name']}/SOURCE.md) | {r['area']} | {r['mode']} "
+                     f"| {r['licence']} | {r['files'] or '—'} | {r['size'] or '—'} |")
     lines += [
         "",
-        "## Two things this table is not",
+        "## How the skills use it",
         "",
-        "- **Not a measure of quality.** A rule kept is a rule with a home, not a good rule.",
-        "- **Not complete for design.** The editing and motion digests were built from rule-level",
-        "  reading; the design digests are summaries pending the same treatment. Said here rather",
-        "  than implied.",
+        "`skills/` is the merge — one voice, contradictions settled. `library/` is the evidence:",
+        "the source material to check that merge against, loaded only when a job needs the depth.",
+        "That is progressive disclosure, and it is what lets eighteen sources fit into one install.",
         "",
-        "## Not carried, on purpose",
+        "## Editorial notes",
         "",
-        "| Source | Why |",
-        "|---|---|",
-        "| open-edit | an application, not doctrine — read, credited, not merged |",
-        "| hypit | an application workflow; only the beat-map idea was taken |",
+        "Each source folder also carries `NOTES.md` where one exists: what that source is good at,",
+        "what it gets wrong, and where its rules landed in `skills/`. Notes are this project's",
+        "writing, not the upstream's.",
+        "",
+        "## What is not here",
+        "",
+        "- **Assets** — themes, fonts, images, example films. Licences vary and a skill repo is not",
+        "  an asset dump.",
+        "- **Applications** — `open-edit`'s CLI code and `hypit`'s workflow are tools; only their",
+        "  doctrine is useful here.",
+        "- **Contradictions** — left as contradictions in the sources, resolved in",
+        "  `../skills/supervision/references/precedence.md`, and nowhere else.",
         "",
     ]
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text("\n".join(lines), encoding="utf-8")
-    print(f"  wrote docs/absorption.md — {len(rows)} sources, {total_rules} rules kept")
+    (LIB / "README.md").write_text("\n".join(lines), encoding="utf-8")
+
+    # ---- docs/absorption.md ------------------------------------------------
+    doc = [
+        "# Absorption — where each source's material went",
+        "",
+        "*Generated by `tools/absorb.py` from the vendored tree. Do not edit by hand.*",
+        "",
+        f"**{len(rows)} sources · {len(copied)} copied verbatim · {len(summarised)} paraphrased "
+        f"· {total_files} files · {total_bytes:,} bytes.**",
+        "",
+        "| Source | Mode | Licence | Where its doctrine is used |",
+        "|---|---|---|---|",
+    ]
+    for r in rows:
+        doc.append(f"| [{r['name']}]({r['upstream']}) | {r['mode']} | {r['licence']} | {r['landed']} |")
+    doc += [
+        "",
+        "## Why four are paraphrased rather than copied",
+        "",
+        "| Source | Licence | Why nothing was copied |",
+        "|---|---|---|",
+        "| hypit | modified Apache-2.0 with commercial conditions | redistribution would carry terms this",
+        "|  |  | project cannot accept on a user's behalf |",
+        "| remotion | Remotion licence | not free for companies; shipping its text would spread a licence",
+        "|  |  | trap to every user of this repo |",
+        "| apple-design-skill | no licence file | no grant to redistribute |",
+        "| tiktok-short-edit | published document | copyright by default; a link is honest |",
+        "",
+        "## What this table does not prove",
+        "",
+        "- **That the merge is good.** It proves the material is present and legal, not that the",
+        "  curation is right. The measured argument lives in `specs/gates.json` and",
+        "  `tools/gate-docs.py`.",
+        "- **That nothing was lost.** Copied files are complete and diffable against upstream; the",
+        "  paraphrase is a judgement, and judgements can be wrong.",
+        "",
+    ]
+    (ROOT / "docs" / "absorption.md").write_text("\n".join(doc), encoding="utf-8")
+    print(f"  wrote library/README.md and/docs/absorption.md — "
+          f"{len(rows)} sources, {total_files} files, {total_bytes:,} bytes")
     return 0
 
 

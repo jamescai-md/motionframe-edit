@@ -40,9 +40,18 @@ REL_LINK = re.compile(r"\[[^\]]*\]\((?![a-z]+:|#)([^)]+)\)")
 EXT_LINK = re.compile(r"\[[^\]]*\]\((https?://[^)]+)\)")
 
 
+VENDORED = ("upstream",)   # library/<area>/<source>/upstream/** is copied verbatim
+
+
+def is_vendored(p: pathlib.Path) -> bool:
+    """True for copied source material: its links, TODOs and claims are the upstream's."""
+    return "library" in p.parts and bool(set(p.parts) & set(VENDORED))
+
+
 def md_files(root: pathlib.Path) -> list[pathlib.Path]:
     return [p for p in root.rglob("*.md")
-            if not any(x in p.parts for x in (".git", "node_modules", ".mfe-demo"))]
+            if not any(x in p.parts for x in (".git", "node_modules", ".mfe-demo"))
+            and not is_vendored(p)]
 
 
 # --- gates -----------------------------------------------------------------

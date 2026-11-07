@@ -86,23 +86,35 @@ drift apart. Details: [docs/platforms.md](docs/platforms.md).
 
 ## The library — 18 sources in one place
 
-`library/` is the part that makes this a merge rather than a summary. **One digest per
-source**, and in each: what it is, the rules worth keeping, what it gets wrong, and exactly
-where each kept rule landed.
+`library/` is the part that makes this a merge rather than a summary. **One folder per
+source**, and how each source sits there is decided by its licence, not by convenience:
 
 ```
 library/
 ├── editing/   i-hate-editing · video-use · freecut · herk-edit-kit · video-short ·
-│             tiktok-short-edit · open-edit · hypit
+│              open-edit · tiktok-short-edit · hypit
 ├── motion/    motionmaxxing · motion-kit · reelmimic · hyperframes ·
-│             hyperframes-launches · remotion
+│              hyperframes-launches · remotion
 └── design/    taste-skill · ui-ux-pro-max · emil-skills · apple-design
 ```
 
-The skills point into the library and load only what the job needs — a captioning task does
-not pull in the design system. Two sources (`open-edit`, `hypit`) are applications rather
-than doctrine: read, credited, deliberately not merged. Five cannot be redistributed (no
-licence file, or `NOASSERTION`); their ideas are summarised, never their text.
+```
+library/editing/video-use/
+├── SOURCE.md            upstream, licence, pinned commit, file count, what it gets wrong
+├── LICENCE.upstream     the upstream's licence, travelling with the text it covers
+├── NOTES.md             this project's editorial notes, where they exist
+└── upstream/            the source's own skill files, copied verbatim
+```
+
+**14 sources are copied verbatim** — 713 files, 6.8 MB — because MIT and Apache-2.0 permit it
+and a copy is more useful than a description of a copy. **4 are paraphrased and never
+copied**: `hypit` (Apache-2.0 with added commercial conditions), `remotion` (Remotion licence,
+free only under a company-size threshold), `apple-design-skill` (no licence file), and
+`tiktok-short-edit` (a published document). Shipping their text would spread a licence
+obligation to everyone who installs this.
+
+The skills load only the source a job needs — a captioning task does not pull in the design
+system. Start at any `SOURCE.md`.
 
 Per-source credit, licences and corrections: [ATTRIBUTION.md](ATTRIBUTION.md).
 Which rule came from where: [docs/absorption.md](docs/absorption.md).

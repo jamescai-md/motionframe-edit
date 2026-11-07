@@ -30,14 +30,17 @@ Two failures this skill exists to prevent:
 
 ## The library — where the depth lives
 
-Seven skills are the curated layer. `library/` holds the absorbed rules of all eighteen
-sources that were merged into this one — one digest per source, each with the rules kept,
-what that source gets wrong, and where every rule landed.
+Seven skills are the curated layer. `library/` holds the material of all eighteen sources
+combined here: fourteen copied verbatim under `upstream/` (their licences permit it), four
+paraphrased because theirs do not.
 
-**Load a digest only when the job needs it.** A captioning task reads
-`library/editing/video-use.md` and `i-hate-editing.md`; it does not read the design system.
-That is the whole reason this repository can replace eighteen installs without becoming
-eighteen installs.
+**Load a source only when the job needs it.** A captioning task reads
+`library/editing/video-use/upstream/` and `library/editing/i-hate-editing/upstream/`; it does
+not read the design system. That is the whole reason this repository can replace eighteen
+installs without becoming eighteen installs.
+
+Start at `SOURCE.md` in any source folder — it names the upstream, the licence, the pinned
+commit, and what that source is good and bad at.
 
 | Job | Read first |
 |---|---|
