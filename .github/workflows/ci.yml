@@ -42,18 +42,18 @@ jobs:
               json.load(open(f))
               print("ok json:", f)
           sys.path.insert(0, "tools")
-          import sv
+          import mfe
           minimal = {
               "version": 1, "profile": "vertical-9x16",
               "sources": {"A": "a.mp4"},
               "segments": [{"id": "s1", "source": "A", "start": 0.0, "end": 2.0}],
           }
-          errs = sv.validate_edl(minimal)
+          errs = mfe.validate_edl(minimal)
           assert not errs, errs
           print("ok contract: the minimal EDL validates clean")
           bad = json.loads(json.dumps(minimal))
           bad["segments"][0]["start"] = 3.0   # start after end = inverted segment
-          assert sv.validate_edl(bad), "validator accepted an inverted segment"
+          assert mfe.validate_edl(bad), "validator accepted an inverted segment"
           print("ok contract: the validator still rejects a broken segment")
           PY
 
