@@ -4,8 +4,8 @@
 **Licence:** MIT  
 **Pinned at commit:** `311d835b623e`  
 **Mode:** copy  
-**Doctrine files:** 276  
-**Bytes:** 2,890,864
+**Doctrine files:** 389  
+**Bytes:** 3,542,074
 
 ## What this is
 
@@ -21,7 +21,7 @@ upstream.
 
 ## What was left out
 
-Assets, translations, examples, tests, packaging and tooling files. Skipped 0 file(s) beyond the per-source ceiling.
+Binary assets, translations, release notes, tests, packaging and tooling. 1 file(s) were byte-identical mirrors of files already copied (sources ship the same skill under `.claude/skills/` and `.agents/skills/`).
 
 ## How it is used here
 

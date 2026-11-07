@@ -106,7 +106,7 @@ library/editing/video-use/
 └── upstream/            the source's own skill files, copied verbatim
 ```
 
-**14 sources are copied verbatim** — 713 files, 6.8 MB — because MIT and Apache-2.0 permit it
+**14 sources are copied verbatim** — 1,066 files, 9.4 MB, every one licensed for it — because MIT and Apache-2.0 permit it
 and a copy is more useful than a description of a copy. **4 are paraphrased and never
 copied**: `hypit` (Apache-2.0 with added commercial conditions), `remotion` (Remotion licence,
 free only under a company-size threshold), `apple-design-skill` (no licence file), and

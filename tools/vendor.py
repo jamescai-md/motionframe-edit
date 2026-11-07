@@ -26,6 +26,7 @@ from __future__ import annotations
 import json
 import pathlib
 import shutil
+import hashlib
 import subprocess
 import sys
 
@@ -33,17 +34,20 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 LIB = ROOT / "library"
 DEFAULT_SRC = ROOT.parent / ".cache" / "src"
 
-# Files that are never doctrine: assets, translations, tooling, tests, packaging.
+# What gets copied: every Markdown file that can instruct an editor, minus things that are
+# not doctrine. The earlier version filtered by keyword ("rules", "reference") and missed
+# whole subtrees — open-edit's CUT.md, ui-ux-pro-max's cli/assets/skills/*/references,
+# emil-skills' AUDIT.md. Extension plus this exclusion list is the honest rule.
 EXCLUDE_PARTS = {
-    "node_modules", ".git", "i18n", "translations", "assets", "themes", "public",
-    "static", "dist", "build", "coverage", "test", "tests", "__tests__", "spec",
-    "packages", "examples", "benchmarks", ".github", ".vscode", ".idea",
+    "node_modules", ".git", "i18n", "locales", "translations", "dist", "build",
+    "coverage", ".next", "target", "releases", "release-notes", ".github", ".vscode",
+    ".idea", "__tests__", "tests", "test", "spec", "snapshots",
 }
 EXCLUDE_NAMES = {
     "CHANGELOG.md", "CONTRIBUTING.md", "CODE_OF_CONDUCT.md", "SECURITY.md",
-    "package.json", "package-lock.json", "pnpm-lock.yaml", "yarn.lock", "tsconfig.json",
+    "ISSUE_TEMPLATE.md", "PULL_REQUEST_TEMPLATE.md", "package.json",
+    "package-lock.json", "pnpm-lock.yaml", "yarn.lock", "tsconfig.json",
 }
-DOCTRINE_HINT = ("skill.md", "rules", "reference", "guide", "handoff", "frame.md", "blueprints")
 
 # name, area, mode, upstream, licence label
 SOURCES = [
@@ -86,18 +90,28 @@ def find_licence(d: pathlib.Path) -> pathlib.Path | None:
     return None
 
 
-def doctrine_files(d: pathlib.Path) -> list[pathlib.Path]:
-    out = []
-    for p in d.rglob("*.md"):
+def doctrine_files(d: pathlib.Path) -> tuple[list[pathlib.Path], int]:
+    """Every Markdown file worth copying, with byte-identical mirrors collapsed.
+
+    Sources ship the same skill twice (`.claude/skills/` and `.agents/skills/`,
+    `cli/assets/skills/`), so content hashing keeps the tree honest: what is dropped is
+    provably identical, not merely assumed to be.
+    """
+    out, seen, dups = [], set(), 0
+    for p in sorted(d.rglob("*.md")):
         if not p.is_file():
             continue
-        parts = {x.lower() for x in p.parts}
-        if parts & EXCLUDE_PARTS or p.name in EXCLUDE_NAMES:
+        if {x.lower() for x in p.parts} & EXCLUDE_PARTS or p.name in EXCLUDE_NAMES:
             continue
-        rel = str(p).lower()
-        if any(h in rel for h in DOCTRINE_HINT):
-            out.append(p)
-    return sorted(out)
+        if p.name.lower().startswith(("license", "licence", "copying", "notice")):
+            continue          # shipped separately as LICENCE.upstream / NOTICE.upstream
+        digest = hashlib.sha256(p.read_bytes()).hexdigest()
+        if digest in seen:
+            dups += 1
+            continue
+        seen.add(digest)
+        out.append(p)
+    return out, dups
 
 
 def write_source_md(dest: pathlib.Path, name: str, mode: str, upstream: str, licence: str,
@@ -179,10 +193,11 @@ def main() -> int:
             if not d.exists():
                 problems.append(f"source clone not found: {d}")
                 continue
-            files = doctrine_files(d)
-            kept, total = [], 0
+            files, dups = doctrine_files(d)
+            kept, total, over = [], 0, 0
             for f in files:
-                if total + f.stat().st_size > 3_500_000:      # per-source ceiling
+                if total + f.stat().st_size > 4_500_000:      # per-source ceiling
+                    over += 1
                     continue
                 kept.append(f); total += f.stat().st_size
             dest.mkdir(parents=True, exist_ok=True)
@@ -197,14 +212,22 @@ def main() -> int:
             else:
                 problems.append(f"no licence file found for {name} — refusing to copy")
                 shutil.rmtree(dest); continue
-            excluded = ("Assets, translations, examples, tests, packaging and tooling files. "
-                        f"Skipped {len(files) - len(kept)} file(s) beyond the per-source ceiling.")
+            excluded = (
+                "Binary assets, translations, release notes, tests, packaging and tooling. "
+                f"{dups} file(s) were byte-identical mirrors of files already copied "
+                "(sources ship the same skill under `.claude/skills/` and `.agents/skills/`)."
+                + (f" {over} file(s) fell beyond the 4.5 MB per-source ceiling." if over else ""))
+            # Apache-2.0 requires a NOTICE to travel with the work
+            notice = next((f for f in d.iterdir() if f.is_file()
+                           and f.name.lower().startswith("notice")), None)
+            if notice:
+                shutil.copy2(notice, dest / "NOTICE.upstream")
             write_source_md(dest, name, mode, upstream, licence, commit_of(d), kept, excluded)
-            rows.append((name, area, mode, len(kept), total))
+            rows.append((name, area, mode, len(kept), total, dups))
         else:
             dest.mkdir(parents=True, exist_ok=True)
             write_source_md(dest, name, mode, upstream, licence, commit_of(d) if d.exists() else "n/a", [], "")
-            rows.append((name, area, mode, 0, 0))
+            rows.append((name, area, mode, 0, 0, 0))
 
     if check:
         if problems:
@@ -215,7 +238,7 @@ def main() -> int:
         return 0
 
     print(f"  {'source':<22} {'area':<8} {'mode':<10} {'files':>6} {'bytes':>10}")
-    for name, area, mode, n, b in rows:
+    for name, area, mode, n, b, _ in rows:
         print(f"  {name:<22} {area:<8} {mode:<10} {n:>6} {b:>10,}")
     if problems:
         print("\n  problems:")
