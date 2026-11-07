@@ -69,6 +69,17 @@ Not effects. Rather:
   photograph, one bold colour — against an otherwise quiet system. That is what
   people remember, and it only works if it is the only one.
 
+## Two that come back from source material, because they are what video slop looks like
+
+Motion work fails differently from page work, and the sources said so before we did. Both of
+these were in the material and neither survived the first merge — which is why a render can
+now pass every mechanical gate and still read as machine-made.
+
+| # | Pattern | Why it reads as slop | Instead |
+|---|---|---|---|
+| 18 | **Production metadata as decoration** — `SAMPLE 01`, `TAKE 3`, `FILM 01`, `01 / 04`, version numbers, timecode, HUD corners | It is the look of a design tool, not of a finished piece. The viewer learns nothing and the frame gets busier | Nothing. The frame does not need to cite itself |
+| 19 | **A stat card that restates what was just said** — big number over a small label ("Pause 1.57 s") | A number on screen only earns its place if it compares, ranks, or proves something the audio does not already carry. Otherwise it is a wall of self-important decoration | Show the comparison, or cut the card. One number that lands beats five that decorate |
+
 ## Pre-ship checklist
 
 - [ ] Could this be a competitor's page with the logo swapped? → fix specificity

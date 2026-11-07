@@ -18,7 +18,7 @@ a piece being called complete. Not because the checks are profound, but because
 **a completed render is not a correct render**, and the gap between those two is
 where every embarrassing result lives.
 
-## The eight gates
+## The nine gates
 
 All commands below use `$SV` for the engine:
 
@@ -41,6 +41,7 @@ python3 "$SV" gate --file out/final.mp4 --edl edl.json \
 | **G5** | cuts don't pop | no boundary spike > 6 dB over the local body level in the 120 ms around a cut | `mfe gate` (astats) |
 | **G6** | captions safe | every cue box inside the platform safe zone; text height ≥ 3.5% of frame | `mfe gate` + boxes |
 | **G7** | honest proof | every asset declares an origin; nothing generated claims to be real | `mfe gate` + `provenance.json` |
+| **G8** | pace | no stretch over 3.5 s without a visible change, for anything under 90 s | `mfe gate` (scene detection) |
 
 For pages, UIs and stills, the analogue is named and binary — see
 `references/gates-for-design.md`. Same principle: no gate, no verdict.
@@ -66,6 +67,32 @@ python3 "$SV" sheet --file out/final.mp4 --out work/sheet.jpg --every 1.5
 **Describe before you judge.** One sentence per frame: what is on screen, what is
 the hero, would this frame pass as a slide? Skipping this step is why people
 "look" at a render for ten minutes and miss that the caption is behind the logo.
+
+## 2b. The design read — required for anything that moves
+
+The nine gates measure engineering. None of them can see that a frame has four typefaces, an
+accent colour doing five jobs, or a chart with no labels. For a video or motion artifact, the
+gate report is not finished until this is done:
+
+```
+python3 tools/mfe.py sheet --file <render> --out work/sheet.jpg --every 1
+```
+
+Then open the sheet and answer these, in this order, out loud:
+
+1. **Type** — how many families? More than two (or two that are not a matched pair) fails D3.
+   Is the caption the *weakest* text in the frame? It is the most-read text, so it cannot be.
+2. **Colour** — name what the accent colour is doing. One meaning is a system; five meanings
+   (numbers, arrows, chart lines, icons, annotations) is decoration.
+3. **Legibility** — would every line survive being watched on a phone at arm's length? Grey on
+   black at 40% is not a caption, it is a texture.
+4. **Decoration test** — for each graphic: what does the viewer know after it that they did not
+   know before? If the answer is the same number they just heard, cut it.
+5. **Self-reference** — is the frame labelling itself (`SAMPLE 01`, `TAKE 3`, version numbers)?
+   That is `anti-slop` 18. Remove it.
+
+Write the answers into the report under **Design read**. A report without it is not a report
+for motion work, it is a file probe.
 
 ## The fix order
 

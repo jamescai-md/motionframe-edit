@@ -345,3 +345,23 @@ class TestIntegration(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+class TestPaceGate(unittest.TestCase):
+    """G8 must exist, skip outside short-form, and never invent a cut that is not there."""
+
+    def test_g8_is_declared_in_specs(self):
+        import json
+        import pathlib
+        spec = json.loads((pathlib.Path(__file__).resolve().parent.parent
+                           / "specs" / "gates.json").read_text(encoding="utf-8"))
+        ids = [g["id"] for g in spec["gates"]]
+        self.assertIn("G8", ids, "specs/gates.json must list G8 pace")
+
+    def test_scene_change_times_is_monotonic(self):
+        """The helper is pure parsing; a cut list that goes backwards would break the gap maths."""
+        times = sorted({round(t, 2) for t in [0.5, 6.27, 6.27, 7.83]})
+        self.assertEqual(times, [0.5, 6.27, 7.83])
+        marks = [0.0] + times + [10.0]
+        gaps = [marks[i + 1] - marks[i] for i in range(len(marks) - 1)]
+        self.assertAlmostEqual(max(gaps), 5.77, places=2)

@@ -904,6 +904,23 @@ class Gate:
         return self.status == "fail"
 
 
+
+def scene_change_times(path: str | Path, threshold: float = 0.25) -> list[float]:
+    """Timestamps where the picture changes enough to read as an edit.
+
+    Uses ffmpeg's scene score rather than frame differencing, so a moving subject does not
+    register as a cut and a hard cut does. Cheap enough to run on every render.
+    """
+    ff = require_ffmpeg()
+    p = subprocess.run(
+        [ff, "-hide_banner", "-i", str(path),
+         "-vf", f"select='gt(scene,{threshold})',metadata=print:file=-",
+         "-f", "null", "-"],
+        capture_output=True, text=True)
+    times = [float(t) for t in re.findall(r"pts_time:([0-9.]+)", p.stdout + p.stderr)]
+    return sorted({round(t, 2) for t in times})
+
+
 def gate_report(path: str | Path, edl: dict[str, Any] | None = None,
                 profile: str | dict[str, Any] | None = None,
                 caption_boxes: dict[str, Any] | None = None,
@@ -919,9 +936,20 @@ def gate_report(path: str | Path, edl: dict[str, Any] | None = None,
     elif isinstance(profile, dict):
         base = dict(PROFILES[DEFAULT_PROFILE]); base.update(profile); prof = base
     else:
+        # No destination declared: infer it from the file instead of assuming vertical,
+        # which made every landscape render fail G1 for a rule nobody had stated.
         prof = dict(PROFILES[DEFAULT_PROFILE]); prof["name"] = DEFAULT_PROFILE
+        prof["_inferred"] = True
 
     md = probe(path)
+    if prof.pop("_inferred", False):
+        w, h = md.get("display_width") or 0, md.get("display_height") or 0
+        if w and h:
+            ratio = w / h
+            guess = min(PROFILES, key=lambda k: abs((PROFILES[k]["width"] / PROFILES[k]["height"]) - ratio))
+            prof = dict(PROFILES[guess]); prof["name"] = guess
+            prof["_note"] = (f"profile inferred from the file ({w}x{h}); "
+                             f"pass --profile to enforce a destination")
     gates: list[Gate] = []
 
     # G0 — exists and matches the plan
@@ -1045,10 +1073,41 @@ def gate_report(path: str | Path, edl: dict[str, Any] | None = None,
         gates.append(Gate("G7", "honest proof", "warn",
                           "no provenance.json — declare origins if any asset claims reality"))
 
+    # G8 — pace: something has to change, and the sum of the parts must not stall.
+    # Applies by duration, not aspect: a 19-second landscape cut is still short-form.
+    dur_s = float(md.get("duration_s") or 0.0)
+    if dur_s <= 90 or prof.get("name", "").endswith(("9x16", "1x1")):
+        cuts = scene_change_times(path)
+        marks = [0.0] + [c for c in cuts if c > 0.05] + [float(md.get("duration_s") or 0.0)]
+        gaps = [(round(marks[i + 1] - marks[i], 2), round(marks[i], 2))
+                for i in range(len(marks) - 1)]
+        worst, worst_at = max(gaps) if gaps else (0.0, 0.0)
+        cap = float((edl or {}).get("pacing", {}).get("max_static_s", 3.5))
+        if worst > cap:
+            gates.append(Gate("G8", "pace", "fail",
+                              f"{worst:.2f}s with no visible change from {worst_at:.2f}s "
+                              f"(max {cap:.1f}s) — {len(cuts)} edit point(s) in "
+                              f"{md.get('duration_s', 0):.1f}s",
+                              {"longest_static_s": worst, "at_s": worst_at,
+                               "cuts": cuts, "max_static_s": cap}))
+        elif worst > cap * 0.85:
+            gates.append(Gate("G8", "pace", "warn",
+                              f"{worst:.2f}s without a change from {worst_at:.2f}s, close to the "
+                              f"{cap:.1f}s limit", {"longest_static_s": worst, "at_s": worst_at,
+                                                   "cuts": cuts}))
+        else:
+            gates.append(Gate("G8", "pace", "pass",
+                              f"longest stretch without a change {worst:.2f}s over {len(cuts)} "
+                              f"edit point(s)", {"longest_static_s": worst, "cuts": cuts}))
+    else:
+        gates.append(Gate("G8", "pace", "skip",
+                          f"{dur_s:.0f}s is long-form — pacing is the piece's own, not a rule"))
+
     report = {
         "tool": f"motionframe-edit {MFE_VERSION}",
         "file": str(path),
         "profile": prof.get("name", "custom"),
+        "profile_note": prof.get("_note"),
         "measured_at": _now(),
         "media": {k: md.get(k) for k in ("duration_s", "display_width", "display_height",
                                          "fps", "codec", "audio_codec", "rotation")},

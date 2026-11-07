@@ -81,6 +81,24 @@ If a beat needs type bigger than the scale allows, that is a composition problem
 licence to break the scale. When the design system and a motion instinct disagree, the ruling
 is already written: `references/precedence.md`.
 
+## The decoration test, before you build a single graphic
+
+Every graphic earns its place or it does not get built. Write one line per planned element:
+
+> "After this, the viewer knows ______ that they did not know from the audio."
+
+If the blank restates the voiceover, the element is decoration — cut it now, while it costs
+nothing. Two failure shapes to look for, both seen in real renders:
+
+- **The stat card.** A number held on screen that was just spoken. It only earns its place if
+  it compares against something (this vs last time, ours vs theirs).
+- **The self-citing frame.** `SAMPLE 01`, `TAKE 3`, timecode, HUD corners. That is the look of
+  a camera, not of an edit.
+
+The list of what makes a frame read as machine-made is in
+`../design-director/references/anti-slop.md` — read it before the beat sheet, not after the
+render.
+
 ## The beat sheet
 
 Before any code, write a beat sheet. It is the EDL of motion, and it is what makes

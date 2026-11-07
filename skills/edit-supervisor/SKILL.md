@@ -227,6 +227,14 @@ Max three audit passes. Past that, present with the failures stated.
 
 ## 8. Deliver a package
 
+**Deliver the aspect the destination wants, and say what you delivered.** A 1920×1080 master
+handed to someone posting to Reels, Shorts or TikTok is an unfinished delivery: the platform
+will crop it, and it will crop the captions with it. For a social destination the master is
+1080×1920, and the landscape cut is a second export if the brief asks for one.
+
+State the panel in the package: destination, aspect, duration, loudness. If only one aspect
+was produced, say which, and say that the others do not exist.
+
 A cut file is not the deliverable. Ship:
 
 ```
