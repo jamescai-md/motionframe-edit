@@ -2,13 +2,22 @@
 
 ## What this repository is — and is not
 
-**It is not a fork.** There are no forks, no submodules, and no vendored code or prose. The
-eighteen sources below were read, and their doctrine was rewritten at rule level into
-`skills/` and summarised in `library/`.
+**It is seventeen forks, pinned, plus a merged doctrine layer.**
 
-That is a deliberate choice, not a shortcut. A literal fork of eighteen repositories would
-have been legally impossible for five of them, technically unmaintainable, and would have
-reproduced exactly the contradictions this project exists to settle.
+Every forkable source is a real GitHub fork on `jamescai-md` — same history, upstream
+linked, licence untouched — and each is pinned into this repository as a git submodule
+under `forks/`. Nine are live and pinned today; eight are pending GitHub's per-account
+fork throttle, and `tools/forks.py` pins each the moment it exists. The eighteenth source
+(`tiktok-short-edit`) is a published document, not a repository.
+
+On top of the forks sits what a fork alone cannot give you: the doctrine read rule by rule
+into `skills/` and `library/`, with the sources' contradictions settled in
+`precedence.md`. A plain fork of eighteen repositories inherits eighteen sets of
+contradictions and no verification; the forks are the provenance, and the merge is the
+product.
+
+Status for every source, live: [docs/forks.md](docs/forks.md) · `forks.json` ·
+`python3 tools/forks.py --pending`.
 
 **It is a merge with an audit trail.** Each source has a digest in `library/` with four
 parts: what it is, the rules worth keeping, what it gets wrong, and where each kept rule

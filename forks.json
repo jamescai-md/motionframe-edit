@@ -1,0 +1,166 @@
+{
+ "sources": [
+  {
+   "name": "i-hate-editing",
+   "area": "editing",
+   "licence": "MIT",
+   "upstream": "https://github.com/ranahaani/i-hate-editing",
+   "fork": "jamescai-md/i-hate-editing",
+   "pinned_sha": "main",
+   "status": "forked"
+  },
+  {
+   "name": "video-use",
+   "area": "editing",
+   "licence": "MIT",
+   "upstream": "https://github.com/browser-use/video-use",
+   "fork": "jamescai-md/video-use",
+   "pinned_sha": "main",
+   "status": "forked"
+  },
+  {
+   "name": "freecut",
+   "area": "editing",
+   "licence": "MIT",
+   "upstream": "https://github.com/Moh4696/freecut",
+   "fork": "jamescai-md/freecut",
+   "pinned_sha": "main",
+   "status": "forked"
+  },
+  {
+   "name": "herk-edit-kit",
+   "area": "editing/motion",
+   "licence": "NOASSERTION",
+   "upstream": "https://github.com/nateherkai/herk-edit-kit",
+   "fork": "jamescai-md/herk-edit-kit",
+   "pinned_sha": "main",
+   "status": "forked"
+  },
+  {
+   "name": "video-short",
+   "area": "editing",
+   "licence": "MIT",
+   "upstream": "https://github.com/petergyang/video-short",
+   "fork": "jamescai-md/video-short",
+   "pinned_sha": "main",
+   "status": "forked"
+  },
+  {
+   "name": "tiktok-short-edit",
+   "area": "editing",
+   "licence": "document",
+   "upstream": "https://www.marwieang.com/tiktok-short-edit.md",
+   "fork": null,
+   "pinned_sha": null,
+   "status": "not-a-repository"
+  },
+  {
+   "name": "open-edit",
+   "area": "editing",
+   "licence": "Apache-2.0",
+   "upstream": "https://github.com/veedstudio/open-edit",
+   "fork": "jamescai-md/open-edit",
+   "pinned_sha": "main",
+   "status": "forked"
+  },
+  {
+   "name": "hypit",
+   "area": "editing",
+   "licence": "NOASSERTION",
+   "upstream": "https://github.com/hypit-ai/hypit",
+   "fork": "jamescai-md/hypit",
+   "pinned_sha": "main",
+   "status": "forked"
+  },
+  {
+   "name": "motionmaxxing",
+   "area": "motion",
+   "licence": "Apache-2.0",
+   "upstream": "https://github.com/Tejashmakwana/motionmaxxing",
+   "fork": "jamescai-md/motionmaxxing",
+   "pinned_sha": "main",
+   "status": "forked"
+  },
+  {
+   "name": "motion-kit",
+   "area": "motion",
+   "licence": "MIT",
+   "upstream": "https://github.com/hughminhphan/motion-kit",
+   "fork": "jamescai-md/motion-kit",
+   "pinned_sha": "main",
+   "status": "forked"
+  },
+  {
+   "name": "reelmimic",
+   "area": "motion",
+   "licence": "MIT",
+   "upstream": "https://github.com/edenfunf/reelmimic",
+   "fork": null,
+   "pinned_sha": null,
+   "status": "pending-ratelimit"
+  },
+  {
+   "name": "hyperframes",
+   "area": "motion",
+   "licence": "Apache-2.0",
+   "upstream": "https://github.com/heygen-com/hyperframes",
+   "fork": null,
+   "pinned_sha": null,
+   "status": "pending-ratelimit"
+  },
+  {
+   "name": "hyperframes-launches",
+   "area": "motion",
+   "licence": "Apache-2.0",
+   "upstream": "https://github.com/heygen-com/hyperframes-launches",
+   "fork": null,
+   "pinned_sha": null,
+   "status": "pending-ratelimit"
+  },
+  {
+   "name": "remotion",
+   "area": "motion",
+   "licence": "Remotion licence",
+   "upstream": "https://github.com/remotion-dev/remotion",
+   "fork": null,
+   "pinned_sha": null,
+   "status": "pending-ratelimit"
+  },
+  {
+   "name": "taste-skill",
+   "area": "design",
+   "licence": "MIT",
+   "upstream": "https://github.com/Leonxlnx/taste-skill",
+   "fork": null,
+   "pinned_sha": null,
+   "status": "pending-ratelimit"
+  },
+  {
+   "name": "ui-ux-pro-max",
+   "area": "design",
+   "licence": "MIT",
+   "upstream": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill",
+   "fork": null,
+   "pinned_sha": null,
+   "status": "pending-ratelimit"
+  },
+  {
+   "name": "emil-skills",
+   "area": "design",
+   "licence": "MIT",
+   "upstream": "https://github.com/emilkowalski/skills",
+   "fork": null,
+   "pinned_sha": null,
+   "status": "pending-ratelimit"
+  },
+  {
+   "name": "apple-design",
+   "area": "design",
+   "licence": "none stated",
+   "upstream": "https://github.com/dickwu/apple-design-skill",
+   "fork": null,
+   "pinned_sha": null,
+   "status": "pending-ratelimit"
+  }
+ ]
+}
