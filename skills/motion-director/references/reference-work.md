@@ -51,39 +51,6 @@ number the viewer just heard in the voiceover. Before building each element:
 If the blank repeats the voiceover, cut it. A reference cannot license decoration; it can only
 license *style*.
 
-## 4b. Copy the construction, not the furniture
-
-There are two ways to take a style from a reference, and only one survives being looked at.
-
-**Furniture** is what the frame is made of: a dark card, a neon accent, contour lines, a
-tracked-caps label, a thin rule, a glow along one edge. It is easy to copy, and copying it
-gives you a frame that is recognisably in the reference's family and says nothing — a panel
-with a title, a subtitle and a diagram-shaped decoration. This is the specific way an agent
-fails at style transfer: it works from stills, so it reproduces what the frames are made of
-and not what they do.
-
-**Construction** is how the reference makes its claim. In the reference this repo was tested
-against, every frame does the same thing: it puts objects into a *relationship* and lets the
-relationship carry the sentence. Money, effort and time are three icons; a curve joins them;
-the total lands at the end of the curve. Nothing on the frame is a label *for* the frame.
-
-Before you build a card, finish this sentence:
-
-> This frame shows ______ related to ______, and the relation is the point.
-
-If you cannot finish it, you are about to build furniture. Four things follow:
-
-1. **The objects are the nouns of the sentence.** If the voiceover says "editing style", the
-   card needs the things a style is made of — a cut, a grade, a sound — not a generic timeline.
-2. **Something must join them.** A curve, a bracket, a sequence, a number that counts, a
-   before-and-after. The join is the graphic. The panel it sits on is not.
-3. **Nothing labels the card itself.** No `02 ·`, no section name, no brand in the corner. The
-   caption already tells the viewer where they are, every second, for free.
-4. **The join should move.** If the relationship is visible in a single frame with no motion,
-   you have built a slide. A slide inside a film is the tell that the graphics were made
-   separately from the edit.
-
-
 ## 5. When the reference has no subject and yours does
 
 A pure graphics reference applied to footage with a person in it is a hybrid, and the mix is a

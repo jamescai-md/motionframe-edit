@@ -165,17 +165,10 @@ mfe.py probe footage/*.mp4          # display dimensions, fps, rotation, audio
 mfe.py validate --edl edl.json      # catch EDL errors before rendering
 mfe.py render --edl edl.json --out work/draft.mp4 --preview
 mfe.py captions --edl edl.json --words words.json --remap A --out captions.ass
-mfe.py watch --file work/draft.mp4 --out work     # frames + watch.md you must fill in
-mfe.py gate --file work/draft.mp4 --edl edl.json --boxes captions.boxes.json \
-            --notes work/watch.md --graphics work/graphics.json --out gate.json
+mfe.py gate --file work/draft.mp4 --edl edl.json --boxes captions.boxes.json --out gate.json
 mfe.py sheet --file work/draft.mp4 --out work/sheet.jpg
 mfe.py demo --selftest              # proves the pipeline AND that the gates can fail
 ```
-
-`mfe.py watch` is the one people skip and then regret. It samples frames on a budget that
-scales with duration and writes a table for one sentence per frame. `G10` reads that table
-back, so an unwatched render fails the audit — which is the only reliable defence against
-shipping something you never actually looked at.
 
 `mfe.py demo --selftest` is the honest one: it renders a synthetic project, audits
 it, then feeds the gates deliberately broken renders and fails if they do *not*

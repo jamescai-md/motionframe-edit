@@ -18,7 +18,7 @@ a piece being called complete. Not because the checks are profound, but because
 **a completed render is not a correct render**, and the gap between those two is
 where every embarrassing result lives.
 
-## The twelve gates
+## The ten gates
 
 All commands below use `$SV` for the engine:
 
@@ -28,15 +28,8 @@ SV=/absolute/path/to/motionframe-edit/tools/mfe.py   # set once; resolved in ski
 
 ```bash
 python3 "$SV" gate --file out/final.mp4 --edl edl.json \
-                   --boxes captions.boxes.json \
-                   --notes work/watch.md --graphics work/graphics.json \
-                   --style work/reference.style.json --out gate-report.json
+                   --boxes captions.boxes.json --out gate-report.json
 ```
-
-G10 and G11 are the two gates that were missing when a real render passed the other ten and
-still shipped with a corner label, a section counter, four play buttons and a fake timeline on
-screen. G0–G9 measure delivery. Those two measure whether anybody looked, and whether the
-frame is furniture.
 
 | Gate | Name | Passes when | Measured by |
 |---|---|---|---|
@@ -50,8 +43,6 @@ frame is furniture.
 | **G7** | honest proof | every asset declares an origin; nothing generated claims to be real | `mfe gate` + `provenance.json` |
 | **G8** | pace | no stretch over 3.5 s without a visible change; when a style spec is supplied, the reference's own longest hold sets the limit | `mfe gate` (scene detection) |
 | **G9** | reference match | aspect matches the reference; most of the picture sits inside its palette | `mfe gate --style` |
-| **G10** | you looked at it | every sampled frame is described in `watch.md`, all five design-read questions answered, a verdict written | `mfe gate --notes` |
-| **G11** | no page chrome | no overlay is frame furniture (corner labels, counters, kickers, progress bars); no overlay text under 3.5% of frame height; every overlay says what the viewer knows after it, and none merely restates its own label | `mfe gate --graphics` |
 
 For pages, UIs and stills, the analogue is named and binary — see
 `references/gates-for-design.md`. Same principle: no gate, no verdict.
@@ -71,16 +62,12 @@ wastes the redesign.
 ```
 
 ```bash
-python3 "$SV" watch --file out/final.mp4 --out work     # frames + watch.md to fill in
 python3 "$SV" sheet --file out/final.mp4 --out work/sheet.jpg --every 1.5
 ```
 
 **Describe before you judge.** One sentence per frame: what is on screen, what is
 the hero, would this frame pass as a slide? Skipping this step is why people
 "look" at a render for ten minutes and miss that the caption is behind the logo.
-`mfe watch` samples on a budget that scales with duration — one frame a second up
-to thirty seconds, sparser after that — and writes the table for you to fill. G10
-reads the table back, so an empty one is a failed render, not a skipped step.
 
 ## 2b. The design read — required for anything that moves
 

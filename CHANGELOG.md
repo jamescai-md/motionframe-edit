@@ -3,41 +3,6 @@
 Format follows [Keep a Changelog](https://keepachangelog.com); versioning follows
 [Semantic Versioning](https://semver.org).
 
-## [1.3.0] — 2026-11-08
-
-A render built with this repo shipped with a corner label, a section counter, four play
-buttons and a fake timeline in it, and passed every gate. That is the finding: the ten gates
-measured delivery, and nothing measured whether anyone had looked at the frame or whether the
-graphics were furniture. Two gates and one command close that hole.
-
-### Added
-
-- **`mfe watch`** — samples frames on a budget that scales with the duration (one a second up
-  to 30 s, sparser after) and writes `work/watch.md`: one sentence per frame, the five
-  design-read questions, a verdict. The notes are a deliverable, not a note to self.
-- **G10 `you looked at it`** — fails when the notes are missing, when any sampled frame was
-  described in under six words, when a design-read question is unanswered, or when there is no
-  verdict. Declared-gate discipline: the table is read back, not trusted.
-- **G11 `no page chrome`** — fails a declared overlay that is frame furniture (corner or edge
-  label, tracked caps, counter, timecode, kicker, progress bar, bracket, watermark, HUD), that
-  puts text under 3.5% of frame height, that cannot say what the viewer knows after it, or that
-  restates its own label.
-- `mfe gate --notes / --tiles / --graphics / --no-notes`; `specs/gates.json` v1.3.0 at thirteen
-  entries.
-
-### Merged from the sources, because the first merge dropped them
-
-- The page-chrome ban, with its full list — one source shipped a linter for this and the
-  curated version had reduced it to a single line about self-citing frames.
-- The type floor as a measurement of frame height, not of points (`design-director/system.md`).
-- **Construction vs furniture** in `motion-director/reference-work.md`: copy how the reference
-  makes its claim, not what its panels are made of. Four tests that follow from it.
-- **Endings must land** in `cutting.md`: the last six words have to finish the thought.
-
-### Changed
-
-- `gatekeeper/SKILL.md` documents twelve gates and the `watch` step between LOOK and READ.
-
 ## [1.0.0] — 2026-11-07
 
 First release. Eighteen video-editing, motion-graphics and design skill repositories read

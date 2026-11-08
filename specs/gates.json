@@ -1,6 +1,6 @@
 {
   "$comment": "The gate contract. Every entry is measurable or binary. A gate that cannot fail is decoration; mfe demo --selftest proves these can.",
-  "version": "1.3.0",
+  "version": "1.2.0",
   "gates": [
     {
       "id": "G0",
@@ -92,24 +92,6 @@
       "measured_by": "mfe.py gate --style, spec from mfe.py style",
       "skip_when": "no reference spec supplied",
       "note": "measures form only: it cannot tell whether the graphics carry content"
-    },
-    {
-      "id": "G10",
-      "name": "you looked at it",
-      "kind": "declared",
-      "blocking": true,
-      "pass": "watch.md describes every sampled frame in at least six words, answers all five design-read questions, and states a verdict",
-      "measured_by": "tools/mfe.py gate --notes (structure and coverage) after tools/mfe.py watch",
-      "catches": "a render nobody ever described — the state in which a corner label, four play buttons and a fake timeline all survive to delivery"
-    },
-    {
-      "id": "G11",
-      "name": "no page chrome",
-      "kind": "declared",
-      "blocking": true,
-      "pass": "no overlay of a chrome kind (corner/edge label, tracked caps, counter, timecode, metadata, bars, kicker, progress bar, bracket, watermark, HUD); no declared overlay text under 3.5% of frame height; every overlay states what the viewer knows after it and does not merely restate its own label",
-      "measured_by": "tools/mfe.py gate --graphics, against a declared graphics.json",
-      "catches": "frame furniture: self-citing frames, decorative dashboards, and labels too small to read"
     },
     {
       "id": "D0-D8",

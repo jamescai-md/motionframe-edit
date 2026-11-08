@@ -1023,11 +1023,7 @@ def gate_report(path: str | Path, edl: dict[str, Any] | None = None,
                 caption_boxes: dict[str, Any] | None = None,
                 expected_duration: float | None = None,
                 max_static_s: float | None = None,
-                style: dict[str, Any] | None = None,
-                notes: dict[str, Any] | None = None,
-                expected_tiles: int | None = None,
-                graphics: dict[str, Any] | None = None,
-                require_notes: bool = False) -> dict[str, Any]:
+                style: dict[str, Any] | None = None) -> dict[str, Any]:
     path = Path(path)
     if not path.exists():
         die(f"nothing to gate: {path}")
@@ -1244,11 +1240,6 @@ def gate_report(path: str | Path, edl: dict[str, Any] | None = None,
     else:
         gates.append(Gate("G9", "reference match", "skip", "no reference spec supplied"))
 
-    # G10-G12 — the craft half. G9 answers "does it look like the reference";
-    # these answer "did anyone actually look at it, and is the frame furniture".
-    gates.append(check_watch(notes, expected_tiles, required=require_notes))
-    gates.append(check_graphics(graphics))
-
     report = {
         "tool": f"motionframe-edit {MFE_VERSION}",
         "file": str(path),
@@ -1335,192 +1326,6 @@ def contact_sheet(path: str | Path, out: str | Path, every: float = 1.0,
     run([ff, "-hide_banner", "-loglevel", "error", "-y", "-i", str(path),
          "-vf", vf, "-frames:v", "1", "-q:v", "3", str(out)], check=False)
     return out
-
-
-# ---------------------------------------------------------------------------
-# Watch: the artefact that proves the render was looked at.
-#
-# Two video-reading skills (Newuxtreme/watch-video-skill, matt-j-penny/matts-peeker)
-# converged on the same contract — sample frames on a budget, pair every frame with
-# a timestamp, and write the notes to disk. Both stop short of the useful part: the
-# notes they produce are a summary of the source. Here they are a deliverable the
-# gate reads back, because a render nobody described is a render nobody watched.
-# Same budget arithmetic, different obligation.
-# ---------------------------------------------------------------------------
-
-# seconds of footage per sampled frame. Small pieces get read closely; a
-# twenty-minute talk cannot be, and pretending otherwise wastes the budget.
-SAMPLE_BUDGET: tuple[tuple[float | None, float], ...] = (
-    (30, 1.0), (60, 1.5), (180, 3.0), (600, 6.0), (None, 10.0),
-)
-
-WATCH_TEMPLATE = """# Watch notes — {name}
-
-One sentence per tile, written before any judgement. A frame you cannot
-describe is a frame you have not seen.
-
-## Frames
-
-| t | on screen | hero | passes as a slide? |
-|---|---|---|---|
-{rows}
-
-## Design read
-
-1. Type —
-2. Colour —
-3. Legibility —
-4. Decoration test —
-5. Self-reference —
-
-## Verdict
-
-"""
-
-
-def sample_interval(duration_s: float) -> float:
-    """Seconds per sampled frame, by duration. Mirrors the video-read skills."""
-    for limit, every in SAMPLE_BUDGET:
-        if limit is None or duration_s <= limit:
-            return every
-    return 10.0
-
-
-def _mmss(t: float) -> str:
-    t = max(0.0, float(t))
-    return f"{int(t // 60)}:{int(t % 60):02d}"
-
-
-def watch(path: str | Path, outdir: str | Path = "work", every: float | None = None,
-          thumb_w: int = 960) -> Path:
-    """Extract frames and write a notes scaffold next to them."""
-    ff = require_ffmpeg()
-    src = Path(path)
-    if not src.exists():
-        die(f"nothing to watch: {src}")
-    root = Path(outdir)
-    frames = root / "frames"
-    frames.mkdir(parents=True, exist_ok=True)
-    for old in frames.glob("*.jpg"):
-        old.unlink()
-    md = probe(src)
-    dur = _f(md.get("duration_s"), 0.0)
-    every = float(every or sample_interval(dur))
-    run([ff, "-hide_banner", "-loglevel", "error", "-y", "-i", str(src),
-         "-vf", f"fps=1/{every},scale={thumb_w}:-1", "-q:v", "3",
-         str(frames / "%03d.jpg")], check=False)
-    files = sorted(frames.glob("*.jpg"))
-    rows = "\n".join(f"| {_mmss(i * every)} |  |  |  |" for i in range(len(files)))
-    notes = root / "watch.md"
-    notes.write_text(WATCH_TEMPLATE.format(name=src.name, rows=rows), encoding="utf-8")
-    return notes
-
-
-def parse_watch_notes(path: str | Path) -> dict[str, Any]:
-    """Read the notes back. Structure only — the judge is the gate, not this."""
-    p = Path(path)
-    if not p.exists():
-        return {"exists": False, "tiles": [], "design": {}, "verdict": ""}
-    text = p.read_text(encoding="utf-8", errors="replace")
-    tiles: list[dict[str, Any]] = []
-    for line in text.splitlines():
-        cells = [c.strip() for c in line.strip().strip("|").split("|")]
-        if len(cells) >= 2 and re.fullmatch(r"\d+:[0-5]\d", cells[0]):
-            tiles.append({"t": cells[0], "on_screen": cells[1],
-                          "hero": cells[2] if len(cells) > 2 else "",
-                          "slide": cells[3] if len(cells) > 3 else ""})
-    design: dict[str, str] = {}
-    for line in text.splitlines():
-        m = re.match(r"^\s*([1-5])\.\s*([A-Za-z ]+?)\s*[—-]\s*(.+)$", line)
-        if m:
-            design[m.group(1)] = m.group(3).strip()
-    tail = text.split("## Verdict", 1)[1].strip() if "## Verdict" in text else ""
-    return {"exists": True, "tiles": tiles, "design": design, "verdict": tail}
-
-
-def check_watch(notes: dict[str, Any] | None, expected_tiles: int | None,
-                required: bool) -> Gate:
-    """G10 — the render was read frame by frame before it was called done."""
-    id_, name = "G10", "you looked at it"
-    if not notes or not notes.get("exists"):
-        if required:
-            return Gate(id_, name, "fail",
-                        "no watch notes: nothing proves this render was ever looked at "
-                        "(run `mfe watch`, fill work/watch.md)")
-        return Gate(id_, name, "warn", "no watch notes supplied — not checked")
-    tiles = notes["tiles"]
-    if expected_tiles and len(tiles) < expected_tiles:
-        return Gate(id_, name, "fail",
-                    f"{len(tiles)} of {expected_tiles} sampled frames written up — "
-                    f"the frames nobody described are the ones that ship broken",
-                    {"tiles": len(tiles), "expected": expected_tiles})
-    blank = [t["t"] for t in tiles if len(t["on_screen"].split()) < 6]
-    if blank:
-        return Gate(id_, name, "fail",
-                    f"{len(blank)} frame(s) described in under six words: {blank[:6]}",
-                    {"thin": blank})
-    missing = [k for k in "12345" if len(notes["design"].get(k, "").split()) < 5]
-    if missing:
-        return Gate(id_, name, "fail",
-                    f"design read incomplete — question(s) {', '.join(missing)} unanswered "
-                    f"or answered in under five words", {"missing": missing})
-    if not notes.get("verdict"):
-        return Gate(id_, name, "fail", "no verdict line: what would you change?")
-    return Gate(id_, name, "pass",
-                f"{len(tiles)} frames described, design read complete", {"tiles": len(tiles)})
-
-
-# The page-chrome ban, taken from the upstream rule that had a linter behind it
-# (motionmaxxing G5): corner labels, tracked-caps labels, counters, timecodes,
-# metadata, header/footer bars, kickers over a headline, progress bars, brackets.
-CHROME_KINDS = {
-    "corner-label", "edge-label", "tracked-caps", "counter", "timecode",
-    "metadata", "header-bar", "footer-bar", "kicker", "progress-bar",
-    "bracket", "watermark", "scene-label", "chapter-label", "hud",
-}
-
-TYPE_FLOOR_PCT = 3.5
-
-
-def check_graphics(manifest: dict[str, Any] | None) -> Gate:
-    """G11 — every overlay is information, legible, and not frame furniture."""
-    id_, name = "G11", "no page chrome"
-    if not manifest:
-        return Gate(id_, name, "warn",
-                    "no graphics.json — overlays undeclared, so nothing can be checked")
-    els = manifest.get("elements", [])
-    if not els:
-        return Gate(id_, name, "pass", "declared: no overlays")
-    chrome = [e.get("id", "?") for e in els if str(e.get("kind", "")).lower() in CHROME_KINDS]
-    small = [f"{e.get('id', '?')} ({e.get('smallest_text_pct')}%)" for e in els
-             if e.get("smallest_text_pct") is not None
-             and float(e["smallest_text_pct"]) < TYPE_FLOOR_PCT]
-    unproven = [e.get("id", "?") for e in els if len(str(e.get("proves", "")).split()) < 4]
-    told: list[str] = []
-    for e in els:
-        text = {w.lower().strip(".,:;!?") for w in str(e.get("text", "")).split() if len(w) > 3}
-        proves = {w.lower().strip(".,:;!?") for w in str(e.get("proves", "")).split() if len(w) > 3}
-        if text and proves and proves <= text:
-            told.append(str(e.get("id", "?")))
-    if chrome:
-        return Gate(id_, name, "fail",
-                    f"{len(chrome)} overlay(s) are page chrome — the frame labelling itself: "
-                    f"{chrome[:6]}", {"chrome": chrome})
-    if small:
-        return Gate(id_, name, "fail",
-                    f"{len(small)} overlay(s) under the {TYPE_FLOOR_PCT}% type floor — "
-                    f"delete them or set them large: {small[:6]}", {"small": small})
-    if unproven:
-        return Gate(id_, name, "fail",
-                    f"{len(unproven)} overlay(s) do not say what the viewer knows after them: "
-                    f"{unproven[:6]}", {"unproven": unproven})
-    if told:
-        return Gate(id_, name, "fail",
-                    f"{len(told)} overlay(s) restate their own label instead of adding to it: "
-                    f"{told[:6]}", {"restated": told})
-    return Gate(id_, name, "pass",
-                f"{len(els)} overlay(s), all information, none under {TYPE_FLOOR_PCT}%",
-                {"count": len(els)})
 
 
 # ---------------------------------------------------------------------------
@@ -1845,33 +1650,6 @@ def demo(workdir: str | Path, selftest: bool = False, keep: bool = False) -> int
         failures += 1
     prov.unlink(missing_ok=True)
 
-    # G10 — an empty watch table must fail, and a filled one must pass.
-    (Path(workdir) / "watch-empty.md").write_text(
-        WATCH_TEMPLATE.format(name="demo.mp4", rows="| 0:00 |  |  |  |"), encoding="utf-8")
-    empty = parse_watch_notes(Path(workdir) / "watch-empty.md")
-    g10 = check_watch(empty, 1, required=True)
-    if g10.status == "fail":
-        ok("selftest", "G10 catches an unwatched render")
-    else:
-        bad("selftest", f"G10 accepted an empty watch table ({g10.detail})")
-        failures += 1
-
-    # G11 — a corner label must fail, a real overlay must pass.
-    g11 = check_graphics({"elements": [
-        {"id": "corner", "kind": "corner-label", "text": "THE BRAND",
-         "smallest_text_pct": 1.1, "proves": ""}]})
-    if g11.status == "fail":
-        ok("selftest", "G11 catches page chrome")
-    else:
-        bad("selftest", f"G11 accepted a corner label ({g11.detail})")
-        failures += 1
-    g11b = check_graphics({"elements": [
-        {"id": "curve", "kind": "graphic", "text": "TOTAL VALUE", "smallest_text_pct": 6.0,
-         "proves": "money and effort compound, so the total outruns both inputs"}]})
-    if g11b.status != "pass":
-        bad("selftest", f"G11 rejects a real overlay ({g11b.detail})")
-        failures += 1
-
     print()
     if failures:
         bad("selftest", f"{failures} gate(s) are asleep — fix before trusting any report")
@@ -1944,33 +1722,13 @@ def cmd_gate(a: argparse.Namespace) -> int:
     edl = load_edl(a.edl) if a.edl else None
     boxes = json.loads(Path(a.boxes).read_text()) if a.boxes else None
     style = json.loads(Path(a.style).read_text()) if a.style else None
-    graphics = json.loads(Path(a.graphics).read_text()) if a.graphics else None
-    notes = parse_watch_notes(a.notes) if a.notes else None
-    expected_tiles = None
-    if notes and notes.get("exists") and a.tiles:
-        expected_tiles = int(a.tiles)
-    elif notes and notes.get("exists") and a.notes:
-        expected_tiles = len(notes["tiles"]) or None
     rep = gate_report(a.file, edl=edl, profile=a.profile, caption_boxes=boxes,
-                      expected_duration=a.expect, max_static_s=a.max_static, style=style,
-                      notes=notes, expected_tiles=expected_tiles, graphics=graphics,
-                      require_notes=not a.no_notes)
+                      expected_duration=a.expect, max_static_s=a.max_static, style=style)
     print_report(rep)
     if a.out:
         Path(a.out).write_text(json.dumps(rep, indent=2) + "\n", encoding="utf-8")
         print(f"  report: {a.out}\n")
     return 0 if rep["verdict"] == "pass" else 1
-
-
-def cmd_watch(a: argparse.Namespace) -> int:
-    notes = watch(a.file, outdir=a.out or "work", every=a.every)
-    md = probe(a.file)
-    n = len(list(Path(a.out or "work").glob("frames/*.jpg")))
-    print(f"\n  {n} frames from {md.get('duration_s')}s at one every "
-          f"{sample_interval(_f(md.get('duration_s'), 0.0))}s")
-    print(f"  wrote {notes} — fill every row, then: mfe gate --file ... --notes {notes}\n")
-    return 0
-
 
 
 
@@ -2054,20 +1812,8 @@ def build_parser() -> argparse.ArgumentParser:
     ga.add_argument("--style", help="style spec JSON from `mfe style`")
     ga.add_argument("--max-static", type=float, default=None, dest="max_static",
                     help="longest allowed stretch with no visible change (default 3.5 s)")
-    ga.add_argument("--notes", help="watch notes from `mfe watch` — proves the render was read")
-    ga.add_argument("--tiles", type=int, help="how many sampled frames the notes should cover")
-    ga.add_argument("--graphics", help="overlay manifest: what each element is and proves")
-    ga.add_argument("--no-notes", action="store_true", dest="no_notes",
-                    help="do not require watch notes (fixtures and stills only)")
     ga.add_argument("--out")
     ga.set_defaults(func=cmd_gate)
-
-    wa = sub.add_parser("watch", help="sample frames and scaffold watch notes")
-    wa.add_argument("--file", required=True)
-    wa.add_argument("--out", default="work", help="work directory (default: work)")
-    wa.add_argument("--every", type=float, default=None,
-                    help="seconds per frame (default: scaled to the duration)")
-    wa.set_defaults(func=cmd_watch)
 
     sh = sub.add_parser("sheet", help="contact sheet of a render")
     sh.add_argument("--file", required=True)

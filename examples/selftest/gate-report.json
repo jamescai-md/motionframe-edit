@@ -1,9 +1,8 @@
 {
   "tool": "motionframe-edit 1.0.0",
-  "file": "/tmp/demowork/out/demo.mp4",
+  "file": ".mfe-demo/out/demo.mp4",
   "profile": "vertical-9x16",
-  "profile_note": null,
-  "measured_at": "2026-11-08T00:14:17Z",
+  "measured_at": "2026-11-07T10:39:16Z",
   "media": {
     "duration_s": 13.57,
     "display_width": 1080,
@@ -102,40 +101,8 @@
       "facts": {
         "count": 1
       }
-    },
-    {
-      "id": "G8",
-      "name": "pace",
-      "status": "warn",
-      "detail": "13.57s without a change from 0.00s, close to the 15.0s limit",
-      "facts": {
-        "longest_static_s": 13.57,
-        "at_s": 0.0,
-        "cuts": []
-      }
-    },
-    {
-      "id": "G9",
-      "name": "reference match",
-      "status": "skip",
-      "detail": "no reference spec supplied",
-      "facts": {}
-    },
-    {
-      "id": "G10",
-      "name": "you looked at it",
-      "status": "warn",
-      "detail": "no watch notes supplied \u2014 not checked",
-      "facts": {}
-    },
-    {
-      "id": "G11",
-      "name": "no page chrome",
-      "status": "warn",
-      "detail": "no graphics.json \u2014 overlays undeclared, so nothing can be checked",
-      "facts": {}
     }
   ],
   "verdict": "pass",
-  "warnings": 3
+  "warnings": 0
 }

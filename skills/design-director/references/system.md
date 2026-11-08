@@ -29,25 +29,6 @@ Five rules that do 80% of the work:
 5. **Correct punctuation**: curly apostrophes, en dashes for ranges, no double
    spaces, no ALL CAPS for a long heading (tracked caps only for ≤ 3 words).
 
-### Type on a frame
-
-The scale above is for pages. On video, the number that matters is how much of the
-frame *height* a line occupies, because that is the only measurement that survives
-being watched on a phone at arm's length:
-
-```
-caption      3.5–4.5% of frame height      38–49 px at 1080p
-label        2.5%+                         27 px at 1080p
-kicker       2.5%+   — or delete it; a kicker rarely earns its space
-under 2%     delete it, do not shrink it
-```
-
-Small type does not become legible by being important. A label that has to fall under 2%
-to fit means the composition is wrong, not the type — and an unreadable label is worse
-than no label, because it reads as texture the eye keeps trying to resolve.
-
-`mfe gate --graphics` fails any declared overlay whose smallest text is under 3.5%.
-
 ## Colour
 
 ```

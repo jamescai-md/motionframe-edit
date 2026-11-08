@@ -1,19 +1,15 @@
 # A real render, and the report that measured it
 
-Both files here were produced by `mfe.py`, not drawn by hand:
+Both files here were produced by `mfe.py` on 2026-11-07, not drawn by hand:
 
 | File | What it is |
 |---|---|
 | `demo-540p.mp4` | 13.6 s vertical render from `python3 tools/mfe.py demo`, downscaled from 1080×1920 to 540×960 so the repository stays small |
-| `gate-report.json` | the twelve-gate report from that 1080×1920 render, unmodified |
+| `gate-report.json` | the report from that 1080×1920 render, unmodified |
 
-Eight gates passed: duration within 0.12 s of plan, 1080×1920 at 29.93 fps, −14 dB LUFS
-loudness, no freeze, no black interval, no cut popping above the local body level, captions
-inside the safe zone, and every asset declaring an origin. `G8 pace` warns because this fixture
-is a static pattern that declares its own 15 s limit, `G9` skips because no reference was
-supplied, and `G10`/`G11` warn because a synthetic fixture has no frames worth describing and
-no overlays to declare. The warnings are printed rather than hidden, which is the point: a
-report that only ever says pass is not a report.
+All eight gates passed on it: duration within 0.12 s of plan, 1080×1920 at 29.93 fps,
+−14 dB LUFS loudness, no freeze, no black interval, no cut popping above the local body level,
+captions inside the safe zone, and every asset declaring an origin.
 
 ## What this does and does not show
 

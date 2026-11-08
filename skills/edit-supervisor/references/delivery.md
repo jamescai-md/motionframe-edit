@@ -10,16 +10,9 @@ out/
 ├── captions.srt          uploadable, output-timeline times, proofread
 ├── thumbnail.jpg         chosen from 3 candidates, checked at small size
 ├── report.md             every judgement call + every measurement
-├── watch.md              one sentence per sampled frame, the design read, the verdict
-├── graphics.json         every overlay declared: what it is, and what it proves
 ├── gate-report.json      the audit as data
 └── provenance.json       origin of every asset that claims to be real
 ```
-
-`watch.md` and `graphics.json` are deliverables, not working files. They are the two pieces of
-evidence that the craft half happened — that someone described the frames and that the overlays
-can justify themselves — and `mfe gate` fails the package when they are missing. A render with
-a gate report and no watch notes is a render whose audit stops at "it decoded".
 
 ## Encoding
 
