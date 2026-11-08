@@ -361,6 +361,9 @@ class TestPaceGate(unittest.TestCase):
                            / "specs" / "gates.json").read_text(encoding="utf-8"))
         ids = [g["id"] for g in spec["gates"]]
         self.assertIn("G8", ids, "specs/gates.json must list G8 pace")
+        self.assertIn("G10", ids, "specs/gates.json must list G10 you-looked-at-it")
+        self.assertIn("G11", ids, "specs/gates.json must list G11 no-page-chrome")
+        self.assertEqual(len(ids), 13, "thirteen gate families: G0-G11 plus the design gates")
 
     def test_scene_change_times_is_monotonic(self):
         """The helper is pure parsing; a cut list that goes backwards would break the gap maths."""
@@ -406,3 +409,122 @@ class TestLibraryIndex(unittest.TestCase):
                  / "library" / "INDEX.md").read_text(encoding="utf-8")
         self.assertGreaterEqual(index.count("/upstream/"), 40,
                                 "the index must name concrete upstream files, not folders")
+
+
+# ---------------------------------------------------------------------------
+# G10-G11 — the craft half: was the render read, and is the frame furniture
+# ---------------------------------------------------------------------------
+
+class TestWatchNotes(unittest.TestCase):
+    """G10. The gate exists because a render that was never described was never
+    watched, and that is how four play buttons ended up in one frame."""
+
+    def _notes(self, n=3, sentence="A man in a hoodie talks to camera, wall behind",
+               design=None, verdict="Would cut the second overlay."):
+        d = design or {str(i): "This answer is long enough to count as written" for i in "12345"}
+        return {"exists": True,
+                "tiles": [{"t": f"0:0{i}", "on_screen": sentence, "hero": "", "slide": ""}
+                          for i in range(n)],
+                "design": d, "verdict": verdict}
+
+    def test_missing_notes_fail_when_required(self):
+        g = mfe.check_watch(None, None, required=True)
+        self.assertEqual(g.status, "fail")
+        self.assertIn("nothing proves", g.detail)
+
+    def test_missing_notes_warn_when_not_required(self):
+        self.assertEqual(mfe.check_watch(None, None, required=False).status, "warn")
+
+    def test_unwatched_frames_fail(self):
+        g = mfe.check_watch(self._notes(n=3), expected_tiles=19, required=True)
+        self.assertEqual(g.status, "fail")
+        self.assertIn("3 of 19", g.detail)
+
+    def test_one_word_descriptions_fail(self):
+        g = mfe.check_watch(self._notes(sentence="talking head"), expected_tiles=3, required=True)
+        self.assertEqual(g.status, "fail")
+
+    def test_unanswered_design_question_fails(self):
+        design = {"1": "one typeface, bold caps headline", "3": "fine"}
+        g = mfe.check_watch(self._notes(design=design), expected_tiles=3, required=True)
+        self.assertEqual(g.status, "fail")
+        self.assertIn("2", g.detail)
+
+    def test_no_verdict_fails(self):
+        g = mfe.check_watch(self._notes(verdict=""), expected_tiles=3, required=True)
+        self.assertEqual(g.status, "fail")
+
+    def test_complete_notes_pass(self):
+        self.assertEqual(mfe.check_watch(self._notes(), expected_tiles=3, required=True).status,
+                         "pass")
+
+    def test_parser_reads_the_template_back(self):
+        with tempfile.TemporaryDirectory() as td:
+            p = Path(td) / "watch.md"
+            p.write_text(mfe.WATCH_TEMPLATE.format(
+                name="x.mp4",
+                rows="| 0:00 | a man talks to camera in a warm room | his face | yes |\n"
+                     "| 0:01 | the same shot, hands moving, caption below | hands | yes |") +
+                "1. Type — one sans, heavy, all caps\n", encoding="utf-8")
+            n = mfe.parse_watch_notes(p)
+        self.assertEqual(len(n["tiles"]), 2)
+        self.assertEqual(n["tiles"][1]["t"], "0:01")
+        self.assertIn("one sans", n["design"]["1"])
+
+    def test_parser_survives_a_missing_file(self):
+        self.assertFalse(mfe.parse_watch_notes("/nonexistent/watch.md")["exists"])
+
+
+class TestPageChrome(unittest.TestCase):
+    """G11. The upstream rule that had a linter (no page chrome) had no
+    enforcement here at all — so an edit shipped with a corner label, a counter
+    and a kicker, exactly the three things the rule names."""
+
+    def _m(self, *els):
+        return {"elements": list(els)}
+
+    def test_absent_manifest_warns(self):
+        self.assertEqual(mfe.check_graphics(None).status, "warn")
+
+    def test_corner_label_fails(self):
+        g = mfe.check_graphics(self._m(
+            {"id": "brand-corner", "kind": "corner-label", "text": "THE BRAND",
+             "proves": "the brand name", "smallest_text_pct": 4.0}))
+        self.assertEqual(g.status, "fail")
+        self.assertIn("page chrome", g.detail)
+
+    def test_counter_and_kicker_and_progress_bar_fail(self):
+        for kind in ("counter", "kicker", "progress-bar", "timecode", "hud", "watermark"):
+            g = mfe.check_graphics(self._m(
+                {"id": "x", "kind": kind, "text": "02", "proves": "where we are in the piece"}))
+            self.assertEqual(g.status, "fail", f"{kind} should be page chrome")
+
+    def test_type_under_the_floor_fails(self):
+        g = mfe.check_graphics(self._m(
+            {"id": "sub", "kind": "graphic", "text": "Showcase your work",
+             "proves": "a place to put finished work", "smallest_text_pct": 1.6}))
+        self.assertEqual(g.status, "fail")
+        self.assertIn("3.5%", g.detail)
+
+    def test_overlay_that_proves_nothing_fails(self):
+        g = mfe.check_graphics(self._m(
+            {"id": "chart", "kind": "graphic", "text": "COLOR GRADE", "proves": ""}))
+        self.assertEqual(g.status, "fail")
+        self.assertIn("do not say what the viewer knows", g.detail)
+
+    def test_overlay_restating_its_own_label_fails(self):
+        g = mfe.check_graphics(self._m(
+            {"id": "tile", "kind": "graphic", "text": "personal brand showcase work",
+             "proves": "personal brand showcase work", "smallest_text_pct": 5.0}))
+        self.assertEqual(g.status, "fail")
+        self.assertIn("restate", g.detail)
+
+    def test_a_real_overlay_passes(self):
+        g = mfe.check_graphics(self._m(
+            {"id": "curve", "kind": "graphic", "text": "TOTAL VALUE",
+             "proves": "money times effort, rising, so the viewer sees the trade",
+             "smallest_text_pct": 6.0},
+            {"id": "icons", "kind": "graphic", "text": "Money Effort Time",
+             "proves": "three inputs feeding one output, drawn as a diagram",
+             "smallest_text_pct": 4.0}))
+        self.assertEqual(g.status, "pass", g.detail)

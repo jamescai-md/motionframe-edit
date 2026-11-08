@@ -29,6 +29,14 @@ which re-encodes the picture for an audio change.
 If you can only get one right, it is the voice. A piece with no music and a clear
 voice reads as intentional; a piece with music over a buried voice reads as broken.
 
+**A silent reference licenses no sound, not no sound design.** When the reference has no audio
+track at all, it is a motion-graphics piece with no voiceover — it says nothing about whether
+*this* piece, which does have a voice, should be bare. If your cut has graphic hits, the hits
+need either a sound or a stated reason they are silent. Four hard cuts onto full-frame cards
+and a counter landing, with nothing but dialogue, is not restraint; it is an unfinished mix.
+Write the line in the report: "the cards are silent because ______", and if the blank is empty,
+add the sound.
+
 ## Ducking
 
 Music must drop when the speaker speaks, not sit at one level and fight.

@@ -105,6 +105,11 @@ rest. On-screen text must carry it with the sound off.
 ## Endings
 
 - End on the last word, or on a designed beat of stillness — 0.6–1.4 s, no more.
+- **The last words must land.** Read the final six words out loud. If the sentence is still
+  travelling — "…90 days inside of", "…and then we", "…the thing about it is" — you cut a
+  runway, not an ending. Either extend one clause to the landing, or go back to the previous
+  complete thought. An end card over an unfinished sentence is worse than no end card, because
+  it hides the truncation behind a logo.
 - Never fade to black by default. It reads as a truncated file.
 - Do not let the music resolve before the picture does, and do not let it resolve
   after either. One ending.

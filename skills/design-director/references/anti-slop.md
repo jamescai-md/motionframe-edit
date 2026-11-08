@@ -79,6 +79,35 @@ now pass every mechanical gate and still read as machine-made.
 |---|---|---|---|
 | 18 | **Production metadata as decoration** — `SAMPLE 01`, `TAKE 3`, `FILM 01`, `01 / 04`, version numbers, timecode, HUD corners | It is the look of a design tool, not of a finished piece. The viewer learns nothing and the frame gets busier | Nothing. The frame does not need to cite itself |
 | 19 | **A stat card that restates what was just said** — big number over a small label ("Pause 1.57 s") | A number on screen only earns its place if it compares, ranks, or proves something the audio does not already carry. Otherwise it is a wall of self-important decoration | Show the comparison, or cut the card. One number that lands beats five that decorate |
+| 20 | **Page chrome** — a name in the corner, `02 / THE STYLE` counters, tracked-caps micro labels, a timecode, a progress bar under a card, a kicker over a headline | The frame is labelling itself instead of saying something. Of everything in the source material this was the most strictly policed — one of the sources shipped a linter that fails a build for a corner label alone | Delete it. An empty corner is empty, and that is fine |
+| 21 | **A dashboard for a sentence** — a fake NLE timeline, a graph with a dashed diagonal and a dot, a row of progress bars filling for no reason | Instruments imply data. With no data behind them they are set dressing that invites the viewer to read a chart that means nothing, which is worse than a blank space | Draw the relationship the sentence is actually about, or use the frame for something else |
+| 22 | **One idea labelled three times** — corner label, card title and caption all naming the same thing in the same frame | Repetition without addition makes the frame busy and makes the writer look unsure of the first two attempts | One label. The caption already exists and does not need a headline above it |
+| 23 | **A sub-label under a headline that restates it** — "Stylize your content with a signature look" under "EDITING STYLE" | The second line exists because the first was too vague | Make the headline do the whole job, or give the second line information the headline does not carry |
+
+20–23 all share a cause: the graphics were designed as *furniture* rather than as *argument*.
+The reference that taught the palette was making a claim in every frame; copying its panels
+without copying what the panels were doing produces exactly these four.
+
+20, 21 and 23 are now checked rather than remembered. Declare every overlay and the gate
+reads it:
+
+```bash
+python3 tools/mfe.py gate --file work/master.mp4 --graphics work/graphics.json
+```
+
+```json
+{"elements": [
+  {"id": "value-curve", "kind": "graphic", "t": 6.2,
+   "text": "TOTAL VALUE", "smallest_text_pct": 6.0,
+   "proves": "money and effort compound, so the total outruns both"},
+  {"id": "brand-corner", "kind": "corner-label", "t": 11.5,
+   "text": "THE BRAND", "smallest_text_pct": 1.1, "proves": ""}
+]}
+```
+
+The first element passes. The second fails three times over: it is page chrome, it is under the
+type floor, and it does not say what the viewer knows afterwards.
+
 
 ## Pre-ship checklist
 
